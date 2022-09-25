@@ -1,71 +1,78 @@
 import { Card, Row, Col } from 'antd'
 import pattern from '../../assets/pattern.png'
 import rupiah from 'rupiah-format'
+import styled from 'styled-components'
 
-const cardStyle = (color) => {
-  const style = {
-    background: `url(${pattern}), ${color}`,
-    cursor: 'default',
-  }
-  return style
-}
+const CardWrapper = styled(Card)`
+  background-image: url(${pattern});
+  cursor: default;
+  border-radius: 5px;
+  box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.3);
+`
 
-const daily = {
-  color: 'lightSalmon',
-  title: 'HARIAN',
-  visitor: 0,
-  profit: 0,
-}
+const Title = styled.h4`
+  letter-spacing: 0.2rem;
+  margin-bottom: 1rem;
+  text-transform: uppercase;
+  font-weight: 700;
+`
 
-const weekly = {
-  color: 'LightGoldenRodYellow',
-  title: 'MINGGUAN',
-  visitor: 0,
-  profit: 0,
-}
+const DataWrapper = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+`
 
-const monthly = {
-  color: 'lightGreen',
-  title: 'BULANAN',
-  visitor: 0,
-  profit: 0,
-}
+const datas = [
+  {
+    title: 'harian',
+    visitor: 0,
+    profit: 0,
+  },
+  {
+    title: 'mingguan',
+    visitor: 0,
+    profit: 0,
+  },
+  {
+    title: 'bulanan',
+    visitor: 0,
+    profit: 0,
+  },
+  {
+    title: 'tahunan',
+    visitor: 0,
+    profit: 0,
+  },
+]
 
-const yearly = {
-  color: 'lightSkyBlue',
-  title: 'TAHUNAN',
-  visitor: 0,
-  profit: 0,
-}
-
-const Base = ({ title, visitor, profit, color }) => {
+const Wrapper = ({ title, visitor, profit }) => {
   return (
     <Col span={6}>
-      <Card bordered={false} hoverable style={cardStyle(color)} className='rounded'>
-        <h6 className='m-0' style={{ letterSpacing: '.2rem' }}>
-          {title}
-        </h6>
-        <div className='my-3 d-flex justify-content-between align-items-center'>
-          <h5 className='m-0'>JUMLAH PENGUNJUNG:</h5>
-          <h4 className='m-0 fs-1 fw-bold'>{visitor}</h4>
-        </div>
-        <div>
-          <h6 className='m-0'>ESTIMASI LABA:</h6>
-          <h5 className='m-0'>{rupiah.convert(profit)}</h5>
-        </div>
-      </Card>
+      <CardWrapper hoverable bordered={false}>
+        <Title>{title}</Title>
+        <DataWrapper>
+          <h3 style={{ marginBottom: '.5rem' }}>JUMLAH PENGUNJUNG:</h3>
+          <h3 style={{ marginBottom: '.5rem' }}>{visitor}</h3>
+        </DataWrapper>
+        <DataWrapper>
+          <h3 style={{ marginBottom: '.5rem' }}>ESTIMASI LABA:</h3>
+          <h3 style={{ marginBottom: '.5rem' }}>{rupiah.convert(profit)}</h3>
+        </DataWrapper>
+      </CardWrapper>
     </Col>
   )
 }
 
 const Cards = () => {
+  // const color = ['lightSalmon', 'LightGoldenRodYellow', 'lightGreen', 'lightSkyBlue']
+
   return (
     <>
       <Row gutter={16}>
-        <Base title={daily.title} visitor={daily.visitor} profit={daily.profit} color={daily.color} />
-        <Base title={weekly.title} visitor={weekly.visitor} profit={weekly.profit} color={weekly.color} />
-        <Base title={monthly.title} visitor={monthly.visitor} profit={monthly.profit} color={monthly.color} />
-        <Base title={yearly.title} visitor={yearly.visitor} profit={yearly.profit} color={yearly.color} />
+        {datas?.map((data, i) => (
+          <Wrapper key={i} title={data.title} visitor={data.visitor} profit={data.profit} />
+        ))}
       </Row>
     </>
   )

@@ -2,10 +2,14 @@ import { LayoutApp, Cards, Tables } from '../../components'
 
 const Home = () => {
   return (
-    <LayoutApp>
-      <Cards />
-      <Tables />
-    </LayoutApp>
+    <LayoutApp
+      items={
+        <>
+          <Cards />
+          <Tables />
+        </>
+      }
+    ></LayoutApp>
   )
 }
 

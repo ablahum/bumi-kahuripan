@@ -1,7 +1,8 @@
 import mongoose from 'mongoose'
+
 const { Schema, model } = mongoose
 
-const ConsumerSchema = new Schema(
+const consumerSchema = new Schema(
   {
     name: {
       type: String,
@@ -12,8 +13,20 @@ const ConsumerSchema = new Schema(
       type: String,
       required: true,
     },
+    roomType: {
+      // type: Schema.Types.ObjectId,
+      type: String,
+      required: true,
+      ref: 'RoomType',
+    },
+    dayType: {
+      // type: Schema.Types.ObjectId,
+      type: String,
+      required: true,
+      ref: 'DayType',
+    },
   },
   { timestamps: true }
 )
 
-export default model('Consumer', ConsumerSchema)
+export default model('Consumer', consumerSchema)

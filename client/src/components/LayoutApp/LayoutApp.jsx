@@ -1,68 +1,89 @@
 import { Button, Layout, Menu } from 'antd'
-import React, { useState } from 'react'
-import { AiFillHome, AiFillSetting } from 'react-icons/ai'
+import { useState } from 'react'
+import { Link, Navigate, useNavigate } from 'react-router-dom'
+import { HomeOutlined, SettingOutlined } from '@ant-design/icons'
+import { logout } from '../../apis/auth'
 import styled from 'styled-components'
-import { Fade } from 'react-bootstrap'
-import { Link, Navigate } from 'react-router-dom'
-import { GiHamburgerMenu } from 'react-icons/gi'
 
-const Trigger = styled(GiHamburgerMenu)`
-  font-size: 1.5rem;
-  margin-left: 1.5rem;
-  transition: color 0.3s;
-  cursor: pointer;
+const { Header, Sider, Content, Footer } = Layout
 
-  :hover {
-    color: #dc3545;
-  }
+const Logo = styled.h2`
+  margin: 1rem;
+  color: #ff4d4f;
 `
 
-const LayoutApp = ({ children }) => {
-  const [collapsed, setCollapsed] = useState(false)
+const HeaderWrapper = styled(Header)`
+  background-color: #fff;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 2rem;
+`
 
-  const { Header, Sider, Content } = Layout
-  const user = localStorage.getItem('user')
+const ContentWrapper = styled(Content)`
+  margin: 2rem;
+  background-color: #fff;
+  // min-height: 80vh;
+  padding: 1.5rem;
+`
 
-  if (!localStorage.getItem('token')) return <Navigate to='/login' />
+const FooterWrapper = styled(Footer)`
+  background-color: #fff;
+  text-align: center;
+  padding: 1rem;
+`
 
-  const handleLogout = () => {
-    console.log('logout')
+const menuItem = [
+  {
+    key: '1',
+    icon: <HomeOutlined />,
+    label: 'dashboard',
+  },
+  {
+    key: '2',
+    icon: <SettingOutlined />,
+    label: 'pengaturan',
+  },
+]
+
+const LayoutApp = ({ items }) => {
+  if (!localStorage.getItem('user')) return <Navigate to='/login' />
+  const user = JSON.parse(localStorage.getItem('user'))
+  const userEmail = user.email
+
+  const handleLogout = async () => {
+    try {
+      const res = await logout()
+
+      alert(res.data.message)
+      localStorage.removeItem('user')
+      window.location.reload()
+    } catch (err) {
+      console.log(err)
+    }
   }
 
   return (
-    <Layout className='vh-100'>
-      <Sider trigger={null} collapsible collapsed={collapsed} className='bg-light shadow'>
-        <Fade in={!collapsed} className='m-3'>
-          <div id='example-fade-text'>
-            <h4 className='text-danger m-0 fw-bold'>
-              <span className='fw-normal'>BUMI</span> KAHURIPAN
-            </h4>
-          </div>
-        </Fade>
-        <Menu mode='inline' defaultSelectedKeys={['1']} className='fs-6'>
-          <Menu.Item key={1} icon={<AiFillHome className='fs-5' />}>
-            <Link to='/'>DASBOR</Link>
-          </Menu.Item>
-          <Menu.Item key={2} icon={<AiFillSetting className='fs-5' />}>
-            <Link to='/setting'>PENGATURAN</Link>
-          </Menu.Item>
-        </Menu>
+    <Layout>
+      <Sider breakpoint='lg' collapsedWidth='0'>
+        <Logo>BUMI KAHURIPAN</Logo>
+
+        <Menu theme='dark' mode='inline' defaultSelectedKeys={['1']} items={menuItem} style={{ textTransform: 'uppercase' }} />
       </Sider>
+
       <Layout>
-        <Header className='bg-light shadow d-flex justify-content-between align-items-center p-0'>
-          <Trigger onClick={() => setCollapsed(!collapsed)} />
-          <div className='d-flex align-items-center'>
-            <p className='m-0'>
-              MASUK SEBAGAI:<span className='fs-5 mx-3 fw-bold'>{user}</span>
-            </p>
-            <Button type='primary' danger className='me-4 rounded bg-danger' onClick={handleLogout}>
-              KELUAR
-            </Button>
-          </div>
-        </Header>
-        <Content className='m-5'>
-          <div>{children}</div>
-        </Content>
+        <HeaderWrapper>
+          <h3 style={{ margin: '0', fontWeight: '400' }}>
+            MASUK SEBAGAI: <span style={{ fontWeight: '800' }}>{userEmail}</span>
+          </h3>
+          <Button type='primary' danger onClick={handleLogout}>
+            KELUAR
+          </Button>
+        </HeaderWrapper>
+
+        <ContentWrapper>{items}</ContentWrapper>
+
+        <FooterWrapper>Bumi Kahuripan ©2022 Created by ablahum</FooterWrapper>
       </Layout>
     </Layout>
   )

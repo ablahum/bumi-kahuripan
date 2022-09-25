@@ -2,15 +2,15 @@ import mongoose from 'mongoose'
 
 const { Schema, model } = mongoose
 
-const userSchema = new Schema({
-  email: {
+const roomType = new Schema({
+  name: {
     type: String,
     required: true,
   },
-  password: {
-    type: String,
+  price: {
+    type: Number,
     required: true,
   },
 })
 
-export default model('User', userSchema)
+export default model('RoomType', roomType)

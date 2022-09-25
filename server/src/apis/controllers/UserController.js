@@ -1,9 +1,6 @@
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
 import User from '../models/User.js'
-import { LocalStorage } from 'node-localstorage'
-
-global.localStorage = new LocalStorage('./src/utils')
 
 export const showMe = async (req, res, next) => {
   const { id } = req.params
@@ -30,7 +27,7 @@ export const register = async (req, res, next) => {
       })
 
       const savedUser = await newData.save()
-      res.json(savedUser)
+      res.json({ message: 'Berhasil membuat akun', savedUser })
     })
   } catch (err) {
     next(err)
@@ -48,18 +45,26 @@ export const login = async (req, res, next) => {
       const hash = user.password
       bcrypt.compare(password, hash, async (err, result) => {
         if (err) next(err)
+
         if (result) {
           jwt.sign({ email: user.email }, 'JWT_SECRET', (err, token) => {
             if (err) next(err)
-            // localStorage.setItem('token', token)
-            // res.json({ message: 'Berhasil masuk', user: email })
-            res.json({ message: 'Berhasil masuk', user: email, token })
+
+            res.json({ message: 'Berhasil masuk', user: { email, token } })
           })
         } else {
           res.json({ message: 'Email atau password salah' })
         }
       })
     }
+  } catch (err) {
+    next(err)
+  }
+}
+
+export const logout = async (req, res, next) => {
+  try {
+    res.json({ message: 'Berhasil logout' })
   } catch (err) {
     next(err)
   }

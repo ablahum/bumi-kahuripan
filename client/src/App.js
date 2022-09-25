@@ -1,5 +1,4 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
-import { Header, Footer, Sidebar } from './components'
 import { Home, Setting, Login, Register } from './pages'
 import 'antd/dist/antd.css'
 
