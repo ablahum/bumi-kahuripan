@@ -1,6 +1,7 @@
 import { Table, Button, Image } from 'antd'
 import { useState, useEffect } from 'react'
-import { showAll, deleteOne, createOne, updateOne } from '../../apis/consumers'
+import { getAll, deleteOne, createOne, updateOne } from '../../apis/consumers'
+import { showDayType, showRoomType } from '../../apis/type'
 import styled from 'styled-components'
 import moment from 'moment'
 import 'moment/locale/id'
@@ -23,9 +24,11 @@ const Tables = () => {
     roomType: '',
     dayType: '',
   })
+  const [roomType, setRoomType] = useState([])
+  const [dayType, setDayType] = useState([])
+
   const [dataId, setDataId] = useState(null)
   const [visible, setVisible] = useState(false)
-  const [ktp, setKtp] = useState(null)
 
   const [newTrigger, setNewTrigger] = useState(false)
   const [updateTrigger, setUpdateTrigger] = useState(false)
@@ -33,43 +36,24 @@ const Tables = () => {
 
   const date = moment().format('dddd, DD MMMM YYYY')
 
-  const handleChange = (e) => {
-    if (e === 'AC' || e === 'Non AC') {
-      const roomType = e
+  const getType = async () => {
+    try {
+      const room = await showRoomType()
+      const day = await showDayType()
 
-      setNewData(() => ({ ...newData, roomType }))
-    } else if (e === 'Weekend' || e === 'Weekday') {
-      const dayType = e
-
-      setNewData(() => ({ ...newData, dayType }))
-    } else if (e.file) {
-      const ktp = e.file.originFileObj
-
-      setNewData(() => ({ ...newData, ktp }))
-    } else {
-      setNewData(() => ({ ...newData, [e.target.name]: e.target.value }))
+      setRoomType(room.data)
+      setDayType(day.data)
+    } catch (err) {
+      console.log(err)
     }
   }
 
-  const setUpdate = (params) => {
-    setUpdateTrigger(true)
-    setDataId(params)
-  }
-
-  const setDelete = (params) => {
-    setDeleteTrigger(true)
-    setDataId(params)
-  }
-
-  useEffect(() => {
-    showConsumers()
-  }, [])
-
-  const showConsumers = async () => {
+  const getConsumers = async () => {
     try {
-      const res = await showAll()
+      const res = await getAll()
 
       setData(res.data)
+      getType()
     } catch (err) {
       console.log(err)
     }
@@ -100,18 +84,52 @@ const Tables = () => {
       const res = await deleteOne(dataId)
 
       console.log(res)
-      showAll()
+      getAll()
     } catch (err) {
       console.log(err)
     }
   }
+
+  const handleChange = (e) => {
+    if (e === '632be95848bf26629630d63f' || e === '632be95e48bf26629630d641') {
+      const roomType = e
+
+      setNewData({ ...newData, roomType })
+    } else if (e === '632be91148bf26629630d637' || e === '632be91e48bf26629630d63a') {
+      const dayType = e
+
+      setNewData({ ...newData, dayType })
+    } else if (e.file) {
+      const ktp = e.file.originFileObj
+
+      setNewData(() => ({ ...newData, ktp }))
+    } else {
+      setNewData(() => ({
+        ...newData,
+        [e.target.name]: e.target.value,
+      }))
+    }
+  }
+
+  const setUpdate = (params) => {
+    setUpdateTrigger(true)
+    setDataId(params)
+  }
+
+  const setDelete = (params) => {
+    setDeleteTrigger(true)
+    setDataId(params)
+  }
+
+  useEffect(() => {
+    getConsumers()
+  }, [])
 
   return (
     <>
       <TitleWrapper>
         <h3 style={{ margin: '0' }}>{date}</h3>
 
-        {/* <Button danger onClick={() => console.log(dataId)}> */}
         <Button danger onClick={() => setNewTrigger(true)}>
           TAMBAH PENGUNJUNG
         </Button>
@@ -154,17 +172,12 @@ const Tables = () => {
             <>
               <Button onClick={() => setUpdate(action._id)}>UBAH</Button>
               <Button onClick={() => setDelete(action._id)}>HAPUS</Button>
-              {/* <Button onClick={() => setUpdateTrigger(true)}>UBAH</Button> */}
-              {/* <Button onClick={() => setDeleteTrigger(true)}>HAPUS</Button> */}
-              {/* <Modal title='TAMBAHKAN PENGUNJUNG' items={<Form handleChange={handleChange} handleFile={(params) => setKtp(params)} />} open={newTrigger} setOpen={setNewTrigger} confirm={createConsumer} /> */}
-              {/* <Modal title='UBAH PENGUNJUNG' items={<Form handleChange={handleChange} />} open={updateTrigger} setOpen={setUpdateTrigger} confirm={() => updateConsumer(action._id)} /> */}
-              {/* <Modal title='HAPUS PENGUNJUNG' items='Anda yakin untuk menghapus pengunjung?' open={deleteTrigger} setOpen={setDeleteTrigger} confirm={() => deleteConsumer(action._id)} /> */}
             </>
           )}
         />
       </Table>
 
-      <Modal title='TAMBAHKAN PENGUNJUNG' items={<Form handleChange={handleChange} handleFile={(params) => setKtp(params)} />} open={newTrigger} setOpen={setNewTrigger} confirm={createConsumer} />
+      <Modal title='TAMBAHKAN PENGUNJUNG' items={<Form handleChange={handleChange} roomType={roomType} dayType={dayType} />} open={newTrigger} setOpen={setNewTrigger} confirm={createConsumer} />
       <Modal title='UBAH PENGUNJUNG' items={<Form handleChange={handleChange} />} open={updateTrigger} setOpen={setUpdateTrigger} confirm={updateConsumer} />
       <Modal title='HAPUS PENGUNJUNG' items='Anda yakin untuk menghapus pengunjung?' open={deleteTrigger} setOpen={setDeleteTrigger} confirm={deleteConsumer} />
     </>

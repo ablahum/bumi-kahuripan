@@ -23,7 +23,6 @@ const HeaderWrapper = styled(Header)`
 const ContentWrapper = styled(Content)`
   margin: 2rem;
   background-color: #fff;
-  // min-height: 80vh;
   padding: 1.5rem;
 `
 
@@ -71,7 +70,7 @@ const LayoutApp = ({ items }) => {
         <Menu theme='dark' mode='inline' defaultSelectedKeys={['1']} items={menuItem} style={{ textTransform: 'uppercase' }} />
       </Sider>
 
-      <Layout>
+      <Layout style={{ minHeight: '100vh' }}>
         <HeaderWrapper>
           <h3 style={{ margin: '0', fontWeight: '400' }}>
             MASUK SEBAGAI: <span style={{ fontWeight: '800' }}>{userEmail}</span>

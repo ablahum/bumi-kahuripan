@@ -1,7 +1,7 @@
 import Consumer from '../models/Consumer.js'
 import fs from 'fs'
 
-export const showAll = async (req, res, next) => {
+export const getAll = async (req, res, next) => {
   try {
     const consumers = await Consumer.find()
 
@@ -11,7 +11,7 @@ export const showAll = async (req, res, next) => {
   }
 }
 
-// export const showOne = async (req, res, next) => {
+// export const getOne = async (req, res, next) => {
 //   const { id } = req.params
 
 //   try {
@@ -28,7 +28,7 @@ export const createOne = async (req, res, next) => {
   const image = req.file
 
   try {
-    const consumer = await new Consumer({ ...payload, ktp: image.filename })
+    const consumer = new Consumer({ ...payload, ktp: image.filename })
     await consumer.save()
 
     res.status(201).json({
@@ -36,7 +36,7 @@ export const createOne = async (req, res, next) => {
       consumer,
     })
   } catch (err) {
-    console.log(err)
+    next(err)
   }
 }
 

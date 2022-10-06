@@ -1,9 +1,9 @@
 import express from 'express'
-import { showAll, createOne, deleteOne } from '../controllers/DayTypeController.js'
+import { getAll, createOne, deleteOne } from '../controllers/DayTypeController.js'
 
 const router = express.Router()
 
-router.get('/', showAll)
+router.get('/', getAll)
 router.post('/', createOne)
 router.delete('/:id', deleteOne)
 

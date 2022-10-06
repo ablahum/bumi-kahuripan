@@ -2,42 +2,10 @@ import { Button, Select, Form as FormAntd, Input, Upload } from 'antd'
 import { UploadOutlined } from '@ant-design/icons'
 import styled from 'styled-components'
 import { Link } from 'react-router-dom'
-import { useEffect, useState } from 'react'
-import { showDayType, showRoomType } from '../../apis/type'
 
 const { Option } = Select
 
-export const Form = ({ handleChange, handleFile }) => {
-  const [roomType, setRoomType] = useState([])
-  const [dayType, setDayType] = useState([])
-
-  const showType = async () => {
-    try {
-      const room = await showRoomType()
-      const day = await showDayType()
-
-      setRoomType(room.data)
-      setDayType(day.data)
-    } catch (err) {
-      console.log(err)
-    }
-  }
-
-  useEffect(() => {
-    showType()
-  }, [])
-
-  // const props = {
-  //   name: 'ktp',
-  //   action: 'http://localhost:4000/api/consumers',
-
-  //   onChange(info) {
-  //     console.log(info.file)
-  //     handleFile(info.file.originFileObj)
-  //     handleChange
-  //   },
-  // }
-
+export const Form = ({ handleChange, roomType, dayType }) => {
   return (
     <FormAntd name='basic' labelCol={{ span: 5 }} wrapperCol={{ span: 19, offset: 1 }}>
       <FormAntd.Item
@@ -65,9 +33,7 @@ export const Form = ({ handleChange, handleFile }) => {
           },
         ]}
       >
-        {/* <Upload {...props}> */}
         <Upload name='ktp' onChange={handleChange}>
-          {/* <Upload name='ktp' onChange={(e) => handleFile(e.file.originFileObj)}> */}
           <Button icon={<UploadOutlined />}>Upload KTP</Button>
         </Upload>
       </FormAntd.Item>
@@ -83,12 +49,11 @@ export const Form = ({ handleChange, handleFile }) => {
       >
         <Select name='roomType' onChange={handleChange}>
           {roomType.map((type) => (
-            <Option value={type.name} key={type._id}>
-              {type.name}
+            <Option value={type._id} key={type._id}>
+              {type.name} - <span>{type.price}</span>
             </Option>
           ))}
         </Select>
-        {/* <p style={{ display: 'inline' }}>Rp. 200,000</p> */}
       </FormAntd.Item>
 
       <FormAntd.Item
@@ -102,12 +67,11 @@ export const Form = ({ handleChange, handleFile }) => {
       >
         <Select name='dayType' onChange={handleChange}>
           {dayType.map((type) => (
-            <Option value={type.name} key={type._id}>
-              {type.name}
+            <Option value={type._id} key={type._id}>
+              {type.name} - <span>{type.price}</span>
             </Option>
           ))}
         </Select>
-        {/* <p style={{ display: 'inline' }}>Rp. 200,000</p> */}
       </FormAntd.Item>
 
       {/* <Button htmlType='submit'>Submit</Button> */}

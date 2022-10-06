@@ -1,5 +1,6 @@
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
+
 import User from '../models/User.js'
 
 export const showMe = async (req, res, next) => {
@@ -15,7 +16,7 @@ export const showMe = async (req, res, next) => {
 
 export const register = async (req, res, next) => {
   const payload = req.body
-  const password = req.body.password
+  const { password } = req.body
 
   try {
     bcrypt.hash(password, 10, async (err, hash) => {
