@@ -1,6 +1,6 @@
 import RoomType from '../models/RoomType.js'
 
-export const showAll = async (req, res, next) => {
+export const getAll = async (req, res, next) => {
   try {
     const roomTypes = await RoomType.find()
 

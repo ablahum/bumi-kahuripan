@@ -1,6 +1,6 @@
 import DayType from '../models/DayType.js'
 
-export const showAll = async (req, res, next) => {
+export const getAll = async (req, res, next) => {
   try {
     const dayTypes = await DayType.find()
 

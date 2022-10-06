@@ -1,6 +1,6 @@
 import express from 'express'
 import multer from 'multer'
-import { showAll, createOne, updateOne, deleteOne } from '../controllers/ConsumerController.js'
+import { getAll, createOne, updateOne, deleteOne } from '../controllers/ConsumerController.js'
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -14,7 +14,7 @@ const storage = multer.diskStorage({
 const router = express.Router()
 const upload = multer({ storage })
 
-router.get('/', showAll)
+router.get('/', getAll)
 router.post('/', upload.single('ktp'), createOne)
 router.put('/:id', upload.single('ktp'), updateOne)
 router.delete('/:id', deleteOne)

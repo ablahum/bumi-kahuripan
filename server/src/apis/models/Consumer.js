@@ -14,14 +14,14 @@ const consumerSchema = new Schema(
       required: true,
     },
     roomType: {
-      // type: Schema.Types.ObjectId,
-      type: String,
+      type: Schema.Types.ObjectId,
+      // type: String,
       required: true,
       ref: 'RoomType',
     },
     dayType: {
-      // type: Schema.Types.ObjectId,
-      type: String,
+      type: Schema.Types.ObjectId,
+      // type: String,
       required: true,
       ref: 'DayType',
     },
