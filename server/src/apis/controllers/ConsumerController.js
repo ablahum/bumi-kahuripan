@@ -1,9 +1,12 @@
-import Consumer from '../models/Consumer.js'
 import fs from 'fs'
+
+import Consumer from '../models/Consumer.js'
+import RoomType from '../models/RoomType.js'
+import DayType from '../models/DayType.js'
 
 export const getAll = async (req, res, next) => {
   try {
-    const consumers = await Consumer.find()
+    const consumers = await Consumer.find().populate('roomType').populate('dayType')
 
     res.status(200).json(consumers)
   } catch (err) {
@@ -24,11 +27,44 @@ export const getAll = async (req, res, next) => {
 // }
 
 export const createOne = async (req, res, next) => {
-  const payload = req.body
+  let payload = req.body
   const image = req.file
 
   try {
-    const consumer = new Consumer({ ...payload, ktp: image.filename })
+    if (payload.roomType) {
+      const roomType = await RoomType.findOne({
+        name: payload.roomType,
+      })
+
+      if (roomType) {
+        payload = {
+          ...payload,
+          roomType: roomType._id,
+        }
+      } else {
+        delete payload.roomType
+      }
+    }
+
+    if (payload.dayType) {
+      const dayType = await DayType.findOne({
+        name: payload.dayType,
+      })
+
+      if (dayType) {
+        payload = {
+          ...payload,
+          dayType: dayType._id,
+        }
+      } else {
+        delete payload.dayType
+      }
+    }
+
+    const consumer = new Consumer({
+      ...payload,
+      ktp: image.filename,
+    })
     await consumer.save()
 
     res.status(201).json({

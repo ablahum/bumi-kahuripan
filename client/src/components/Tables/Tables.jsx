@@ -63,7 +63,8 @@ const Tables = () => {
     try {
       const res = await createOne(newData)
 
-      console.log(res)
+      alert(res.data.msg)
+      setNewTrigger(false)
     } catch (err) {
       console.log(err)
     }
@@ -73,7 +74,8 @@ const Tables = () => {
     try {
       const res = await updateOne(dataId, newData)
 
-      console.log(res)
+      alert(res.data.msg)
+      setUpdateTrigger(false)
     } catch (err) {
       console.log(err)
     }
@@ -83,31 +85,28 @@ const Tables = () => {
     try {
       const res = await deleteOne(dataId)
 
-      console.log(res)
-      getAll()
+      alert(res.data.msg)
+      setDeleteTrigger(false)
     } catch (err) {
       console.log(err)
     }
   }
 
   const handleChange = (e) => {
-    if (e === '632be95848bf26629630d63f' || e === '632be95e48bf26629630d641') {
+    if (e === 'AC' || e === 'Non AC') {
       const roomType = e
 
-      setNewData({ ...newData, roomType })
-    } else if (e === '632be91148bf26629630d637' || e === '632be91e48bf26629630d63a') {
+      setNewData(() => ({ ...newData, roomType }))
+    } else if (e === 'Weekend' || e === 'Weekday') {
       const dayType = e
 
-      setNewData({ ...newData, dayType })
+      setNewData(() => ({ ...newData, dayType }))
     } else if (e.file) {
       const ktp = e.file.originFileObj
 
       setNewData(() => ({ ...newData, ktp }))
     } else {
-      setNewData(() => ({
-        ...newData,
-        [e.target.name]: e.target.value,
-      }))
+      setNewData(() => ({ ...newData, [e.target.name]: e.target.value }))
     }
   }
 
@@ -125,6 +124,10 @@ const Tables = () => {
     getConsumers()
   }, [])
 
+  useEffect(() => {
+    getConsumers()
+  }, [newTrigger, updateTrigger, deleteTrigger])
+
   return (
     <>
       <TitleWrapper>
@@ -137,8 +140,11 @@ const Tables = () => {
 
       <Table dataSource={data}>
         <Table.Column title='NO' dataIndex='no' key='no' />
+
         <Table.Column title='NAMA' dataIndex='name' key='name' />
+
         <Table.Column title='ASAL' dataIndex='origin' key='origin' />
+
         <Table.Column
           title='KTP'
           dataIndex='ktp'
@@ -146,6 +152,7 @@ const Tables = () => {
           render={(image) => (
             <>
               <Button onClick={() => setVisible(true)}>Lihat KTP</Button>
+
               <Image
                 width={200}
                 style={{
@@ -163,8 +170,10 @@ const Tables = () => {
             </>
           )}
         />
-        <Table.Column title='TIPE KAMAR' dataIndex='roomType' key='roomType' />
-        <Table.Column title='TIPE HARI' dataIndex='dayType' key='dayType' />
+
+        <Table.Column title='TIPE KAMAR' dataIndex={['roomType', 'name']} key='roomType' render={(name) => <>{name}</>} />
+
+        <Table.Column title='TIPE HARI' dataIndex={['dayType', 'name']} key='dayType' render={(name) => <>{name}</>} />
 
         <Table.Column
           key='action'
