@@ -49,7 +49,7 @@ export const Form = ({ handleChange, roomType, dayType }) => {
       >
         <Select name='roomType' onChange={handleChange}>
           {roomType.map((type) => (
-            <Option value={type._id} key={type._id}>
+            <Option value={type.name} key={type._id}>
               {type.name} - <span>{type.price}</span>
             </Option>
           ))}
@@ -67,7 +67,7 @@ export const Form = ({ handleChange, roomType, dayType }) => {
       >
         <Select name='dayType' onChange={handleChange}>
           {dayType.map((type) => (
-            <Option value={type._id} key={type._id}>
+            <Option value={type.name} key={type._id}>
               {type.name} - <span>{type.price}</span>
             </Option>
           ))}
