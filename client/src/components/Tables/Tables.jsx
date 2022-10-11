@@ -187,7 +187,7 @@ const Tables = () => {
       </Table>
 
       <Modal title='TAMBAHKAN PENGUNJUNG' items={<Form handleChange={handleChange} roomType={roomType} dayType={dayType} />} open={newTrigger} setOpen={setNewTrigger} confirm={createConsumer} />
-      <Modal title='UBAH PENGUNJUNG' items={<Form handleChange={handleChange} />} open={updateTrigger} setOpen={setUpdateTrigger} confirm={updateConsumer} />
+      <Modal title='UBAH PENGUNJUNG' items={<Form handleChange={handleChange} roomType={roomType} dayType={dayType} />} open={updateTrigger} setOpen={setUpdateTrigger} confirm={updateConsumer} />
       <Modal title='HAPUS PENGUNJUNG' items='Anda yakin untuk menghapus pengunjung?' open={deleteTrigger} setOpen={setDeleteTrigger} confirm={deleteConsumer} />
     </>
   )

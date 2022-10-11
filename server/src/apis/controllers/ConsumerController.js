@@ -78,10 +78,40 @@ export const createOne = async (req, res, next) => {
 
 export const updateOne = async (req, res, next) => {
   const { id } = req.params
-  const payload = req.body
+  let payload = req.body
   const image = req.file
 
   try {
+    if (payload.roomType) {
+      const roomType = await RoomType.findOne({
+        name: payload.roomType,
+      })
+
+      if (roomType) {
+        payload = {
+          ...payload,
+          roomType: roomType._id,
+        }
+      } else {
+        delete payload.roomType
+      }
+    }
+
+    if (payload.dayType) {
+      const dayType = await DayType.findOne({
+        name: payload.dayType,
+      })
+
+      if (dayType) {
+        payload = {
+          ...payload,
+          dayType: dayType._id,
+        }
+      } else {
+        delete payload.dayType
+      }
+    }
+
     const consumer = await Consumer.findById(id)
     const currentImage = `public/${consumer.ktp}`
 

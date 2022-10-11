@@ -5,7 +5,7 @@ const Home = () => {
     <LayoutApp
       items={
         <>
-          {/* <Cards /> */}
+          <Cards />
           <Tables />
         </>
       }
