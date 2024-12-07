@@ -7,33 +7,16 @@ use App\Models\Order;
 
 class OrdersController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
         $orders = Order::with('guest')->with('room')->get();
 
-        return response()->json([
-            'title' => 'All Orders',
-            'route_name' => 'orders',
-            'data' => $orders
-        ]);
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        $rooms = Room::all();
+        if (!$orders)
+            return response()->json([
+                'message' => 'Orders not found.',
+            ], 404);
         
-        return view('orders.create', [
-            'title' => 'New Order',
-            'name' => session()->get('user.name'),
-            'rooms' => $rooms,
-            'route_name' => 'orders'
-        ]);
+        return response()->json([$orders], 200);
     }
 
     /**

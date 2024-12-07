@@ -15,10 +15,6 @@ Route::prefix('api')->group(function () {
     Route::resource('/rooms', RoomsController::class);
 });
 
-Route::prefix('api')->group(function () {
-    Route::resource('/categories', CategoriesController::class);
-});
-
 Route::get('/{any}', function () {
     return view('app');
 })->where('any', '^(?!api).*');
