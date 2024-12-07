@@ -1,29 +1,6 @@
 <template>
-    <!-- <div class="flex-1 overflow-x-hidden overflow-y-auto bg-gray-200">
-        <div class="container px-6 py-8 mx-auto">
-            <div class="flex justify-between">
-                <h3 class="text-3xl font-semibold text-gray-700 capitalize">
-                    tambah kamar baru
-                </h3>
-
-                <button
-                    class="uppercase outline outline-indigo-500 px-3 py-1 rounded-lg tracking-widest"
-                >
-                    <router-link to="/rooms" class="m-0">batal</router-link>
-                </button>
-            </div>
-
-            <div
-                v-if="errors.failed"
-                class="bg-red-400 py-2 px-4 rounded-lg mt-4"
-            >
-                <p class="font-semibold">
-                    {{ errors.failed }}
-                </p>
-            </div> -->
-
     <div
-        class="mt-8 p-6 rounded-lg bg-white grid grid-rows-[auto_auto_auto] grid-cols-1 gap-4"
+        class="p-6 rounded-lg bg-white grid grid-rows-[auto_auto_auto] grid-cols-1 gap-4"
     >
         <div
             class="grid md:grid-cols-2 grid-cols-1 md:grid-rows-1 grid-rows-[auto_auto] gap-4 items-start"
@@ -32,12 +9,11 @@
                 <label for="number" class="block capitalize"
                     >nomor kamar:</label
                 >
-
                 <input
                     type="number"
                     name="number"
                     id="number"
-                    v-model="payload.number"
+                    v-model="activePayload.number"
                     class="text-black border rounded-lg w-full p-2"
                     :class="{ 'border-red-500': errors.number }"
                     placeholder="Masukkan nomor kamar..."
@@ -52,20 +28,20 @@
             </div>
 
             <div class="grid grid-cols-1 grid-rows-[auto_auto] gap-2">
-                <label for="category_id" class="block capitalize"
+                <label for="category-id" class="block capitalize"
                     >jenis kamar:</label
                 >
 
                 <select
-                    name="category_id"
-                    id="category_id"
-                    v-model="payload.category_id"
+                    name="category-id"
+                    id="category-id"
+                    v-model="activePayload.category_id"
                     class="text-black border rounded-lg w-full p-2 uppercase"
                     :class="{ 'border-red-500': errors.category }"
                 >
                     <option value="" disabled>---pilih jenis---</option>
                     <option
-                        v-for="category in roomCategories"
+                        v-for="category in categories"
                         :key="category.id"
                         :value="category.id"
                     >
@@ -93,7 +69,7 @@
                 <select
                     name="status"
                     id="status"
-                    v-model="payload.status"
+                    v-model="activePayload.status"
                     class="border rounded-lg w-full p-2 uppercase"
                     :class="{ 'border-red-500': errors.status }"
                 >
@@ -117,12 +93,11 @@
 
                 <div class="flex items-center gap-2">
                     <span class="capitalize text-gray-500">rp</span>
-
                     <input
                         type="number"
                         name="price"
                         id="price"
-                        v-model="payload.price"
+                        v-model="activePayload.price"
                         class="text-black border rounded-lg w-full p-2"
                         :class="{ 'border-red-500': errors.price }"
                         placeholder="Masukkan harga dasar kamar..."
@@ -140,13 +115,11 @@
 
         <button
             class="tracking-widest text-white bg-indigo-500 font-semibold rounded-lg w-full px-4 py-2 text-center uppercase"
-            :onclick="() => createRoom()"
+            @click="handleSubmit"
         >
-            tambah
+            {{ currentPath === "/rooms/create" ? "tambah" : "ubah" }}
         </button>
     </div>
-    <!-- </div>
-    </div> -->
 </template>
 
 <script>
@@ -154,84 +127,34 @@ export default {
     name: "FormComponent",
     data() {
         return {
-            title: "",
-            roomCategories: [],
-            payload: {
-                number: null,
-                category_id: "",
-                status: "",
-                price: null,
-            },
-            errors: {},
+            localPayload: { ...this.payload },
         };
     },
-    mounted() {
-        this.getCategories();
-        // this.getRoom();
+    props: {
+        categories: Array,
+        payload: Object,
+        errors: Object,
+        currentPath: String,
+    },
+    computed: {
+        mode() {
+            return this.$route.path.includes("create") ? "create" : "update";
+        },
+        activePayload() {
+            return this.mode === "create" ? this.payload : this.localPayload;
+        },
+    },
+    created() {
+        if (this.mode === "update" && this.$route.query.room) {
+            const data = JSON.parse(this.$route.query.room);
+            this.localPayload = { ...data };
+        }
     },
     methods: {
-        // async getRoom() {
-        //     try {
-        //         const res = await this.$axios.get(`/api/rooms/${8}`);
-
-        //         console.log(res);
-        //     } catch (err) {
-        //         alert(err.message);
-        //     }
-        // },
-        async getCategories() {
-            try {
-                const res = await this.$axios.get("/api/categories");
-                const { data } = res.data;
-
-                this.roomCategories = data;
-            } catch (err) {
-                alert(err.message);
-            }
+        handleSubmit() {
+            if (this.mode === "create") this.$emit("createRoom", this.payload);
+            else this.$emit("updateRoom", this.localPayload);
         },
-        async createRoom() {
-            this.errors = {};
-
-            if (!this.payload.number)
-                this.errors.number = "Nomor Kamar harus diisi.";
-            if (!this.payload.category_id)
-                this.errors.category = "Jenis Kamar harus diisi.";
-            if (!this.payload.status)
-                this.errors.status = "Status Kamar harus diisi.";
-            if (!this.payload.price)
-                this.errors.price = "Harga Kamar harus diisi.";
-
-            if (Object.keys(this.errors).length > 0) return;
-
-            try {
-                await this.$axios.post("/api/rooms", this.payload);
-
-                this.payload = {
-                    number: null,
-                    category: "",
-                    status: "",
-                    price: null,
-                };
-                this.errors = {};
-
-                this.$router.push({
-                    path: "/rooms",
-                    query: { message: "Kamar berhasil ditambahkan." },
-                });
-            } catch (err) {
-                this.errors.failed =
-                    "Gagal menambahkan kamar baru. Silakan coba lagi.";
-            }
-        },
-        // async updateRoom(id) {
-        //     try {
-        //         const res = await this.$axios.put(`/api/rooms/${id}`, this.payload);
-
-        //         alert(res.data.message);
-        //     } catch (err) {
-        //         alert(err.message);
-        //     }
-        // },
     },
 };
 </script>

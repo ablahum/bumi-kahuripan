@@ -70,8 +70,8 @@
                         </svg>
 
                         <span class="mx-3 capitalize">
-                            <router-link to="/orders" class="m-0"
-                                >pesanan</router-link
+                            <RouterLink to="/orders" class="m-0"
+                                >pesanan</RouterLink
                             >
                         </span>
                     </a>
@@ -97,8 +97,8 @@
                         </svg>
 
                         <span class="mx-3 capitalize">
-                            <router-link to="/rooms" class="m-0"
-                                >kamar</router-link
+                            <RouterLink to="/rooms" class="m-0"
+                                >kamar</RouterLink
                             >
                         </span>
                     </a>
@@ -148,7 +148,7 @@
                     </div>
                 </header>
 
-                <router-view></router-view>
+                <RouterView />
             </div>
         </div>
     </div>
