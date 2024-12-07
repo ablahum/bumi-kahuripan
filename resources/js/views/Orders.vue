@@ -55,13 +55,14 @@
                 >
                     <RouterView
                         :orders="orders"
+                        :rooms="rooms"
                         :payload="payload"
                         :errors="errors"
                         :message="message"
                         :current-path="currentPath"
-                        @create-room="createRoom"
-                        @update-room="updateRoom"
-                        @delete-room="deleteRoom"
+                        @create-order="createOrder"
+                        @update-order="updateOrder"
+                        @delete-order="deleteOrder"
                     />
                 </div>
             </div>
@@ -74,8 +75,13 @@ export default {
     data() {
         return {
             orders: [],
+            rooms: [],
             payload: {
-                guest_id: null,
+                guest: {
+                    name: null,
+                    origin: null,
+                    phone: null,
+                },
                 room_id: null,
                 start_date: null,
                 end_date: null,
@@ -107,74 +113,92 @@ export default {
             try {
                 const res = await this.$axios.get("/api/orders");
 
-                if (res.status === 200) this.rooms = res.data;
+                if (res.status === 200) {
+                    const { orders, rooms } = res.data;
+
+                    this.orders = orders;
+                    this.rooms = rooms;
+                }
             } catch (err) {
                 this.message.failed = "Gagal memuat kamar. Silakan coba lagi.";
             }
         },
-        async createRoom(payload) {
-            this.errors = {};
+        async createOrder(payload) {
+            console.log(payload);
 
-            if (!this.payload.number)
-                this.errors.number = "Nomor Kamar harus diisi.";
-            if (!this.payload.category_id)
-                this.errors.category = "Jenis Kamar harus diisi.";
-            if (!this.payload.status)
-                this.errors.status = "Status Kamar harus diisi.";
-            if (!this.payload.price)
-                this.errors.price = "Harga Kamar harus diisi.";
+            // this.errors = {};
 
-            try {
-                const res = await this.$axios.post("/api/rooms", payload);
+            // if (!this.payload.number)
+            //     this.errors.number = "Nomor Kamar harus diisi.";
+            // if (!this.payload.category_id)
+            //     this.errors.category = "Jenis Kamar harus diisi.";
+            // if (!this.payload.status)
+            //     this.errors.status = "Status Kamar harus diisi.";
+            // if (!this.payload.price)
+            //     this.errors.price = "Harga Kamar harus diisi.";
 
-                this.payload = {
-                    number: null,
-                    category_id: "",
-                    status: "",
-                    price: null,
-                };
-                this.errors = {};
+            // try {
+            //     payload.phone = String(payload.phone);
 
-                if (res.status === 200) {
-                    this.$router.push("/rooms");
-                    this.message.success = "Kamar berhasil ditambahkan.";
-                    this.getOrders();
-                }
-            } catch (err) {
-                this.message.failed =
-                    "Gagal menambahkan kamar. Silakan coba lagi.";
-            }
+            //     // console.log(payload);
+
+            //     const res = await this.$axios.post("/api/orders", payload);
+
+            //     if (res.status === 201) {
+            //         this.payload = {
+            //             name: null,
+            //             origin: null,
+            //             phone: null,
+            //             room_id: null,
+            //             start_date: null,
+            //             end_date: null,
+            //             total_price: null,
+            //         };
+
+            //         this.errors = {};
+
+            //         this.$router.push("/orders");
+            //         this.message.success = "Tamu berhasil ditambahkan.";
+            //         this.getOrders();
+            //     }
+            // } catch (err) {
+            //     this.message.failed =
+            //         "Gagal menambahkan pesanan. Silakan coba lagi.";
+            // }
         },
-        async updateRoom(payload) {
+        async updateOrder(payload) {
+            console.log(payload);
+
             try {
                 const res = await this.$axios.put(
-                    `/api/rooms/${payload.id}`,
+                    `/api/orders/${payload.id}`,
                     payload
                 );
 
-                this.errors = {};
+                console.log(res);
 
-                if (res.status === 200) {
-                    this.$router.push("/rooms");
-                    this.message.success = "Kamar berhasil diubah.";
-                    this.getOrders();
-                }
+                // if (res.status === 204) {
+                //     this.$router.push("/orders");
+                //     this.message.success = "Tamu berhasil diubah.";
+                //     this.getOrders();
+                // }
             } catch (err) {
-                this.message.failed =
-                    "Gagal mengubah kamar. Silakan coba lagi.";
+                console.log(err);
+
+                // this.message.failed = "Gagal mengubah Tamu. Silakan coba lagi.";
             }
         },
-        async deleteRoom(id) {
+        async deleteOrder(id) {
             try {
-                const res = await this.$axios.delete(`/api/rooms/${id}`);
+                const res = await this.$axios.delete(`/api/orders/${id}`);
 
-                if (res.status === 200) {
-                    this.message.success = "Kamar berhasil dihapus.";
+                if (res.status === 204) {
+                    this.message.success = "Tamu berhasil dihapus.";
                     this.getOrders();
                 }
             } catch (err) {
                 this.message.failed =
-                    "Gagal menghapus kamar. Silakan coba lagi.";
+                    "Gagal menghapus Tamu. Silakan coba lagi.";
             }
         },
     },

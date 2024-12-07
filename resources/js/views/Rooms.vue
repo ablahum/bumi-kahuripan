@@ -159,23 +159,25 @@ export default {
             }
         },
         async updateRoom(payload) {
-            try {
-                const res = await this.$axios.put(
-                    `/api/rooms/${payload.id}`,
-                    payload
-                );
+            console.log(payload);
 
-                this.errors = {};
+            // try {
+            //     const res = await this.$axios.put(
+            //         `/api/rooms/${payload.id}`,
+            //         payload
+            //     );
 
-                if (res.status === 200) {
-                    this.$router.push("/rooms");
-                    this.message.success = "Kamar berhasil diubah.";
-                    this.getRooms();
-                }
-            } catch (err) {
-                this.message.failed =
-                    "Gagal mengubah kamar. Silakan coba lagi.";
-            }
+            //     this.errors = {};
+
+            //     if (res.status === 200) {
+            //         this.$router.push("/rooms");
+            //         this.message.success = "Kamar berhasil diubah.";
+            //         this.getRooms();
+            //     }
+            // } catch (err) {
+            //     this.message.failed =
+            //         "Gagal mengubah kamar. Silakan coba lagi.";
+            // }
         },
         async deleteRoom(id) {
             try {
