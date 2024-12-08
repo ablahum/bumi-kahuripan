@@ -21,7 +21,7 @@ class OrdersController extends Controller
             ], 404);
         
         return response()->json([
-            'message' => 'Orders successfully fetched.',
+            'message' => 'Guest and Order successfully fetched.',
             'orders' => $orders,
             'rooms' => $rooms
         ], 200);
@@ -53,7 +53,7 @@ class OrdersController extends Controller
         Order::create($order_data);
 
         return response()->json([
-            'message' => 'Order successfully created.',
+            'message' => 'Guest and Order successfully created.',
         ], 201);
     }
 
@@ -78,17 +78,14 @@ class OrdersController extends Controller
             'total_price' => 'required|integer'
         ]);
 
-        Log::debug(['guest' => $guest_data]);
-        Log::debug(['order' => $order_data]);
-        
-        // $order = Order::find($id);
-        // $guest = Guest::find($order->guest_id);
+        $order = Order::find($id);
+        $guest = Guest::find($order->guest_id);
     
-        // $guest->update($guest_data);
-        // $order->update($order_data);
+        $guest->update($guest_data);
+        $order->update($order_data);
         
         return response()->json([
-            'message' => 'Order successfully updated.',
+            'message' => 'Guest and Order successfully updated.',
         ], 204);
     }
 

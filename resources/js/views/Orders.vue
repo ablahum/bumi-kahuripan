@@ -78,11 +78,11 @@ export default {
             rooms: [],
             payload: {
                 guest: {
-                    name: null,
-                    origin: null,
-                    phone: null,
+                    name: "",
+                    origin: "",
+                    phone: "",
                 },
-                room_id: null,
+                room_id: "",
                 start_date: null,
                 end_date: null,
                 total_price: null,
@@ -123,69 +123,85 @@ export default {
                 this.message.failed = "Gagal memuat kamar. Silakan coba lagi.";
             }
         },
-        async createOrder(payload) {
-            console.log(payload);
+        async createOrder() {
+            this.errors = {};
 
-            // this.errors = {};
-
-            // if (!this.payload.number)
-            //     this.errors.number = "Nomor Kamar harus diisi.";
-            // if (!this.payload.category_id)
-            //     this.errors.category = "Jenis Kamar harus diisi.";
-            // if (!this.payload.status)
-            //     this.errors.status = "Status Kamar harus diisi.";
-            // if (!this.payload.price)
-            //     this.errors.price = "Harga Kamar harus diisi.";
-
-            // try {
-            //     payload.phone = String(payload.phone);
-
-            //     // console.log(payload);
-
-            //     const res = await this.$axios.post("/api/orders", payload);
-
-            //     if (res.status === 201) {
-            //         this.payload = {
-            //             name: null,
-            //             origin: null,
-            //             phone: null,
-            //             room_id: null,
-            //             start_date: null,
-            //             end_date: null,
-            //             total_price: null,
-            //         };
-
-            //         this.errors = {};
-
-            //         this.$router.push("/orders");
-            //         this.message.success = "Tamu berhasil ditambahkan.";
-            //         this.getOrders();
-            //     }
-            // } catch (err) {
-            //     this.message.failed =
-            //         "Gagal menambahkan pesanan. Silakan coba lagi.";
-            // }
-        },
-        async updateOrder(payload) {
-            console.log(payload);
+            if (!this.payload.guest.name)
+                this.errors.name = "Nama Tamu harus diisi.";
+            if (!this.payload.guest.origin)
+                this.errors.origin = "Asal Tamu harus diisi.";
+            if (!this.payload.guest.phone)
+                this.errors.phone = "Nomor Telepon Tamu harus diisi.";
+            if (!this.payload.room_id)
+                this.errors.room_id = "Nomor Kamar harus diisi.";
+            if (!this.payload.total_price)
+                this.errors.total_price = "Total Harga harus diisi.";
+            if (!this.payload.start_date)
+                this.errors.start_date = "Tanggal Masuk harus diisi.";
+            if (!this.payload.end_date)
+                this.errors.end_date = "Tanggal Keluar harus diisi.";
 
             try {
+                const payload = {
+                    name: this.payload.guest.name,
+                    origin: this.payload.guest.origin,
+                    phone: String(this.payload.guest.phone),
+                    room_id: this.payload.room_id,
+                    start_date: this.payload.start_date,
+                    end_date: this.payload.end_date,
+                    total_price: this.payload.total_price,
+                };
+
+                const res = await this.$axios.post("/api/orders", payload);
+
+                if (res.status === 201) {
+                    this.payload = {
+                        guest: {
+                            name: "",
+                            origin: "",
+                            phone: "",
+                        },
+                        room_id: "",
+                        start_date: null,
+                        end_date: null,
+                        total_price: null,
+                    };
+
+                    this.errors = {};
+
+                    this.$router.push("/orders");
+                    this.message.success = "Tamu berhasil ditambahkan.";
+                    this.getOrders();
+                }
+            } catch (err) {
+                this.message.failed =
+                    "Gagal menambahkan pesanan. Silakan coba lagi.";
+            }
+        },
+        async updateOrder(payload) {
+            try {
+                const modifiedPayload = {
+                    name: payload.guest.name,
+                    origin: payload.guest.origin,
+                    phone: String(payload.guest.phone),
+                    room_id: payload.room_id,
+                    start_date: payload.start_date,
+                    end_date: payload.end_date,
+                    total_price: payload.total_price,
+                };
+
                 const res = await this.$axios.put(
                     `/api/orders/${payload.id}`,
-                    payload
+                    modifiedPayload
                 );
 
-                console.log(res);
-
-                // if (res.status === 204) {
-                //     this.$router.push("/orders");
-                //     this.message.success = "Tamu berhasil diubah.";
-                //     this.getOrders();
-                // }
+                if (res.status === 204) {
+                    this.$router.push("/orders");
+                    this.message.success = "Tamu berhasil diubah.";
+                    this.getOrders();
+                }
             } catch (err) {
-                console.log(err);
-
-                // this.message.failed = "Gagal mengubah Tamu. Silakan coba lagi.";
+                this.message.failed = "Gagal mengubah Tamu. Silakan coba lagi.";
             }
         },
         async deleteOrder(id) {

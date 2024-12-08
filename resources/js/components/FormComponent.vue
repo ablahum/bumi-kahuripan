@@ -25,10 +25,10 @@
                     />
 
                     <p
-                        v-if="errors.number"
+                        v-if="errors.name"
                         class="text-red-500 font-semibold text-end"
                     >
-                        {{ errors.number }}
+                        {{ errors.name }}
                     </p>
                 </div>
 
@@ -47,10 +47,10 @@
                     />
 
                     <p
-                        v-if="errors.number"
+                        v-if="errors.origin"
                         class="text-red-500 font-semibold text-end"
                     >
-                        {{ errors.number }}
+                        {{ errors.origin }}
                     </p>
                 </div>
 
@@ -69,10 +69,10 @@
                     />
 
                     <p
-                        v-if="errors.number"
+                        v-if="errors.phone"
                         class="text-red-500 font-semibold text-end"
                     >
-                        {{ errors.number }}
+                        {{ errors.phone }}
                     </p>
                 </div>
             </div>
@@ -332,7 +332,7 @@ export default {
     name: "FormComponent",
     data() {
         return {
-            localPayload: {},
+            updatePayload: {},
         };
     },
     props: {
@@ -347,7 +347,7 @@ export default {
             return this.$route.path.includes("create") ? "create" : "update";
         },
         activePayload() {
-            return this.mode === "create" ? this.payload : this.localPayload;
+            return this.mode === "create" ? this.payload : this.updatePayload;
         },
     },
     created() {
@@ -366,22 +366,22 @@ export default {
                 data = JSON.parse(this.$route.query.room);
             }
 
-            this.localPayload = { ...data };
+            this.updatePayload = { ...data };
         }
     },
     methods: {
         handleSubmit() {
             if (this.mode === "create") {
                 if (this.currentPath === "/orders/create") {
-                    this.$emit("createOrder", this.payload);
+                    this.$emit("createOrder");
                 } else {
-                    this.$emit("createRoom", this.payload);
+                    this.$emit("createRoom");
                 }
             } else {
                 if (this.currentPath === "/orders/update") {
-                    this.$emit("updateOrder", this.localPayload);
+                    this.$emit("updateOrder", this.updatePayload);
                 } else {
-                    this.$emit("updateRoom", this.localPayload);
+                    this.$emit("updateRoom", this.updatePayload);
                 }
             }
         },
