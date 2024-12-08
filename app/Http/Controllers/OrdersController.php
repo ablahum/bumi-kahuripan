@@ -3,20 +3,28 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Guest;
 use App\Models\Order;
+use App\Models\Room;
+use Illuminate\Support\Facades\Log;
 
 class OrdersController extends Controller
 {
     public function index()
     {
         $orders = Order::with('guest')->with('room')->get();
+        $rooms = Room::all();
 
-        if (!$orders)
+        if (!$orders || !$rooms)
             return response()->json([
-                'message' => 'Orders not found.',
+                'message' => 'Orders or Rooms not found.',
             ], 404);
         
-        return response()->json([$orders], 200);
+        return response()->json([
+            'message' => 'Guest and Order successfully fetched.',
+            'orders' => $orders,
+            'rooms' => $rooms
+        ], 200);
     }
 
     /**
@@ -44,25 +52,9 @@ class OrdersController extends Controller
         $order_data['guest_id'] = $guest->id;
         Order::create($order_data);
 
-        return redirect('/orders')->with('success_message', 'Create order successful.');
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        $rooms = Room::all();
-        $order = Order::find($id);
-
-        return view('orders.edit', [
-            'title' => 'Edit Order',
-            'name' => session()->get('user.name'),
-            'rooms' => $rooms,
-            'order' => $order,
-            'guest_name' => $order->guest->name,
-            'route_name' => 'orders'
-        ]);
+        return response()->json([
+            'message' => 'Guest and Order successfully created.',
+        ], 201);
     }
 
     /**
@@ -92,7 +84,9 @@ class OrdersController extends Controller
         $guest->update($guest_data);
         $order->update($order_data);
         
-        return redirect('/orders')->with('success_message', 'Edit order successful.');
+        return response()->json([
+            'message' => 'Guest and Order successfully updated.',
+        ], 204);
     }
 
     /**
@@ -100,13 +94,21 @@ class OrdersController extends Controller
      */
     public function destroy(string $id)
     {
+        
         $order = Order::find($id);
         $guest = Guest::find($order->guest_id);
 
-        if ($guest) $guest->delete();
-
+        // Log::debug($guest);
+    
+        if (!$guest || !$order)
+            return response()->json([
+                'message' => 'Guest or Order not found.',
+            ], 404);
+    
         $order->delete();
-
-        return redirect('/orders')->with('success_message', 'Delete order successful.');
+        $guest->delete();
+        return response()->json([
+            'message' => 'Guest and Order successfully deleted.',
+        ], 204);
     }
 }

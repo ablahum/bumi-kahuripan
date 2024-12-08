@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Room;
 use App\Models\Category;
-use Illuminate\Support\Facades\Log;
+// use Illuminate\Support\Facades\Log;
 
 class RoomsController extends Controller
 {
@@ -24,10 +24,7 @@ class RoomsController extends Controller
             ], 404);
         
         return response()->json([
-            'message' => 'Rooms and Categories successfully fetched.',
-            // 'title' => 'All Rooms',
-            // 'route_name' => 'rooms',
-            // 'name' => session()->get('user.name'),
+            'message' => 'Rooms successfully fetched.',
             'rooms' => $rooms,
             'categories' => $categories
         ], 200);
@@ -52,8 +49,7 @@ class RoomsController extends Controller
         Room::create($data);
         return response()->json([
             'message' => 'Room successfully created.',
-            'data' => $data,
-        ]);
+        ], 201);
     }
 
     /**
@@ -82,7 +78,7 @@ class RoomsController extends Controller
         $room->update($data);
         return response()->json([
             'message' => 'Room successfully updated.',
-        ], 200);
+        ], 204);
     }
 
     /**
@@ -97,9 +93,9 @@ class RoomsController extends Controller
                 'message' => 'Room not found.',
             ], 404);
     
-        Room::destroy($id);
+        $room->destroy($id);
         return response()->json([
             'message' => 'Room successfully deleted.',
-        ], 200);
+        ], 204);
     }
 }
