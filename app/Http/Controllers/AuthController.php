@@ -7,22 +7,23 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use App\Models\Role;
 use App\Models\User;
+use Illuminate\Support\Facades\Log;
 
 class AuthController extends Controller {
-    public function index(Request $request) {        
-        $routeName = $request->route()->getName();
+    // public function index(Request $request) {
+    //     $routeName = $request->route()->getName();
 
-        if ($routeName == 'login') {
-            return view('login', ['title' => 'Login']);
-        } elseif ($routeName == 'register') {
-            return view('register', [
-                "title" => "Register",
-                "roles" => Role::all(),
-            ]);
-        } else {
-            return abort(404);
-        }
-    }
+    //     if ($routeName == 'login') {
+    //         return view('login', ['title' => 'Login']);
+    //     } elseif ($routeName == 'register') {
+    //         return view('register', [
+    //             "title" => "Register",
+    //             "roles" => Role::all(),
+    //         ]);
+    //     } else {
+    //         return abort(404);
+    //     }
+    // }
 
     public function login(Request $request) {
         $data = $request->validate([
@@ -52,9 +53,11 @@ class AuthController extends Controller {
     }
 
     public function logout() {
-        session()->flush();
+        Log::debug('logout bois');
+        
+        // session()->flush();
 
-        return redirect('/login');
+        // return redirect('/login');
     }
     
     public function register(Request $request) {

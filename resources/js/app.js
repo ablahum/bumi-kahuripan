@@ -56,14 +56,6 @@ const routes = [
             },
         ],
     },
-    // {
-    //     path: "/rooms/create",
-    //     component: FormComponent,
-    // },
-    // {
-    //     path: "/rooms/update",
-    //     component: FormComponent,
-    // },
 ];
 
 const router = createRouter({

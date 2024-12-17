@@ -28,7 +28,6 @@
                                   }
                                 : '/orders'
                         "
-                        class="m-0"
                     >
                         {{
                             currentPath === "/orders"

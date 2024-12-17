@@ -28,7 +28,6 @@
                                   }
                                 : '/rooms'
                         "
-                        class="m-0"
                     >
                         {{
                             currentPath === "/rooms"
