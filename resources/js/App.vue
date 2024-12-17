@@ -1,6 +1,6 @@
 <template>
     <div>
-        <div x-data="{ sidebarOpen: false }" class="flex h-screen bg-gray-200">
+        <div class="flex h-screen bg-gray-200">
             <div
                 :class="sidebarOpen ? 'block' : 'hidden'"
                 @click="sidebarOpen = false"
@@ -141,6 +141,13 @@
                             </span>
                         </p>
 
+                        <button
+                            class="outline outline-red-500 text-black uppercase px-3 py-1 rounded-lg text-red-500"
+                            @click="logout"
+                        >
+                            keluar
+                        </button>
+
                         <!-- <form method="post" action={{ route('user.logout') }}>
                           @csrf
                           <button class="uppercase px-3 py-1 rounded-lg border border-red-400 text-xs font-semibold" type="submit" onclick="return confirm('Are you sure?')">logout</button>
@@ -153,3 +160,31 @@
         </div>
     </div>
 </template>
+
+<script>
+export default {
+    data() {
+        return {
+            sidebarOpen: false,
+        };
+    },
+    methods: {
+        async logout() {
+            try {
+                const res = await this.$axios.get("/api/auth");
+
+                console.log(res);
+                // if (res.status === 200) {
+                //     const { orders, rooms } = res.data;
+
+                //     this.orders = orders;
+                //     this.rooms = rooms;
+                // }
+            } catch (err) {
+                console.error(err);
+                // this.message.failed = "Gagal memuat kamar. Silakan coba lagi.";
+            }
+        },
+    },
+};
+</script>

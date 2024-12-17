@@ -2,10 +2,14 @@
 
 use Illuminate\Support\Facades\Route;
 // use App\Http\Controllers\DashboardController;
-// use App\Http\Controllers\AuthController;
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\OrdersController;
 use App\Http\Controllers\RoomsController;
 use App\Http\Controllers\CategoriesController;
+
+Route::prefix('api')->group(function () {
+    Route::resource('/auth', AuthController::class);
+});
 
 Route::prefix('api')->group(function () {
     Route::resource('/orders', OrdersController::class);

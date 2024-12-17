@@ -6,7 +6,6 @@ use Illuminate\Http\Request;
 use App\Models\Guest;
 use App\Models\Order;
 use App\Models\Room;
-use Illuminate\Support\Facades\Log;
 
 class OrdersController extends Controller
 {
