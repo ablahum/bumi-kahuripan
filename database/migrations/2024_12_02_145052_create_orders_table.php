@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
             $table->foreignId('guest_id')->constrained('guests');
-            $table->foreignId('room_id')->constrained('room');
+            $table->foreignId('room_id')->constrained('rooms');
             $table->date('start_date');
             $table->date('end_date');
             $table->integer('total_price');

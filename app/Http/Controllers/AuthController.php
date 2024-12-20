@@ -25,34 +25,35 @@ class AuthController extends Controller {
     //     }
     // }
 
-    public function login(Request $request) {
-        $data = $request->validate([
-            'email' => 'required|string|email:dns',
-            'password' => 'required|string',
-        ]);
+    // public function login(Request $request) {
+    //     $data = $request->validate([
+    //         'email' => 'required|string|email:dns',
+    //         'password' => 'required|string',
+    //     ]);
 
-        $user = User::where('email', $data['email'])->first();
+    //     $user = User::where('email', $data['email'])->first();
 
-        if ($user) {
-            if (Hash::check($data['password'], $user->password)) {
-                if (Auth::attempt($data)) {
-                    $request->session()->regenerate();
-                    $request->session()->put('is_logged', true);
-                    $request->session()->put('user', $user);
+    //     if ($user) {
+    //         if (Hash::check($data['password'], $user->password)) {
+    //             if (Auth::attempt($data)) {
+    //                 $request->session()->regenerate();
+    //                 $request->session()->put('is_logged', true);
+    //                 $request->session()->put('user', $user);
 
-                    return redirect()->intended('/orders');
-                }
+    //                 return redirect()->intended('/orders');
+    //             }
 
-                return back()->with('failed_message', 'Login failed. Please try again.');
-            } else {
-                return back()->with('failed_message', 'Email or password is incorrect.');
-            }
-        } else {
-            return back()->with('failed_message', 'The provided credentials do not match our records.');
-        }
-    }
+    //             return back()->with('failed_message', 'Login failed. Please try again.');
+    //         } else {
+    //             return back()->with('failed_message', 'Email or password is incorrect.');
+    //         }
+    //     } else {
+    //         return back()->with('failed_message', 'The provided credentials do not match our records.');
+    //     }
+    // }
 
-    public function logout() {
+    public function logout()
+    {
         Log::debug('logout bois');
         
         // session()->flush();
@@ -61,17 +62,19 @@ class AuthController extends Controller {
     }
     
     public function register(Request $request) {
-        $data = $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email:dns|max:255|unique:users',
-            'password' => 'required|string|min:8',
-            'role_id' => 'required|integer'
-        ]);
+        Log::debug($request);
+        
+        // $data = $request->validate([
+        //     'name' => 'required|string|max:255',
+        //     'email' => 'required|string|email:dns|max:255|unique:users',
+        //     'password' => 'required|string|min:8',
+        //     'role_id' => 'required|integer'
+        // ]);
 
-        $data['password'] = Hash::make($data['password']);
+        // $data['password'] = Hash::make($data['password']);
 
-        User::create($data);
+        // User::create($data);
 
-        return redirect('/login')->with('success_message', 'Registration successful! Please login to continue.');
+        // return redirect('/login')->with('success_message', 'Registration successful! Please login to continue.');
     }
 };

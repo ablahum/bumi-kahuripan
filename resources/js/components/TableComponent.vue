@@ -5,7 +5,7 @@
         >
             <table class="min-w-full">
                 <thead>
-                    <tr v-if="currentPath === '/orders'">
+                    <tr v-if="currentPath === '/home/orders'">
                         <th
                             class="px-6 py-3 text-xs font-medium leading-4 text-left text-gray-500 uppercase border-b border-gray-200 bg-gray-50"
                         >
@@ -59,7 +59,7 @@
                         ></th>
                     </tr>
 
-                    <tr v-if="currentPath === '/rooms'">
+                    <tr v-if="currentPath === '/home/rooms'">
                         <th
                             class="px-6 py-3 text-xs font-medium leading-4 text-left text-gray-500 uppercase border-b border-gray-200 bg-gray-50"
                         >
@@ -94,7 +94,7 @@
                     <tr
                         v-for="order in orders"
                         :key="order.id"
-                        v-if="currentPath === '/orders'"
+                        v-if="currentPath === '/home/orders'"
                     >
                         <td
                             class="px-6 py-4 whitespace-no-wrap border-b border-gray-200"
@@ -212,7 +212,7 @@
                     <tr
                         v-for="room in rooms"
                         :key="room.id"
-                        v-if="currentPath === '/rooms'"
+                        v-if="currentPath === '/home/rooms'"
                     >
                         <td
                             class="px-6 py-4 whitespace-no-wrap border-b border-gray-200"

@@ -7,17 +7,29 @@ use App\Http\Controllers\OrdersController;
 use App\Http\Controllers\RoomsController;
 use App\Http\Controllers\CategoriesController;
 
-Route::prefix('api')->group(function () {
-    Route::resource('/auth', AuthController::class);
-});
+// Route::middleware('auth:sanctum')->group(function () {
+//     Route::get('/dashboard', [DashboardController::class, 'index']);
+//     Route::get('/profile', [UserController::class, 'show']);
+// });
 
-Route::prefix('api')->group(function () {
+// Route::prefix('api')->middleware('auth:sanctum')->group(function ()
+Route::prefix('api')->group(function ()
+{
+    // Route::post('/login', [AuthController::class, 'login']);
+    // Route::post('/logout', [AuthController::class, 'logout']);
+    Route::resource('/register', AuthController::class);
+
     Route::resource('/orders', OrdersController::class);
-});
-
-Route::prefix('api')->group(function () {
     Route::resource('/rooms', RoomsController::class);
 });
+
+// Route::prefix('api')->group(function () {
+//     Route::resource('/orders', OrdersController::class);
+// });
+
+// Route::prefix('api')->group(function () {
+//     Route::resource('/rooms', RoomsController::class);
+// });
 
 Route::get('/{any}', function () {
     return view('app');
