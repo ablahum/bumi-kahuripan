@@ -164,7 +164,7 @@ export default {
     methods: {
         async logout() {
             try {
-                const res = await this.$axios.post("/api/logout");
+                const res = await this.$axios.delete("/api/auth/logout");
 
                 console.log(res);
                 // localStorage.removeItem("token");

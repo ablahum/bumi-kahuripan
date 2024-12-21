@@ -25,6 +25,7 @@
                 id="email"
                 class="text-black border rounded-lg w-full p-2"
                 placeholder="Your email..."
+                v-model="payload.email"
             />
 
             <!-- @error('email')
@@ -43,6 +44,7 @@
                 id="password"
                 class="text-black border rounded-lg w-full p-2"
                 placeholder="Your password..."
+                v-model="payload.password"
             />
 
             <!-- @error('password')
@@ -79,6 +81,7 @@
 <script>
 export default {
     props: {
+        payload: Object,
         login: Function,
     },
 };

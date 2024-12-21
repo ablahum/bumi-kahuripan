@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Room;
 use App\Models\Category;
-// use Illuminate\Support\Facades\Log;
 
 class RoomsController extends Controller
 {

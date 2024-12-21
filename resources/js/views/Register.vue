@@ -12,7 +12,7 @@
             <label for="name" class="block mb-2 capitalize">name:</label>
 
             <input
-                type="name"
+                type="text"
                 name="name"
                 id="name"
                 class="text-black border @error('name') border-red-500 @enderror rounded-lg w-full p-2"
@@ -61,32 +61,30 @@
         </div>
 
         <div class="mb-4 flex justify-center flex-col">
-            <div class="flex gap-2 items-center">
+            <div class="flex gap-2 h-100">
                 <label for="role" class="block capitalize">role:</label>
 
                 <ul class="flex text-black">
-                    <li
-                        v-for="category in categories"
-                        :key="category.id"
-                        :value="category.id"
-                    >
+                    <li v-for="role in roles" :key="role.id">
                         <input
                             type="radio"
-                            id="{{category.id}}"
-                            name="role_id"
-                            value="{{"
-                            $category.name
-                            }}
+                            :id="'role-' + role.id"
+                            name="roles"
+                            :value="role.name"
                             class="hidden peer"
                         />
 
-                        <label for="{{" $category-
-                            >name }} class="py-1 px-4 uppercase bg-white border
-                            @error('role_id') border-red-500 @enderror
-                            {{ $role->id ===  1 ? 'rounded-l-lg' : 'rounded-r-lg'  }}
-                            cursor-pointer peer-checked:bg-indigo-700
-                            peer-checked:text-white">{{ $role->name }}</label
+                        <label
+                            :for="'role-' + role.id"
+                            class="py-1 px-2 uppercase bg-white border cursor-pointer"
+                            :class="[
+                                'transition-colors',
+                                'peer-checked:bg-indigo-700 peer-checked:text-white',
+                                role.id == 1 ? 'rounded-l-lg' : 'rounded-r-lg',
+                            ]"
                         >
+                            {{ role.name }}
+                        </label>
                     </li>
                 </ul>
             </div>
@@ -117,6 +115,7 @@
 <script>
 export default {
     props: {
+        roles: Object,
         register: Function,
     },
 };
