@@ -164,11 +164,21 @@ export default {
     methods: {
         async logout() {
             try {
-                const res = await this.$axios.delete("/api/auth/logout");
+                const res = await this.$axios.post(
+                    "/api/auth/logout",
+                    {},
+                    {
+                        headers: {
+                            Authorization: `Bearer ${localStorage.getItem(
+                                "token"
+                            )}`,
+                        },
+                    }
+                );
 
                 console.log(res);
                 // localStorage.removeItem("token");
-                // this.$router.push("/login");
+                // this.$router.push("/auth/login");
             } catch (err) {
                 console.error(err.response.data);
             }

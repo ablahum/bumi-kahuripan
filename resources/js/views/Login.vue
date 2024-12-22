@@ -62,13 +62,14 @@
 
         <button
             class="tracking-widest text-white bg-indigo-700 font-semibold rounded-lg w-full px-4 py-2 text-center uppercase"
-            @click="$emit('login')"
+            @click="login"
         >
             login
         </button>
 
-        <p class="text-center">
+        <p class="text-center mt-4">
             <span class="capitalize">don't </span>have an account?
+
             <RouterLink
                 to="/auth/register"
                 class="capitalize text-indigo-700 font-semibold"
@@ -80,9 +81,30 @@
 
 <script>
 export default {
-    props: {
-        payload: Object,
-        login: Function,
+    data() {
+        return {
+            payload: {
+                email: null,
+                password: null,
+            },
+        };
+    },
+    methods: {
+        async login() {
+            try {
+                const res = await this.$axios.post(
+                    "/api/auth/login",
+                    this.payload
+                );
+
+                if (res.status === 200) {
+                    localStorage.setItem("token", res.data.token);
+                    this.$router.push("/home/rooms");
+                }
+            } catch (err) {
+                console.error(err.response.data);
+            }
+        },
     },
 };
 </script>

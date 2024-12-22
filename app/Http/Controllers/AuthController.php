@@ -33,33 +33,55 @@ class AuthController extends Controller {
 
         $user = User::where('email', $data['email'])->first();
 
-        // if ($user) {
-        //     if (Hash::check($data['password'], $user->password)) {
-        //         if (Auth::attempt($data)) {
-        //             $request->session()->regenerate();
-        //             $request->session()->put('is_logged', true);
-        //             $request->session()->put('user', $user);
+        if ($user) {
+            if (Hash::check($data['password'], $user->password)) {
+                if (Auth::attempt($data)) {
+                        $token = $user->createToken('auth-token')->plainTextToken;
 
-        //             return redirect()->intended('/orders');
-        //         }
-
-        //         return back()->with('failed_message', 'Login failed. Please try again.');
-        //     } else {
-        //         return back()->with('failed_message', 'Email or password is incorrect.');
-        //     }
-        // } else {
-        //     return back()->with('failed_message', 'The provided credentials do not match our records.');
-        // }
+                        return response()->json([
+                            'message' => 'Login successful.',
+                            'token' => $token
+                        ], 200);
+                    }
+                    
+                    return back()->with('failed_message', 'Login failed. Please try again.');
+                } else {
+                    return back()->with('failed_message', 'Email or password is incorrect.');
+            }
+        } else {
+            return back()->with('failed_message', 'The provided credentials do not match our records.');
+        }
     }
-
+    
     public function logout()
     {
-        Log::debug('logout bois');
-        
-        // session()->flush();
+        auth()->guard('web')->logout();
 
-        // return redirect('/login');
+        Log::info('Token class:', ['class' => get_class($request->user()->currentAccessToken())]);
+        return response()->json([
+            'message' => 'Logout berhasil.',
+        ], 200);
     }
+    
+    // public function logout(Request $request)
+    // {
+    //     Log::info('Token class:', ['class' => get_class($request->user()->currentAccessToken())]);
+
+    //     $user = $request->user();
+
+    //     if ($user->tokenCan('api')) {
+    //         // Hapus token aktif
+    //         $user->currentAccessToken()->delete();
+    
+    //         return response()->json([
+    //             'message' => 'Logout berhasil.',
+    //         ], 200);
+    //     }
+    
+    //     return response()->json([
+    //         'message' => 'Token tidak valid atau bukan API token.',
+    //     ], 400);
+    // }
     
     public function register(Request $request) {
         $data = $request->validate([
@@ -73,7 +95,7 @@ class AuthController extends Controller {
 
         User::create($data);
         return response()->json([
-            'message' => 'Register successfull. Please login to continue',
+            'message' => 'Register successful. Please login to continue',
         ], 201);
     }
 };

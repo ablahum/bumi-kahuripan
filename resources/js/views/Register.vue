@@ -15,8 +15,9 @@
                 type="text"
                 name="name"
                 id="name"
-                class="text-black border @error('name') border-red-500 @enderror rounded-lg w-full p-2"
+                class="text-black border rounded-lg w-full p-2"
                 placeholder="Enter your name..."
+                v-model="payload.name"
             />
 
             <!-- @error('name')
@@ -33,8 +34,9 @@
                 type="email"
                 name="email"
                 id="email"
-                class="text-black border @error('email') border-red-500 @enderror rounded-lg w-full p-2"
+                class="text-black border rounded-lg w-full p-2"
                 placeholder="Enter your email..."
+                v-model="payload.email"
             />
 
             <!-- @error('email')
@@ -51,8 +53,9 @@
                 type="password"
                 name="password"
                 id="password"
-                class="text-black border @error('password') border-red-500 @enderror rounded-lg w-full p-2"
+                class="text-black border rounded-lg w-full p-2"
                 placeholder="Enter your password..."
+                v-model="payload.password"
             />
 
             <!-- @error('password')
@@ -68,9 +71,10 @@
                     <li v-for="role in roles" :key="role.id">
                         <input
                             type="radio"
-                            :id="'role-' + role.id"
                             name="roles"
-                            :value="role.name"
+                            :id="'role-' + role.id"
+                            :value="role.id"
+                            v-model="payload.role_id"
                             class="hidden peer"
                         />
 
@@ -96,13 +100,14 @@
 
         <button
             class="tracking-widest text-white bg-indigo-700 font-semibold rounded-lg w-full px-4 py-2 text-center uppercase"
-            @click="$emit('register')"
+            @click="register"
         >
             register
         </button>
 
-        <p class="text-center">
+        <p class="text-center mt-4">
             <span class="capitalize">already </span>have an account?
+
             <RouterLink
                 to="/auth/login"
                 class="capitalize text-indigo-700 font-semibold"
@@ -114,9 +119,33 @@
 
 <script>
 export default {
-    props: {
-        roles: Object,
-        register: Function,
+    data() {
+        return {
+            roles: [
+                { id: 1, name: "user" },
+                { id: 2, name: "admin" },
+            ],
+            payload: {
+                name: null,
+                email: null,
+                password: null,
+                role_id: null,
+            },
+        };
+    },
+    methods: {
+        async register() {
+            try {
+                const res = await this.$axios.post(
+                    "/api/auth/register",
+                    this.payload
+                );
+
+                console.log(res);
+            } catch (err) {
+                console.error(err.response.data);
+            }
+        },
     },
 };
 </script>

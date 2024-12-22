@@ -3,26 +3,21 @@ import { createRouter, createWebHistory } from "vue-router";
 import App from "./App.vue";
 import axios from "axios";
 
-// Import layouts
-// import { Dashboard, Sign } from "./layouts";
-import Dashboard from "./layouts/Dashboard.vue";
-import Sign from "./layouts/Sign.vue";
+import { Dashboard, Sign } from "./layouts";
+// import Dashboard from "./layouts/Dashboard.vue";
+// import Sign from "./layouts/Sign.vue";
 
-// Import views
 import { Login, Register, Orders, Rooms } from "./views";
 // import Login from "./views/Login.vue";
 // import Register from "./views/Register.vue";
 // import Orders from "./views/Orders.vue";
 // import Rooms from "./views/Rooms.vue";
 
-// Import components
 import TableComponent from "./components/TableComponent.vue";
 import FormComponent from "./components/FormComponent.vue";
 
-// Set default base URL for axios
 axios.defaults.baseURL = "http://127.0.0.1:8000";
 
-// Define routes
 const routes = [
     {
         path: "/",
@@ -30,7 +25,7 @@ const routes = [
     },
     {
         path: "/auth",
-        component: Sign, // Layout for unauthenticated users
+        component: Sign,
         children: [
             {
                 path: "login",
@@ -46,7 +41,7 @@ const routes = [
     },
     {
         path: "/home",
-        component: Dashboard, // Layout for authenticated users
+        component: Dashboard,
         children: [
             {
                 path: "orders",
