@@ -1,6 +1,19 @@
 <template>
-    <div>
-        <h1>Tentang</h1>
-        <p>Halaman ini tentang aplikasi kita.</p>
+    <div
+        class="h-[100vh] flex items-center justify-center bg-sign-page bg-cover bg-left"
+    >
+        <RouterView />
     </div>
 </template>
+
+<script>
+export default {
+    data() {
+        return {
+            payload: {},
+        };
+    },
+    // mounted() {
+    // },
+};
+</script>

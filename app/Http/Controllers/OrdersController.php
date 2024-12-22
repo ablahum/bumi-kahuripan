@@ -34,22 +34,22 @@ class OrdersController extends Controller
         $request['room_id'] = (int) $request['room_id'];
         $request['total_price'] = (int) $request['total_price'];
         
-        $guest_data = $request->validate([
+        $guestData = $request->validate([
             'name' => 'required|string|max:255',
             'origin' => 'required|string|max:255',
             'phone' => 'required|string|max:255',
         ]);
 
-        $order_data = $request->validate([
+        $orderData = $request->validate([
             'room_id' => 'required|integer',
             'start_date' => 'required|string|date_format:Y-m-d',
             'end_date' => 'required|string|date_format:Y-m-d|after_or_equal:start_date',
             'total_price' => 'required|integer'
         ]);
 
-        $guest = Guest::create($guest_data);
-        $order_data['guest_id'] = $guest->id;
-        Order::create($order_data);
+        $guest = Guest::create($guestData);
+        $orderData['guest_id'] = $guest->id;
+        Order::create($orderData);
 
         return response()->json([
             'message' => 'Guest and Order successfully created.',
@@ -64,13 +64,13 @@ class OrdersController extends Controller
         $request['room_id'] = (int) $request['room_id'];
         $request['total_price'] = (int) $request['total_price'];
         
-        $guest_data = $request->validate([
+        $guestData = $request->validate([
             'name' => 'required|string|max:255',
             'origin' => 'required|string|max:255',
             'phone' => 'required|string|max:255',
         ]);
 
-        $order_data = $request->validate([
+        $orderData = $request->validate([
             'room_id' => 'required|integer',
             'start_date' => 'required|string|date_format:Y-m-d',
             'end_date' => 'required|string|date_format:Y-m-d|after_or_equal:start_date',
@@ -80,8 +80,8 @@ class OrdersController extends Controller
         $order = Order::find($id);
         $guest = Guest::find($order->guest_id);
     
-        $guest->update($guest_data);
-        $order->update($order_data);
+        $guest->update($guestData);
+        $order->update($orderData);
         
         return response()->json([
             'message' => 'Guest and Order successfully updated.',
@@ -97,8 +97,6 @@ class OrdersController extends Controller
         $order = Order::find($id);
         $guest = Guest::find($order->guest_id);
 
-        // Log::debug($guest);
-    
         if (!$guest || !$order)
             return response()->json([
                 'message' => 'Guest or Order not found.',

@@ -4,9 +4,9 @@
             <div class="flex justify-between">
                 <h3 class="text-3xl font-semibold text-gray-700 capitalize">
                     {{
-                        currentPath === "/rooms/create"
+                        currentPath === "/home/rooms/create"
                             ? "tambah kamar"
-                            : currentPath === "/rooms/update"
+                            : currentPath === "/home/rooms/update"
                             ? "ubah kamar"
                             : "semua kamar"
                     }}
@@ -15,22 +15,22 @@
                 <button
                     class="uppercase px-3 py-1 rounded-lg"
                     :class="
-                        currentPath === '/rooms'
+                        currentPath === '/home/rooms'
                             ? 'bg-indigo-500 text-white'
                             : 'outline outline-indigo-500 text-black'
                     "
                 >
                     <RouterLink
                         :to="
-                            currentPath === '/rooms'
+                            currentPath === '/home/rooms'
                                 ? {
                                       name: 'CreateRoom',
                                   }
-                                : '/rooms'
+                                : '/home/rooms'
                         "
                     >
                         {{
-                            currentPath === "/rooms"
+                            currentPath === "/home/rooms"
                                 ? "tambah kamar baru"
                                 : "kembali"
                         }}
