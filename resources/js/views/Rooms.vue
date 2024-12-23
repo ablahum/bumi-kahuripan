@@ -4,9 +4,9 @@
             <div class="flex justify-between">
                 <h3 class="text-3xl font-semibold text-gray-700 capitalize">
                     {{
-                        currentPath === "/home/rooms/create"
+                        currentPath === "/rooms/create"
                             ? "tambah kamar"
-                            : currentPath === "/home/rooms/update"
+                            : currentPath === "/rooms/update"
                             ? "ubah kamar"
                             : "semua kamar"
                     }}
@@ -15,22 +15,22 @@
                 <button
                     class="uppercase px-3 py-1 rounded-lg"
                     :class="
-                        currentPath === '/home/rooms'
+                        currentPath === '/rooms'
                             ? 'bg-indigo-500 text-white'
                             : 'outline outline-indigo-500 text-black'
                     "
                 >
                     <RouterLink
                         :to="
-                            currentPath === '/home/rooms'
+                            currentPath === '/rooms'
                                 ? {
                                       name: 'CreateRoom',
                                   }
-                                : '/home/rooms'
+                                : '/rooms'
                         "
                     >
                         {{
-                            currentPath === "/home/rooms"
+                            currentPath === "/rooms"
                                 ? "tambah kamar baru"
                                 : "kembali"
                         }}
@@ -112,7 +112,7 @@ export default {
     methods: {
         async getRooms() {
             try {
-                const res = await this.$axios.get("/api/rooms");
+                const res = await this.$axios.get("/rooms");
 
                 if (res.status === 200) {
                     const { rooms, categories } = res.data;
@@ -137,17 +137,17 @@ export default {
                 this.errors.price = "Harga Kamar harus diisi.";
 
             try {
-                const res = await this.$axios.post("/api/rooms", this.payload);
-
-                this.payload = {
-                    number: null,
-                    category_id: null,
-                    status: null,
-                    price: null,
-                };
-                this.errors = {};
+                const res = await this.$axios.post("/rooms", this.payload);
 
                 if (res.status === 201) {
+                    this.payload = {
+                        number: null,
+                        category_id: null,
+                        status: null,
+                        price: null,
+                    };
+                    this.errors = {};
+
                     this.$router.push("/rooms");
                     this.message.success = "Kamar berhasil ditambahkan.";
                     this.getRooms();
@@ -160,7 +160,7 @@ export default {
         async updateRoom(payload) {
             try {
                 const res = await this.$axios.put(
-                    `/api/rooms/${payload.id}`,
+                    `/rooms/${payload.id}`,
                     payload
                 );
 
@@ -178,7 +178,7 @@ export default {
         },
         async deleteRoom(id) {
             try {
-                const res = await this.$axios.delete(`/api/rooms/${id}`);
+                const res = await this.$axios.delete(`/rooms/${id}`);
 
                 if (res.status === 204) {
                     this.message.success = "Kamar berhasil dihapus.";

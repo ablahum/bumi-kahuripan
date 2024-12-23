@@ -43,9 +43,8 @@
             </div>
 
             <nav class="mt-10">
-                <a
+                <div
                     class="flex items-center px-6 py-2 mt-4 text-gray-500 hover:bg-gray-700 hover:bg-opacity-25 hover:text-gray-100 {{ $route_name === 'orders' ? 'text-gray-100 bg-gray-700 bg-opacity-25' : ''}}"
-                    href="/orders"
                 >
                     <svg
                         class="w-6 h-6"
@@ -69,16 +68,15 @@
                     </svg>
 
                     <span class="mx-3 capitalize">
-                        <RouterLink to="/home/orders" class="m-0"
+                        <RouterLink to="/orders" class="m-0"
                             >pesanan</RouterLink
                         >
                     </span>
-                </a>
+                </div>
 
                 <!-- @if (session()->get('user.role_id') === 1) -->
-                <a
+                <div
                     class="flex items-center px-6 py-2 mt-4 text-gray-500 hover:bg-gray-700 hover:bg-opacity-25 hover:text-gray-100 {{ $route_name === 'rooms' ? 'text-gray-100 bg-gray-700 bg-opacity-25' : ''}}"
-                    href="/rooms"
                 >
                     <svg
                         class="w-6 h-6"
@@ -96,11 +94,9 @@
                     </svg>
 
                     <span class="mx-3 capitalize">
-                        <RouterLink to="/home/rooms" class="m-0"
-                            >kamar</RouterLink
-                        >
+                        <RouterLink to="/rooms" class="m-0">kamar</RouterLink>
                     </span>
-                </a>
+                </div>
                 <!-- @endif -->
             </nav>
         </div>
@@ -165,10 +161,12 @@ export default {
         async logout() {
             try {
                 const res = await this.$axios.post(
-                    "/api/auth/logout",
+                    "/auth/logout",
                     {},
                     {
                         headers: {
+                            // Authorization:
+                            //     "Bearer c2ca71ef5a93578a25b55c8dbc78a1bb20fd560718bc0d4fe571b7e08271b2f5",
                             Authorization: `Bearer ${localStorage.getItem(
                                 "token"
                             )}`,
@@ -178,9 +176,10 @@ export default {
 
                 console.log(res);
                 // localStorage.removeItem("token");
-                // this.$router.push("/auth/login");
+                // this.$router.push("/login");
             } catch (err) {
-                console.error(err.response.data);
+                console.log(err);
+                // console.error(err.response.data);
             }
         },
     },

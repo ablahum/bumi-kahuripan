@@ -8,11 +8,15 @@
             </p>
         </div>
 
-        <!-- @if (session()->has('success_message'))
-        <div class="bg-green-300 py-2 px-4 rounded-lg mb-4">
-            <p class="font-semibold">{{ session("success_message") }}</p>
+        <div
+            v-if="message && (message.success || message.failed)"
+            class="py-2 px-4 rounded-lg mt-4"
+            :class="message.success ? 'bg-green-400' : 'bg-red-400'"
+        >
+            <p class="font-semibold">
+                {{ message.success ? message.success : message.failed }}
+            </p>
         </div>
-        @endif -->
 
         <div class="mb-4">
             <label for="email" class="block mb-2"
@@ -24,13 +28,14 @@
                 name="email"
                 id="email"
                 class="text-black border rounded-lg w-full p-2"
+                :class="{ 'border-red-500': errors.password }"
                 placeholder="Your email..."
                 v-model="payload.email"
             />
 
-            <!-- @error('email')
-            <p class="text-red-500 font-semibold text-end">{{ $message }}</p>
-            @enderror -->
+            <p v-if="errors.email" class="text-red-500 font-semibold text-end">
+                {{ errors.email }}
+            </p>
         </div>
 
         <div class="mb-4">
@@ -43,22 +48,18 @@
                 name="password"
                 id="password"
                 class="text-black border rounded-lg w-full p-2"
+                :class="{ 'border-red-500': errors.password }"
                 placeholder="Your password..."
                 v-model="payload.password"
             />
 
-            <!-- @error('password')
-            <p class="text-red-500 font-semibold text-end">{{ $message }}</p>
-            @enderror -->
-        </div>
-
-        <!-- @if (session()->has('failed_message'))
-        <div class="bg-red-500 py-2 px-4 rounded-lg mb-4">
-            <p class="font-semibold text-white">
-                {{ session("failed_message") }}
+            <p
+                v-if="errors.password"
+                class="text-red-500 font-semibold text-end"
+            >
+                {{ errors.password }}
             </p>
         </div>
-        @endif -->
 
         <button
             class="tracking-widest text-white bg-indigo-700 font-semibold rounded-lg w-full px-4 py-2 text-center uppercase"
@@ -71,7 +72,7 @@
             <span class="capitalize">don't </span>have an account?
 
             <RouterLink
-                to="/auth/register"
+                to="/register"
                 class="capitalize text-indigo-700 font-semibold"
                 >register </RouterLink
             >now
@@ -87,19 +88,42 @@ export default {
                 email: null,
                 password: null,
             },
+            message: {
+                success: this.$route.query.message || null,
+                failed: null,
+            },
+            errors: {},
         };
+    },
+    mounted() {
+        if (this.message) {
+            setTimeout(() => {
+                this.message = {};
+            }, 5000);
+        }
     },
     methods: {
         async login() {
+            this.errors = {};
+
+            if (!this.payload.email) this.errors.email = "Email harus diisi.";
+            if (!this.payload.password)
+                this.errors.password = "Password harus diisi.";
+
             try {
-                const res = await this.$axios.post(
-                    "/api/auth/login",
-                    this.payload
-                );
+                const res = await this.$axios.post("/auth/login", this.payload);
+
+                this.payload = {
+                    email: null,
+                    password: null,
+                };
+                this.errors = {};
 
                 if (res.status === 200) {
-                    localStorage.setItem("token", res.data.token);
-                    this.$router.push("/home/rooms");
+                    // this.message.success = "Masuk berhasil.";
+                    alert(res.data.message);
+                    localStorage.setItem("auth-token", res.data.token);
+                    this.$router.push("/rooms");
                 }
             } catch (err) {
                 console.error(err.response.data);

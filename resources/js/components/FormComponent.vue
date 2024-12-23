@@ -3,8 +3,8 @@
         <div
             class="grid grid-rows-[auto_auto_auto_auto] grid-cols-1 gap-4"
             v-if="
-                currentPath === '/home/orders/create' ||
-                currentPath === '/home/orders/update'
+                currentPath === '/orders/create' ||
+                currentPath === '/orders/update'
             "
         >
             <div
@@ -195,15 +195,15 @@
                 class="tracking-widest text-white bg-indigo-500 font-semibold rounded-lg w-full px-4 py-2 text-center uppercase"
                 @click="handleSubmit"
             >
-                {{ currentPath === "/home/orders/create" ? "tambah" : "ubah" }}
+                {{ currentPath === "/orders/create" ? "tambah" : "ubah" }}
             </button>
         </div>
 
         <div
             class="grid grid-rows-[auto_auto_auto] grid-cols-1 gap-4"
             v-if="
-                currentPath === '/home/rooms/create' ||
-                currentPath === '/home/rooms/update'
+                currentPath === '/rooms/create' ||
+                currentPath === '/rooms/update'
             "
         >
             <div
@@ -321,7 +321,7 @@
                 class="tracking-widest text-white bg-indigo-500 font-semibold rounded-lg w-full px-4 py-2 text-center uppercase"
                 @click="handleSubmit"
             >
-                {{ currentPath === "/home/rooms/create" ? "tambah" : "ubah" }}
+                {{ currentPath === "/rooms/create" ? "tambah" : "ubah" }}
             </button>
         </div>
     </div>
@@ -358,8 +358,8 @@ export default {
             let data;
 
             if (
-                this.currentPath === "/home/orders/create" ||
-                this.currentPath === "/home/orders/update"
+                this.currentPath === "/orders/create" ||
+                this.currentPath === "/orders/update"
             ) {
                 data = JSON.parse(this.$route.query.order);
             } else {
@@ -372,13 +372,13 @@ export default {
     methods: {
         handleSubmit() {
             if (this.mode === "create") {
-                if (this.currentPath === "/home/orders/create") {
+                if (this.currentPath === "/orders/create") {
                     this.$emit("createOrder");
                 } else {
                     this.$emit("createRoom");
                 }
             } else {
-                if (this.currentPath === "/home/orders/update") {
+                if (this.currentPath === "/orders/update") {
                     this.$emit("updateOrder", this.updatePayload);
                 } else {
                     this.$emit("updateRoom", this.updatePayload);
