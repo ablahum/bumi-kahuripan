@@ -25,7 +25,8 @@ class AuthController extends Controller {
     //     }
     // }
 
-    public function login(Request $request) {
+    public function login(Request $request)
+    {
         $data = $request->validate([
             'email' => 'required|string|email:dns',
             'password' => 'required|string',
@@ -53,37 +54,44 @@ class AuthController extends Controller {
         }
     }
     
-    public function logout()
-    {
-        auth()->guard('web')->logout();
-
-        Log::info('Token class:', ['class' => get_class($request->user()->currentAccessToken())]);
-        return response()->json([
-            'message' => 'Logout berhasil.',
-        ], 200);
-    }
-    
     // public function logout(Request $request)
     // {
-    //     Log::info('Token class:', ['class' => get_class($request->user()->currentAccessToken())]);
-
-    //     $user = $request->user();
-
-    //     if ($user->tokenCan('api')) {
-    //         // Hapus token aktif
-    //         $user->currentAccessToken()->delete();
+    //     // Logout user dari sesi
+    //     auth()->guard('web')->logout();
     
-    //         return response()->json([
-    //             'message' => 'Logout berhasil.',
-    //         ], 200);
-    //     }
+    //     // Hapus session dan cookie Sanctum
+    //     $request->session()->invalidate();
+    //     $request->session()->regenerateToken();
     
     //     return response()->json([
-    //         'message' => 'Token tidak valid atau bukan API token.',
-    //     ], 400);
+    //         'message' => 'Logout berhasil.',
+    //     ], 200);
     // }
     
-    public function register(Request $request) {
+    public function logout(Request $request)
+    {
+        // Log::info('Token:', ['token' => $request->bearerToken()]);
+        // Log::debug($user->currentAccessToken());
+        
+        $user = $request->user();
+
+        Log::debug($user);
+        
+        // if (!$user || !$user->currentAccessToken()) {
+        //     return response()->json([
+        //         'message' => 'User tidak terautentikasi atau token tidak valid.',
+        //     ], 401);
+        // }
+    
+        // $user->currentAccessToken()->delete();
+    
+        // return response()->json([
+        //     'message' => 'Logout berhasil.',
+        // ], 200);
+    }
+    
+    public function register(Request $request)
+    {
         $data = $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|string|email:dns|max:255|unique:users',

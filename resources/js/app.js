@@ -4,27 +4,18 @@ import App from "./App.vue";
 import axios from "axios";
 
 import { Dashboard, Sign } from "./layouts";
-// import Dashboard from "./layouts/Dashboard.vue";
-// import Sign from "./layouts/Sign.vue";
-
 import { Login, Register, Orders, Rooms } from "./views";
-// import Login from "./views/Login.vue";
-// import Register from "./views/Register.vue";
-// import Orders from "./views/Orders.vue";
-// import Rooms from "./views/Rooms.vue";
+import { TableComponent, FormComponent } from "./components";
 
-import TableComponent from "./components/TableComponent.vue";
-import FormComponent from "./components/FormComponent.vue";
-
-axios.defaults.baseURL = "http://127.0.0.1:8000";
+axios.defaults.baseURL = "http://127.0.0.1:8000/api";
 
 const routes = [
     {
         path: "/",
-        redirect: "/auth/login", // Default redirect to login
+        redirect: "/login",
     },
     {
-        path: "/auth",
+        path: "/",
         component: Sign,
         children: [
             {
@@ -40,7 +31,7 @@ const routes = [
         ],
     },
     {
-        path: "/home",
+        path: "/",
         component: Dashboard,
         children: [
             {

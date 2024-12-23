@@ -16,13 +16,14 @@
                 name="name"
                 id="name"
                 class="text-black border rounded-lg w-full p-2"
+                :class="{ 'border-red-500': errors.name }"
                 placeholder="Enter your name..."
                 v-model="payload.name"
             />
 
-            <!-- @error('name')
-            <p class="text-red-500 font-semibold text-end">{{ $message }}</p>
-            @enderror -->
+            <p v-if="errors.name" class="text-red-500 font-semibold text-end">
+                {{ errors.name }}
+            </p>
         </div>
 
         <div class="mb-4">
@@ -35,13 +36,14 @@
                 name="email"
                 id="email"
                 class="text-black border rounded-lg w-full p-2"
+                :class="{ 'border-red-500': errors.email }"
                 placeholder="Enter your email..."
                 v-model="payload.email"
             />
 
-            <!-- @error('email')
-            <p class="text-red-500 font-semibold text-end">{{ $message }}</p>
-            @enderror -->
+            <p v-if="errors.email" class="text-red-500 font-semibold text-end">
+                {{ errors.email }}
+            </p>
         </div>
 
         <div class="mb-4">
@@ -54,13 +56,17 @@
                 name="password"
                 id="password"
                 class="text-black border rounded-lg w-full p-2"
+                :class="{ 'border-red-500': errors.password }"
                 placeholder="Enter your password..."
                 v-model="payload.password"
             />
 
-            <!-- @error('password')
-            <p class="text-red-500 font-semibold text-end">{{ $message }}</p>
-            @enderror -->
+            <p
+                v-if="errors.password"
+                class="text-red-500 font-semibold text-end"
+            >
+                {{ errors.password }}
+            </p>
         </div>
 
         <div class="mb-4 flex justify-center flex-col">
@@ -85,6 +91,7 @@
                                 'transition-colors',
                                 'peer-checked:bg-indigo-700 peer-checked:text-white',
                                 role.id == 1 ? 'rounded-l-lg' : 'rounded-r-lg',
+                                { 'border-red-500': errors.role },
                             ]"
                         >
                             {{ role.name }}
@@ -93,9 +100,9 @@
                 </ul>
             </div>
 
-            <!-- @error('role_id')
-            <p class="text-red-500 font-semibold self-end">{{ $message }}</p>
-            @enderror -->
+            <p v-if="errors.role" class="text-red-500 font-semibold text-end">
+                {{ errors.role }}
+            </p>
         </div>
 
         <button
@@ -109,7 +116,7 @@
             <span class="capitalize">already </span>have an account?
 
             <RouterLink
-                to="/auth/login"
+                to="/login"
                 class="capitalize text-indigo-700 font-semibold"
                 >login </RouterLink
             >instead
@@ -122,8 +129,8 @@ export default {
     data() {
         return {
             roles: [
-                { id: 1, name: "user" },
-                { id: 2, name: "admin" },
+                { id: 1, name: "admin" },
+                { id: 2, name: "user" },
             ],
             payload: {
                 name: null,
@@ -131,17 +138,49 @@ export default {
                 password: null,
                 role_id: null,
             },
+            message: {
+                success: this.$route.query.message || null,
+                failed: null,
+            },
+            errors: {},
         };
+    },
+    mounted() {
+        if (this.message) {
+            setTimeout(() => {
+                this.message = {};
+            }, 5000);
+        }
     },
     methods: {
         async register() {
+            this.errors = {};
+
+            if (!this.payload.name) this.errors.name = "Nama harus diisi.";
+            if (!this.payload.email) this.errors.email = "Email harus diisi.";
+            if (!this.payload.password)
+                this.errors.password = "Password harus diisi.";
+            if (!this.payload.role_id) this.errors.role = "Role harus diisi.";
+
             try {
                 const res = await this.$axios.post(
-                    "/api/auth/register",
+                    "/auth/register",
                     this.payload
                 );
 
-                console.log(res);
+                this.payload = {
+                    name: null,
+                    email: null,
+                    password: null,
+                    role_id: null,
+                };
+                this.errors = {};
+
+                if (res.status === 201) {
+                    this.$router.push("/login");
+                    this.message.success =
+                        "Registrasi berhasil. Silakan masuk untuk melanjutkan.";
+                }
             } catch (err) {
                 console.error(err.response.data);
             }

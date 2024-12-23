@@ -4,9 +4,9 @@
             <div class="flex justify-between">
                 <h3 class="text-3xl font-semibold text-gray-700 capitalize">
                     {{
-                        currentPath === "/home/orders/create"
+                        currentPath === "/orders/create"
                             ? "tambah tamu"
-                            : currentPath === "/home/orders/update"
+                            : currentPath === "/orders/update"
                             ? "ubah tamu"
                             : "semua tamu"
                     }}
@@ -15,22 +15,22 @@
                 <button
                     class="uppercase px-3 py-1 rounded-lg"
                     :class="
-                        currentPath === '/home/orders'
+                        currentPath === '/orders'
                             ? 'bg-indigo-500 text-white'
                             : 'outline outline-indigo-500 text-black'
                     "
                 >
                     <RouterLink
                         :to="
-                            currentPath === '/home/orders'
+                            currentPath === '/orders'
                                 ? {
                                       name: 'CreateOrder',
                                   }
-                                : '/home/orders'
+                                : '/orders'
                         "
                     >
                         {{
-                            currentPath === "/home/orders"
+                            currentPath === "/orders"
                                 ? "tambah tamu baru"
                                 : "kembali"
                         }}
@@ -110,7 +110,7 @@ export default {
     methods: {
         async getOrders() {
             try {
-                const res = await this.$axios.get("/api/orders");
+                const res = await this.$axios.get("/orders");
 
                 if (res.status === 200) {
                     const { orders, rooms } = res.data;
@@ -151,7 +151,7 @@ export default {
                     total_price: this.payload.total_price,
                 };
 
-                const res = await this.$axios.post("/api/orders", payload);
+                const res = await this.$axios.post("/orders", payload);
 
                 if (res.status === 201) {
                     this.payload = {
@@ -190,7 +190,7 @@ export default {
                 };
 
                 const res = await this.$axios.put(
-                    `/api/orders/${payload.id}`,
+                    `/orders/${payload.id}`,
                     modifiedPayload
                 );
 
@@ -205,7 +205,7 @@ export default {
         },
         async deleteOrder(id) {
             try {
-                const res = await this.$axios.delete(`/api/orders/${id}`);
+                const res = await this.$axios.delete(`/orders/${id}`);
 
                 if (res.status === 204) {
                     this.message.success = "Tamu berhasil dihapus.";
