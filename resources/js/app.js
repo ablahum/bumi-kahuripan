@@ -8,6 +8,9 @@ import { Login, Register, Orders, Rooms } from "./views";
 import { TableComponent, FormComponent } from "./components";
 
 axios.defaults.baseURL = "http://127.0.0.1:8000/api";
+axios.defaults.headers.common["Authorization"] = `Bearer ${localStorage.getItem(
+    "auth-token"
+)}`;
 
 const routes = [
     {

@@ -160,26 +160,19 @@ export default {
     methods: {
         async logout() {
             try {
-                const res = await this.$axios.post(
-                    "/auth/logout",
-                    {},
-                    {
-                        headers: {
-                            // Authorization:
-                            //     "Bearer c2ca71ef5a93578a25b55c8dbc78a1bb20fd560718bc0d4fe571b7e08271b2f5",
-                            Authorization: `Bearer ${localStorage.getItem(
-                                "token"
-                            )}`,
-                        },
-                    }
-                );
+                const res = await this.$axios.post("/auth/logout", {
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem(
+                            "auth-token"
+                        )}`,
+                    },
+                });
 
-                console.log(res);
-                // localStorage.removeItem("token");
-                // this.$router.push("/login");
+                alert(res.data.message);
+                localStorage.removeItem("auth-token");
+                this.$router.push("/login");
             } catch (err) {
-                console.log(err);
-                // console.error(err.response.data);
+                console.error(err.response.data);
             }
         },
     },

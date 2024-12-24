@@ -11,7 +11,7 @@ class RoomsController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
         // $rooms = Room::with('category')->get()->makeHidden('category_id');
         $rooms = Room::with('category')->get();

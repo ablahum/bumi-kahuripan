@@ -110,7 +110,13 @@ export default {
     methods: {
         async getOrders() {
             try {
-                const res = await this.$axios.get("/orders");
+                const res = await this.$axios.get("/orders", {
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem(
+                            "auth-token"
+                        )}`,
+                    },
+                });
 
                 if (res.status === 200) {
                     const { orders, rooms } = res.data;

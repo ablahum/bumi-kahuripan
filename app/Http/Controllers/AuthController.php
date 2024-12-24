@@ -10,21 +10,6 @@ use App\Models\User;
 use Illuminate\Support\Facades\Log;
 
 class AuthController extends Controller {
-    // public function index(Request $request) {
-    //     $routeName = $request->route()->getName();
-
-    //     if ($routeName == 'login') {
-    //         return view('login', ['title' => 'Login']);
-    //     } elseif ($routeName == 'register') {
-    //         return view('register', [
-    //             "title" => "Register",
-    //             "roles" => Role::all(),
-    //         ]);
-    //     } else {
-    //         return abort(404);
-    //     }
-    // }
-
     public function login(Request $request)
     {
         $data = $request->validate([
@@ -36,58 +21,39 @@ class AuthController extends Controller {
 
         if ($user) {
             if (Hash::check($data['password'], $user->password)) {
-                if (Auth::attempt($data)) {
-                        $token = $user->createToken('auth-token')->plainTextToken;
+                $token = $user->createToken('auth-token');
 
-                        return response()->json([
-                            'message' => 'Login successful.',
-                            'token' => $token
-                        ], 200);
-                    }
-                    
-                    return back()->with('failed_message', 'Login failed. Please try again.');
-                } else {
-                    return back()->with('failed_message', 'Email or password is incorrect.');
+                return response()->json([
+                    'message' => 'Login successful.',
+                    'token' => $token->plainTextToken
+                ], 201);
+            } else {
+                return response()->json([
+                    'message' => 'Email or password is incorrect. Please try again.',
+                ], 401);
             }
         } else {
-            return back()->with('failed_message', 'The provided credentials do not match our records.');
+            return response()->json([
+                'message' => 'The provided credentials do not match our records.',
+            ], 401);
         }
     }
     
-    // public function logout(Request $request)
-    // {
-    //     // Logout user dari sesi
-    //     auth()->guard('web')->logout();
-    
-    //     // Hapus session dan cookie Sanctum
-    //     $request->session()->invalidate();
-    //     $request->session()->regenerateToken();
-    
-    //     return response()->json([
-    //         'message' => 'Logout berhasil.',
-    //     ], 200);
-    // }
-    
     public function logout(Request $request)
     {
-        // Log::info('Token:', ['token' => $request->bearerToken()]);
-        // Log::debug($user->currentAccessToken());
-        
         $user = $request->user();
-
-        Log::debug($user);
         
-        // if (!$user || !$user->currentAccessToken()) {
-        //     return response()->json([
-        //         'message' => 'User tidak terautentikasi atau token tidak valid.',
-        //     ], 401);
-        // }
+        if (!$user || !$user->currentAccessToken()) {
+            return response()->json([
+                'message' => 'User not authenticated or token is invalid.',
+            ], 401);
+        }
     
-        // $user->currentAccessToken()->delete();
+        $user->currentAccessToken()->delete();
     
-        // return response()->json([
-        //     'message' => 'Logout berhasil.',
-        // ], 200);
+        return response()->json([
+            'message' => 'Logout successful.',
+        ], 200);
     }
     
     public function register(Request $request)
@@ -103,7 +69,7 @@ class AuthController extends Controller {
 
         User::create($data);
         return response()->json([
-            'message' => 'Register successful. Please login to continue',
+            'message' => 'Register successful. Please login to continue!',
         ], 201);
     }
 };

@@ -112,7 +112,13 @@ export default {
     methods: {
         async getRooms() {
             try {
-                const res = await this.$axios.get("/rooms");
+                const res = await this.$axios.get("/rooms", {
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem(
+                            "auth-token"
+                        )}`,
+                    },
+                });
 
                 if (res.status === 200) {
                     const { rooms, categories } = res.data;
