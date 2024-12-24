@@ -10,21 +10,6 @@ use App\Models\User;
 use Illuminate\Support\Facades\Log;
 
 class AuthController extends Controller {
-    // public function index(Request $request) {
-    //     $routeName = $request->route()->getName();
-
-    //     if ($routeName == 'login') {
-    //         return view('login', ['title' => 'Login']);
-    //     } elseif ($routeName == 'register') {
-    //         return view('register', [
-    //             "title" => "Register",
-    //             "roles" => Role::all(),
-    //         ]);
-    //     } else {
-    //         return abort(404);
-    //     }
-    // }
-
     public function login(Request $request)
     {
         $data = $request->validate([
@@ -41,12 +26,16 @@ class AuthController extends Controller {
                 return response()->json([
                     'message' => 'Login successful.',
                     'token' => $token->plainTextToken
-                ], 200);
+                ], 201);
             } else {
-                return back()->with('failed_message', 'Email or password is incorrect.');
+                return response()->json([
+                    'message' => 'Email or password is incorrect. Please try again.',
+                ], 401);
             }
         } else {
-            return back()->with('failed_message', 'The provided credentials do not match our records.');
+            return response()->json([
+                'message' => 'The provided credentials do not match our records.',
+            ], 401);
         }
     }
     
@@ -80,7 +69,7 @@ class AuthController extends Controller {
 
         User::create($data);
         return response()->json([
-            'message' => 'Register successful. Please login to continue',
+            'message' => 'Register successful. Please login to continue!',
         ], 201);
     }
 };

@@ -119,7 +119,7 @@ export default {
                 };
                 this.errors = {};
 
-                if (res.status === 200) {
+                if (res.status === 201) {
                     // this.message.success = "Masuk berhasil.";
                     alert(res.data.message);
 
