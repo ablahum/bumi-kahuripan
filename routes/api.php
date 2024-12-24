@@ -12,7 +12,7 @@ Route::group(['prefix' => 'auth'], function () {
     Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
 });
 
-// Route::middleware('auth:sanctum')->group(function () {
+Route::middleware('auth:sanctum')->group(function () {
     Route::resource('/orders', OrdersController::class);
     Route::resource('/rooms', RoomsController::class);
-// });
+});

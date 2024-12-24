@@ -122,6 +122,7 @@ export default {
                 if (res.status === 200) {
                     // this.message.success = "Masuk berhasil.";
                     alert(res.data.message);
+
                     localStorage.setItem("auth-token", res.data.token);
                     this.$router.push("/rooms");
                 }
