@@ -4,12 +4,23 @@
             <h3 class="font-bold uppercase text-2xl">register</h3>
 
             <p class="font-semibold mt-2">
-                <span class="capitalize">please </span>register before continue
+                <span class="capitalize">silakan </span>buat akun sebelum
+                melanjutkan
+            </p>
+        </div>
+
+        <div
+            v-if="message && (message.success || message.failed)"
+            class="py-2 px-4 rounded-lg my-4"
+            :class="message.success ? 'bg-green-400' : 'bg-red-400'"
+        >
+            <p class="font-semibold">
+                {{ message.success ? message.success : message.failed }}
             </p>
         </div>
 
         <div class="mb-4">
-            <label for="name" class="block mb-2 capitalize">name:</label>
+            <label for="name" class="block mb-2 capitalize">nama:</label>
 
             <input
                 type="text"
@@ -28,7 +39,7 @@
 
         <div class="mb-4">
             <label for="email" class="block mb-2"
-                ><span class="capitalize">email </span>address:</label
+                ><span class="capitalize">alamat </span>email:</label
             >
 
             <input
@@ -47,8 +58,8 @@
         </div>
 
         <div class="mb-4">
-            <label for="password" class="block mb-2 capitalize"
-                >password:</label
+            <label for="password" class="block mb-2"
+                ><span class="capitalize">kata </span>sandi</label
             >
 
             <input
@@ -109,17 +120,17 @@
             class="tracking-widest text-white bg-indigo-700 font-semibold rounded-lg w-full px-4 py-2 text-center uppercase"
             @click="register"
         >
-            register
+            buat akun
         </button>
 
         <p class="text-center mt-4">
-            <span class="capitalize">already </span>have an account?
+            <span class="capitalize">sudah </span>punya akun?
 
             <RouterLink
                 to="/login"
                 class="capitalize text-indigo-700 font-semibold"
-                >login </RouterLink
-            >instead
+                >masuk </RouterLink
+            >saja
         </p>
     </div>
 </template>
@@ -168,21 +179,38 @@ export default {
                     this.payload
                 );
 
-                this.payload = {
-                    name: null,
-                    email: null,
-                    password: null,
-                    role_id: null,
-                };
-                this.errors = {};
-
                 if (res.status === 201) {
-                    this.$router.push("/login");
-                    this.message.success =
-                        "Registrasi berhasil. Silakan masuk untuk melanjutkan.";
+                    this.message.success = `Buat akun berhasil. Anda akan dialihkan dalam 5 detik.`;
+
+                    this.payload = {
+                        name: null,
+                        email: null,
+                        password: null,
+                        role_id: null,
+                    };
+                    this.errors = {};
+
+                    if (this.message) {
+                        setTimeout(() => {
+                            this.message = {};
+
+                            this.$router.push("/login");
+                        }, 5000);
+                    }
                 }
             } catch (err) {
-                console.error(err.response.data);
+                if (
+                    err.response.data.message ===
+                    "The email has already been taken."
+                ) {
+                    this.message.failed = "Alamat email sudah terdaftar.";
+                }
+
+                if (this.message) {
+                    setTimeout(() => {
+                        this.message = {};
+                    }, 5000);
+                }
             }
         },
     },

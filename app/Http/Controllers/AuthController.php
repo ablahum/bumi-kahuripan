@@ -3,9 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use App\Models\Role;
 use App\Models\User;
 use Illuminate\Support\Facades\Log;
 
@@ -58,6 +56,8 @@ class AuthController extends Controller {
     
     public function register(Request $request)
     {
+        // Log::debug($request);
+        
         $data = $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|string|email:dns|max:255|unique:users',
