@@ -4,13 +4,13 @@
             <h3 class="font-bold uppercase text-2xl">login</h3>
 
             <p class="font-semibold mt-2">
-                <span class="capitalize">please </span>login before continue
+                <span class="capitalize">silakan </span>masuk untuk melanjutkan
             </p>
         </div>
 
         <div
             v-if="message && (message.success || message.failed)"
-            class="py-2 px-4 rounded-lg mt-4"
+            class="py-2 px-4 rounded-lg my-4"
             :class="message.success ? 'bg-green-400' : 'bg-red-400'"
         >
             <p class="font-semibold">
@@ -20,7 +20,7 @@
 
         <div class="mb-4">
             <label for="email" class="block mb-2"
-                ><span class="capitalize">email </span>address:</label
+                ><span class="capitalize">alamat </span>email:</label
             >
 
             <input
@@ -28,7 +28,7 @@
                 name="email"
                 id="email"
                 class="text-black border rounded-lg w-full p-2"
-                :class="{ 'border-red-500': errors.password }"
+                :class="{ 'border-red-500': errors.email }"
                 placeholder="Your email..."
                 v-model="payload.email"
             />
@@ -39,8 +39,8 @@
         </div>
 
         <div class="mb-4">
-            <label for="password" class="block mb-2 capitalize"
-                >password:</label
+            <label for="password" class="block mb-2"
+                ><span class="capitalize">kata </span>sandi:</label
             >
 
             <input
@@ -65,17 +65,15 @@
             class="tracking-widest text-white bg-indigo-700 font-semibold rounded-lg w-full px-4 py-2 text-center uppercase"
             @click="login"
         >
-            login
+            masuk
         </button>
 
         <p class="text-center mt-4">
-            <span class="capitalize">don't </span>have an account?
+            <span class="capitalize">belum </span>memiliki akun?
 
-            <RouterLink
-                to="/register"
-                class="capitalize text-indigo-700 font-semibold"
-                >register </RouterLink
-            >now
+            <RouterLink to="/register" class="text-indigo-700 font-semibold"
+                ><span class="capitalize">buat </span>akun </RouterLink
+            >sekarang
         </p>
     </div>
 </template>
@@ -95,13 +93,6 @@ export default {
             errors: {},
         };
     },
-    mounted() {
-        if (this.message) {
-            setTimeout(() => {
-                this.message = {};
-            }, 5000);
-        }
-    },
     methods: {
         async login() {
             this.errors = {};
@@ -113,21 +104,52 @@ export default {
             try {
                 const res = await this.$axios.post("/auth/login", this.payload);
 
-                this.payload = {
-                    email: null,
-                    password: null,
-                };
-                this.errors = {};
-
                 if (res.status === 201) {
-                    // this.message.success = "Masuk berhasil.";
-                    alert(res.data.message);
+                    this.message.success = `Masuk berhasil. Anda akan dialihkan dalam 5 detik.`;
 
                     localStorage.setItem("auth-token", res.data.token);
-                    this.$router.push("/rooms");
+                    this.$axios.defaults.headers.common[
+                        "Authorization"
+                    ] = `Bearer ${res.data.token}`;
+
+                    this.payload = {
+                        email: null,
+                        password: null,
+                    };
+                    this.errors = {};
+
+                    if (this.message) {
+                        setTimeout(() => {
+                            this.message = {};
+
+                            this.$router.push("/rooms");
+                        }, 5000);
+                    }
                 }
             } catch (err) {
-                console.error(err.response.data);
+                if (
+                    err.response.data.message ===
+                    "Email or password is incorrect. Please try again."
+                ) {
+                    this.message.failed =
+                        "Email atau password salah. Silakan coba kembali.";
+                } else if (
+                    err.response.data.message ===
+                    "The email field must be a valid email address."
+                ) {
+                    this.message.failed = "Format alamat email harus benar.";
+                } else if (
+                    err.response.data.message ===
+                    "The provided credentials do not match our records."
+                ) {
+                    this.message.failed = "Akun belum terdaftar.";
+                }
+            }
+
+            if (this.message) {
+                setTimeout(() => {
+                    this.message = {};
+                }, 5000);
             }
         },
     },
