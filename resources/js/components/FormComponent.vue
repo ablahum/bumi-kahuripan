@@ -213,6 +213,7 @@
                     <label for="number" class="block capitalize"
                         >nomor kamar:</label
                     >
+
                     <input
                         type="number"
                         name="number"

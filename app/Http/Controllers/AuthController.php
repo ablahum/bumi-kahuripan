@@ -5,14 +5,10 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use App\Models\User;
-use Illuminate\Support\Facades\Log;
 
 class AuthController extends Controller {
-    public function me() {        
-        // $user = User::find(3);
+    public function me() {
         $user = auth()->user();
-
-        Log::debug($user);
         
         return response()->json([
             'message' => 'User successfully fetched.',
