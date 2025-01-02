@@ -12,7 +12,7 @@ class OrdersController extends Controller
     public function index()
     {
         $orders = Order::with('guest')->with('room')->get();
-        $rooms = Room::all();
+        $rooms = Room::where('status', 'available')->get();
 
         if (!$orders || !$rooms)
             return response()->json([
@@ -46,11 +46,13 @@ class OrdersController extends Controller
             'end_date' => 'required|string|date_format:Y-m-d|after_or_equal:start_date',
             'total_price' => 'required|integer'
         ]);
-
+        
         $guest = Guest::create($guestData);
         $orderData['guest_id'] = $guest->id;
         Order::create($orderData);
 
+        Room::find($request['room_id'])->update(['status' => 'unavailable']);
+        
         return response()->json([
             'message' => 'Guest and Order successfully created.',
         ], 201);
@@ -96,6 +98,7 @@ class OrdersController extends Controller
         
         $order = Order::find($id);
         $guest = Guest::find($order->guest_id);
+        $room = Room::find($order->room_id);
 
         if (!$guest || !$order)
             return response()->json([
@@ -104,6 +107,8 @@ class OrdersController extends Controller
     
         $order->delete();
         $guest->delete();
+        $room->update(['status' => 'available']);
+        
         return response()->json([
             'message' => 'Guest and Order successfully deleted.',
         ], 204);

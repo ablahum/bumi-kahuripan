@@ -70,7 +70,7 @@
 </template>
 
 <script>
-import { getAll, createOne, updateOne, deleteOne } from "../apis/rooms";
+import { getAll, createOne, updateOne, deleteOne } from "../apis/orders";
 
 export default {
     data() {
@@ -153,7 +153,7 @@ export default {
                     total_price: this.payload.total_price,
                 };
 
-                const res = await createOne(this.payload);
+                const res = await createOne(payload);
 
                 if (res.status === 201) {
                     this.payload = {
@@ -175,6 +175,8 @@ export default {
                     this.getOrders();
                 }
             } catch (err) {
+                console.log(err);
+
                 this.message.failed =
                     "Gagal menambahkan pesanan. Silakan coba lagi.";
             }
