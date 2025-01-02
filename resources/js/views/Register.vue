@@ -1,7 +1,7 @@
 <template>
     <div class="md:w-2/3 lg:w-1/2 w-11/12 bg-white rounded-xl shadow-xl p-8">
         <div class="mb-4 text-center">
-            <h3 class="font-bold uppercase text-2xl">register</h3>
+            <h3 class="font-bold uppercase text-2xl">buat akun</h3>
 
             <p class="font-semibold mt-2">
                 <span class="capitalize">silakan </span>buat akun sebelum
@@ -82,7 +82,7 @@
 
         <div class="mb-4 flex justify-center flex-col">
             <div class="flex gap-2 h-100">
-                <label for="role" class="block capitalize">role:</label>
+                <label for="role" class="block capitalize">peran:</label>
 
                 <ul class="flex text-black">
                     <li v-for="role in roles" :key="role.id">
@@ -136,6 +136,8 @@
 </template>
 
 <script>
+import { register } from "../apis/auth";
+
 export default {
     data() {
         return {
@@ -171,16 +173,14 @@ export default {
             if (!this.payload.email) this.errors.email = "Email harus diisi.";
             if (!this.payload.password)
                 this.errors.password = "Password harus diisi.";
-            if (!this.payload.role_id) this.errors.role = "Role harus diisi.";
+            if (!this.payload.role_id) this.errors.role = "Peran harus diisi.";
 
             try {
-                const res = await this.$axios.post(
-                    "/auth/register",
-                    this.payload
-                );
+                const res = await register(this.payload);
 
                 if (res.status === 201) {
-                    this.message.success = `Buat akun berhasil. Anda akan dialihkan dalam 5 detik.`;
+                    this.message.success =
+                        "Buat akun berhasil. Anda akan dialihkan dalam 5 detik.";
 
                     this.payload = {
                         name: null,
@@ -204,6 +204,17 @@ export default {
                     "The email has already been taken."
                 ) {
                     this.message.failed = "Alamat email sudah terdaftar.";
+                } else if (
+                    err.response.data.message ===
+                    "The email field must be a valid email address."
+                ) {
+                    this.message.failed = "Format alamat email harus benar.";
+                } else if (
+                    err.response.data.message ===
+                    "The password field must be at least 8 characters."
+                ) {
+                    this.message.failed =
+                        "Kata sandi harus setidaknya memiliki 8 karakter";
                 }
 
                 if (this.message) {

@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from "vue-router";
 
+import { me } from "../apis/auth";
 import { Dashboard, Sign } from "../layouts";
 import { Login, Register, Orders, Rooms } from "../views";
 import { TableComponent, FormComponent } from "../components";
@@ -56,7 +57,10 @@ const routes = [
             {
                 path: "rooms",
                 component: Rooms,
-                meta: { requiresAuth: true },
+                meta: {
+                    requiresAuth: true,
+                    requiresRole: "admin",
+                },
                 children: [
                     {
                         path: "",
@@ -84,33 +88,37 @@ const router = createRouter({
     routes,
 });
 
-// Tambahkan navigation guard
-router.beforeEach((to, from, next) => {
+router.beforeEach(async (to, from, next) => {
     const token = localStorage.getItem("auth-token");
 
-    // Cek jika route memerlukan autentikasi
     if (to.matched.some((record) => record.meta.requiresAuth)) {
-        if (!token) {
-            // Jika tidak ada token, redirect ke halaman login
-            return next({
-                path: "/login",
-                query: { redirect: to.fullPath }, // Redirect kembali setelah login
-            });
+        if (!token) return next({ path: "/login" });
+
+        try {
+            const res = await me();
+            const user = res.data.user;
+
+            if (
+                to.matched.some(
+                    (record) =>
+                        record.meta.requiresRole &&
+                        record.meta.requiresRole !== user.role.name
+                )
+            ) {
+                return next({ path: "/orders" });
+            }
+
+            next();
+        } catch (err) {
+            return next({ path: "/rooms" });
         }
 
-        next();
-    }
-    // Cek jika route hanya untuk guest
-    else if (to.matched.some((record) => record.meta.requiresGuest)) {
-        if (token) {
-            // Jika sudah login, redirect ke dashboard
-            return next({ path: "/orders" });
-        }
+        // next();
+    } else if (to.matched.some((record) => record.meta.requiresGuest)) {
+        if (token) return next({ path: "/orders" });
 
         next();
-    }
-    // Jika tidak ada kondisi khusus
-    else {
+    } else {
         next();
     }
 });

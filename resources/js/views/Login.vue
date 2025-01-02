@@ -1,7 +1,7 @@
 <template>
     <div class="md:w-2/3 lg:w-1/2 w-11/12 bg-white rounded-xl shadow-xl p-8">
         <div class="mb-4 text-center">
-            <h3 class="font-bold uppercase text-2xl">login</h3>
+            <h3 class="font-bold uppercase text-2xl">masuk</h3>
 
             <p class="font-semibold mt-2">
                 <span class="capitalize">silakan </span>masuk untuk melanjutkan
@@ -79,6 +79,8 @@
 </template>
 
 <script>
+import { login } from "../apis/auth";
+
 export default {
     data() {
         return {
@@ -102,15 +104,16 @@ export default {
                 this.errors.password = "Password harus diisi.";
 
             try {
-                const res = await this.$axios.post("/auth/login", this.payload);
+                const res = await login(this.payload);
 
                 if (res.status === 201) {
-                    this.message.success = `Masuk berhasil. Anda akan dialihkan dalam 5 detik.`;
+                    this.message.success =
+                        "Masuk berhasil. Anda akan dialihkan dalam 5 detik.";
 
                     localStorage.setItem("auth-token", res.data.token);
-                    this.$axios.defaults.headers.common[
-                        "Authorization"
-                    ] = `Bearer ${res.data.token}`;
+                    // this.$axios.defaults.headers.common[
+                    //     "Authorization"
+                    // ] = `Bearer ${res.data.token}`;
 
                     this.payload = {
                         email: null,
@@ -122,7 +125,7 @@ export default {
                         setTimeout(() => {
                             this.message = {};
 
-                            this.$router.push("/rooms");
+                            this.$router.push("/orders");
                         }, 5000);
                     }
                 }
