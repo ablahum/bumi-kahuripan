@@ -44,7 +44,12 @@
 
             <nav class="mt-10">
                 <div
-                    class="flex items-center px-6 py-2 mt-4 text-gray-500 hover:bg-gray-700 hover:bg-opacity-25 hover:text-gray-100 {{ $route_name === 'orders' ? 'text-gray-100 bg-gray-700 bg-opacity-25' : ''}}"
+                    :class="[
+                        'flex items-center px-6 py-2 mt-4 text-gray-500 hover:bg-gray-700 hover:bg-opacity-25 hover:text-gray-100',
+                        $route.path === '/orders'
+                            ? 'text-gray-100 bg-gray-700 bg-opacity-25'
+                            : '',
+                    ]"
                 >
                     <svg
                         class="w-6 h-6"
@@ -74,9 +79,14 @@
                     </span>
                 </div>
 
-                <!-- @if (session()->get('user.role_id') === 1) -->
                 <div
-                    class="flex items-center px-6 py-2 mt-4 text-gray-500 hover:bg-gray-700 hover:bg-opacity-25 hover:text-gray-100 {{ $route_name === 'rooms' ? 'text-gray-100 bg-gray-700 bg-opacity-25' : ''}}"
+                    :class="[
+                        'flex items-center px-6 py-2 mt-4 text-gray-500 hover:bg-gray-700 hover:bg-opacity-25 hover:text-gray-100',
+                        $route.path === '/rooms'
+                            ? 'text-gray-100 bg-gray-700 bg-opacity-25'
+                            : '',
+                    ]"
+                    v-if="user && user.role.name === 'admin'"
                 >
                     <svg
                         class="w-6 h-6"
@@ -97,7 +107,6 @@
                         <RouterLink to="/rooms" class="m-0">kamar</RouterLink>
                     </span>
                 </div>
-                <!-- @endif -->
             </nav>
         </div>
 
@@ -128,16 +137,13 @@
                 <div
                     class="flex items-center lg:gap-0 gap-4 lg:justify-between justify-end w-full"
                 >
-                    <p>
-                        Selamat Datang,
-                        <span class="font-semibold capitalize">
-                            <!-- {{ $name }}! -->
-                            asd
-                        </span>
+                    <p class="capitalize">
+                        selamat datang,
+                        <span class="font-semibold"> {{ user.name }}! </span>
                     </p>
 
                     <button
-                        class="outline outline-red-500 text-black uppercase px-3 py-1 rounded-lg text-red-500"
+                        class="outline outline-red-500 uppercase px-3 py-1 rounded-lg text-red-500"
                         @click="logout"
                     >
                         keluar
@@ -151,22 +157,27 @@
 </template>
 
 <script>
+import { me, logout } from "../apis/auth";
+
 export default {
     data() {
         return {
             sidebarOpen: false,
+            user: "",
         };
     },
+    mounted() {
+        this.getMe();
+    },
     methods: {
+        async getMe() {
+            const res = await me();
+
+            this.user = res.data.user;
+        },
         async logout() {
             try {
-                const res = await this.$axios.post("/auth/logout", {
-                    headers: {
-                        Authorization: `Bearer ${localStorage.getItem(
-                            "auth-token"
-                        )}`,
-                    },
-                });
+                const res = await logout();
 
                 alert(res.data.message);
                 localStorage.removeItem("auth-token");

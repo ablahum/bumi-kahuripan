@@ -8,6 +8,19 @@ use App\Models\User;
 use Illuminate\Support\Facades\Log;
 
 class AuthController extends Controller {
+    public function me() {        
+        // $user = User::find(3);
+        $user = auth()->user();
+
+        Log::debug($user);
+        
+        return response()->json([
+            'message' => 'User successfully fetched.',
+            'user' => $user,
+            'role' => $user->role,
+        ], 200);
+    }
+    
     public function login(Request $request)
     {
         $data = $request->validate([
@@ -56,11 +69,9 @@ class AuthController extends Controller {
     
     public function register(Request $request)
     {
-        // Log::debug($request);
-        
         $data = $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email:dns|max:255|unique:users',
+            'name' => 'required|string',
+            'email' => 'required|string|email:dns|unique:users',
             'password' => 'required|string|min:8',
             'role_id' => 'required|integer'
         ]);
