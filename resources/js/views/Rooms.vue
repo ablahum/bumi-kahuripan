@@ -77,6 +77,8 @@
 </template>
 
 <script>
+import { getAll, createOne, updateOne, deleteOne } from "../apis/rooms";
+
 export default {
     data() {
         return {
@@ -112,7 +114,7 @@ export default {
     methods: {
         async getRooms() {
             try {
-                const res = await this.$axios.get("/rooms");
+                const res = await getAll();
 
                 if (res.status === 200) {
                     const { rooms, categories } = res.data;
@@ -137,7 +139,7 @@ export default {
                 this.errors.price = "Harga Kamar harus diisi.";
 
             try {
-                const res = await this.$axios.post("/rooms", this.payload);
+                const res = await createOne(this.payload);
 
                 if (res.status === 201) {
                     this.payload = {
@@ -159,10 +161,7 @@ export default {
         },
         async updateRoom(payload) {
             try {
-                const res = await this.$axios.put(
-                    `/rooms/${payload.id}`,
-                    payload
-                );
+                const res = await updateOne(payload);
 
                 this.errors = {};
 
@@ -178,7 +177,7 @@ export default {
         },
         async deleteRoom(id) {
             try {
-                const res = await this.$axios.delete(`/rooms/${id}`);
+                const res = await deleteOne(id);
 
                 if (res.status === 204) {
                     this.message.success = "Kamar berhasil dihapus.";

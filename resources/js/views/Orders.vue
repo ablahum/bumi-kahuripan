@@ -70,6 +70,8 @@
 </template>
 
 <script>
+import { getAll, createOne, updateOne, deleteOne } from "../apis/rooms";
+
 export default {
     data() {
         return {
@@ -110,7 +112,7 @@ export default {
     methods: {
         async getOrders() {
             try {
-                const res = await this.$axios.get("/orders");
+                const res = await getAll();
 
                 if (res.status === 200) {
                     const { orders, rooms } = res.data;
@@ -151,7 +153,7 @@ export default {
                     total_price: this.payload.total_price,
                 };
 
-                const res = await this.$axios.post("/orders", payload);
+                const res = await createOne(this.payload);
 
                 if (res.status === 201) {
                     this.payload = {
@@ -189,10 +191,7 @@ export default {
                     total_price: payload.total_price,
                 };
 
-                const res = await this.$axios.put(
-                    `/orders/${payload.id}`,
-                    modifiedPayload
-                );
+                const res = await updateOne(payload.id, modifiedPayload);
 
                 if (res.status === 204) {
                     this.$router.push("/orders");
@@ -205,7 +204,7 @@ export default {
         },
         async deleteOrder(id) {
             try {
-                const res = await this.$axios.delete(`/orders/${id}`);
+                const res = await deleteOne(id);
 
                 if (res.status === 204) {
                     this.message.success = "Tamu berhasil dihapus.";
