@@ -10,5 +10,6 @@ axios.defaults.headers.common["Authorization"] = `Bearer ${localStorage.getItem(
 
 const app = createApp(App);
 
+app.config.globalProperties.$axios = axios;
 app.use(router);
 app.mount("#app");

@@ -4,6 +4,10 @@ export const getAll = async () => {
     return await axios.get("/rooms");
 };
 
+export const getOne = async (id) => {
+    return await axios.get(`/rooms/${id}`);
+};
+
 export const createOne = async (payload) => {
     return await axios.post("/rooms", payload);
 };
