@@ -157,7 +157,7 @@
 </template>
 
 <script>
-import { me, logout } from "../apis/auth";
+import { getMe, logout } from "../apis/auth";
 
 export default {
     data() {
@@ -167,11 +167,11 @@ export default {
         };
     },
     mounted() {
-        this.getMe();
+        this.getProfile();
     },
     methods: {
-        async getMe() {
-            const res = await me();
+        async getProfile() {
+            const res = await getMe();
 
             this.user = res.data.user;
         },

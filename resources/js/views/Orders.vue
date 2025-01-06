@@ -71,6 +71,8 @@
 
 <script>
 import { getAll, createOne, updateOne, deleteOne } from "../apis/orders";
+import { getOne } from "../apis/rooms";
+import countPrice from "../utils/countPrice";
 
 export default {
     data() {
@@ -104,12 +106,50 @@ export default {
 
         this.getOrders();
     },
+    watch: {
+        "payload.start_date": "updateTotalPrice",
+        "payload.end_date": "updateTotalPrice",
+    },
     computed: {
         currentPath() {
             return this.$route.path;
         },
     },
     methods: {
+        async updateTotalPrice() {
+            const { room_id, start_date, end_date } = this.payload;
+
+            const res = await getRoom(room_id);
+            console.log(res);
+
+            if (start_date && end_date) {
+                if (start_date > end_date) {
+                    this.errors.start_date =
+                        "Tanggal Masuk harus sebelum Tanggal Keluar.";
+                    this.payload.total_price = 0;
+                } else if (start_date == end_date) {
+                    this.errors.end_date =
+                        "Tanggal Keluar tidak boleh sama dengan Tanggal Masuk.";
+                } else {
+                    this.errors = {};
+
+                    this.payload.total_price = countPrice(
+                        200000,
+                        start_date,
+                        end_date
+                    );
+                }
+            } else {
+                this.payload.total_price = 0;
+            }
+        },
+        async getRoom(roomId) {
+            try {
+                return await getOne(roomId);
+            } catch (err) {
+                console.log(err);
+            }
+        },
         async getOrders() {
             try {
                 const res = await getAll();
@@ -125,72 +165,70 @@ export default {
             }
         },
         async createOrder() {
-            this.errors = {};
+            // this.errors = {};
+            const { room_id, total_price, start_date, end_date } = this.payload;
+            const { name, origin, phone } = this.payload.guest;
 
-            if (!this.payload.guest.name)
-                this.errors.name = "Nama Tamu harus diisi.";
-            if (!this.payload.guest.origin)
-                this.errors.origin = "Asal Tamu harus diisi.";
-            if (!this.payload.guest.phone)
-                this.errors.phone = "Nomor Telepon Tamu harus diisi.";
-            if (!this.payload.room_id)
-                this.errors.room_id = "Nomor Kamar harus diisi.";
-            if (!this.payload.total_price)
-                this.errors.total_price = "Total Harga harus diisi.";
-            if (!this.payload.start_date)
+            if (!name) this.errors.name = "Nama Tamu harus diisi.";
+            if (!origin) this.errors.origin = "Asal Tamu harus diisi.";
+            if (!phone) this.errors.phone = "Nomor Telepon Tamu harus diisi.";
+            if (!room_id) this.errors.room_id = "Nomor Kamar harus diisi.";
+            if (!start_date)
                 this.errors.start_date = "Tanggal Masuk harus diisi.";
-            if (!this.payload.end_date)
-                this.errors.end_date = "Tanggal Keluar harus diisi.";
-
-            try {
-                const payload = {
-                    name: this.payload.guest.name,
-                    origin: this.payload.guest.origin,
-                    phone: String(this.payload.guest.phone),
-                    room_id: this.payload.room_id,
-                    start_date: this.payload.start_date,
-                    end_date: this.payload.end_date,
-                    total_price: this.payload.total_price,
-                };
-
-                const res = await createOne(payload);
-
-                if (res.status === 201) {
-                    this.payload = {
-                        guest: {
-                            name: "",
-                            origin: "",
-                            phone: "",
-                        },
-                        room_id: "",
-                        start_date: null,
-                        end_date: null,
-                        total_price: null,
+            if (!end_date) this.errors.end_date = "Tanggal Keluar harus diisi.";
+            else
+                try {
+                    const payload = {
+                        name,
+                        origin,
+                        phone: String(phone),
+                        room_id,
+                        start_date,
+                        end_date,
+                        total_price,
                     };
 
-                    this.errors = {};
+                    const res = await createOne(payload);
 
-                    this.$router.push("/orders");
-                    this.message.success = "Tamu berhasil ditambahkan.";
-                    this.getOrders();
+                    if (res.status === 201) {
+                        this.payload = {
+                            guest: {
+                                name: "",
+                                origin: "",
+                                phone: "",
+                            },
+                            room_id: "",
+                            start_date: null,
+                            end_date: null,
+                            total_price: null,
+                        };
+
+                        this.errors = {};
+
+                        this.$router.push("/orders");
+                        this.message.success = "Tamu berhasil ditambahkan.";
+                        this.getOrders();
+                    }
+                } catch (err) {
+                    console.log(err);
+
+                    this.message.failed =
+                        "Gagal menambahkan pesanan. Silakan coba lagi.";
                 }
-            } catch (err) {
-                console.log(err);
-
-                this.message.failed =
-                    "Gagal menambahkan pesanan. Silakan coba lagi.";
-            }
         },
         async updateOrder(payload) {
+            const { room_id, start_date, end_date, total_price } = payload;
+            const { name, origin, phone } = payload.guest;
+
             try {
                 const modifiedPayload = {
-                    name: payload.guest.name,
-                    origin: payload.guest.origin,
-                    phone: String(payload.guest.phone),
-                    room_id: payload.room_id,
-                    start_date: payload.start_date,
-                    end_date: payload.end_date,
-                    total_price: payload.total_price,
+                    name,
+                    origin,
+                    phone: String(phone),
+                    room_id,
+                    start_date,
+                    end_date,
+                    total_price,
                 };
 
                 const res = await updateOne(payload.id, modifiedPayload);

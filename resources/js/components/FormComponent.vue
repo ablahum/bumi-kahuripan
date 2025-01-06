@@ -81,68 +81,6 @@
                 class="grid md:grid-cols-2 grid-cols-1 md:grid-rows-1 grid-rows-[auto_auto] gap-4 items-start"
             >
                 <div class="grid grid-cols-1 grid-rows-[auto_auto] gap-2">
-                    <label for="room-id" class="block capitalize"
-                        >nomor kamar:</label
-                    >
-
-                    <!-- ??????? -->
-                    <select
-                        name="room-id"
-                        id="room-id"
-                        v-model="activePayload.room_id"
-                        class="text-black border rounded-lg w-full p-2 uppercase"
-                        :class="{ 'border-red-500': errors.room_id }"
-                    >
-                        <option value="" disabled>---pilih kamar---</option>
-                        <option
-                            v-for="room in rooms"
-                            :key="room.id"
-                            :value="room.id"
-                        >
-                            {{ room.number }}
-                        </option>
-                    </select>
-                    <!-- ????? -->
-
-                    <p
-                        v-if="errors.room_id"
-                        class="text-red-500 font-semibold text-end"
-                    >
-                        {{ errors.room_id }}
-                    </p>
-                </div>
-
-                <div class="grid grid-cols-1 grid-rows-[auto_auto] gap-2">
-                    <label for="total-price" class="block capitalize"
-                        >total harga:</label
-                    >
-
-                    <div class="flex items-center gap-2">
-                        <span class="capitalize text-gray-500">rp</span>
-
-                        <input
-                            type="number"
-                            name="total-price"
-                            id="total-price"
-                            v-model="activePayload.total_price"
-                            class="text-black border rounded-lg w-full p-2"
-                            :class="{ 'border-red-500': errors.total_price }"
-                        />
-                    </div>
-
-                    <p
-                        v-if="errors.total_price"
-                        class="text-red-500 font-semibold text-end"
-                    >
-                        {{ errors.total_price }}
-                    </p>
-                </div>
-            </div>
-
-            <div
-                class="grid md:grid-cols-2 grid-cols-1 md:grid-rows-1 grid-rows-[auto_auto] gap-4 items-start"
-            >
-                <div class="grid grid-cols-1 grid-rows-[auto_auto] gap-2">
                     <label for="start-date" class="block capitalize"
                         >tanggal masuk:</label
                     >
@@ -187,6 +125,66 @@
                         class="text-red-500 font-semibold text-end"
                     >
                         {{ errors.end_date }}
+                    </p>
+                </div>
+            </div>
+
+            <div
+                class="grid md:grid-cols-2 grid-cols-1 md:grid-rows-1 grid-rows-[auto_auto] gap-4 items-start"
+            >
+                <div class="grid grid-cols-1 grid-rows-[auto_auto] gap-2">
+                    <label for="room-id" class="block capitalize"
+                        >nomor kamar:</label
+                    >
+
+                    <select
+                        name="room-id"
+                        id="room-id"
+                        v-model="activePayload.room_id"
+                        class="text-black border rounded-lg w-full p-2 uppercase"
+                        :class="{ 'border-red-500': errors.room_id }"
+                    >
+                        <option value="" disabled>---pilih kamar---</option>
+                        <option
+                            v-for="room in rooms"
+                            :key="room.id"
+                            :value="room.id"
+                        >
+                            {{ room.number }}
+                        </option>
+                    </select>
+
+                    <p
+                        v-if="errors.room_id"
+                        class="text-red-500 font-semibold text-end"
+                    >
+                        {{ errors.room_id }}
+                    </p>
+                </div>
+
+                <div class="grid grid-cols-1 grid-rows-[auto_auto] gap-2">
+                    <label for="total-price" class="block capitalize"
+                        >total harga:</label
+                    >
+
+                    <div class="flex items-center gap-2">
+                        <span class="capitalize text-gray-500">rp</span>
+
+                        <input
+                            type="number"
+                            name="total-price"
+                            id="total-price"
+                            v-model="activePayload.total_price"
+                            class="text-black border rounded-lg w-full p-2"
+                            disabled
+                        />
+                    </div>
+
+                    <p
+                        v-if="errors.total_price"
+                        class="text-red-500 font-semibold text-end"
+                    >
+                        {{ errors.total_price }}
                     </p>
                 </div>
             </div>
@@ -375,6 +373,7 @@ export default {
             if (this.mode === "create") {
                 if (this.currentPath === "/orders/create") {
                     this.$emit("createOrder");
+                    // console.log(this.payload);
                 } else {
                     this.$emit("createRoom");
                 }

@@ -1,6 +1,6 @@
 import axios from "axios";
 
-export const me = () => {
+export const getMe = () => {
     return axios.get("/auth/me");
 };
 

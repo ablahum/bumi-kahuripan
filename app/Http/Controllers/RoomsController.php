@@ -11,7 +11,7 @@ class RoomsController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(Request $request)
+    public function index()
     {
         // $rooms = Room::with('category')->get()->makeHidden('category_id');
         $rooms = Room::with('category')->get();
@@ -26,6 +26,16 @@ class RoomsController extends Controller
             'message' => 'Rooms successfully fetched.',
             'rooms' => $rooms,
             'categories' => $categories
+        ], 200);
+    }
+
+    public function getOne(string $id)
+    {
+        $room = Room::find($id);
+
+        return response()->json([
+            'message' => 'Room successfully fetched.',
+            'room' => $room,
         ], 200);
     }
     

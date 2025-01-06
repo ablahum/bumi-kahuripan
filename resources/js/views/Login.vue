@@ -95,6 +95,9 @@ export default {
             errors: {},
         };
     },
+    mounted() {
+        // console.log(localStorage.getItem("auth-token"));
+    },
     methods: {
         async login() {
             this.errors = {};
@@ -109,17 +112,16 @@ export default {
                 if (res.status === 201) {
                     this.message.success =
                         "Masuk berhasil. Anda akan dialihkan dalam 5 detik.";
-
-                    localStorage.setItem("auth-token", res.data.token);
-                    // this.$axios.defaults.headers.common[
-                    //     "Authorization"
-                    // ] = `Bearer ${res.data.token}`;
-
                     this.payload = {
                         email: null,
                         password: null,
                     };
                     this.errors = {};
+
+                    localStorage.setItem("auth-token", res.data.token);
+                    this.$axios.defaults.headers.common[
+                        "Authorization"
+                    ] = `Bearer ${res.data.token}`;
 
                     if (this.message) {
                         setTimeout(() => {
@@ -130,6 +132,8 @@ export default {
                     }
                 }
             } catch (err) {
+                console.log(err);
+
                 if (
                     err.response.data.message ===
                     "Email or password is incorrect. Please try again."
