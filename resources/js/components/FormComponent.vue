@@ -171,10 +171,10 @@
                         <span class="capitalize text-gray-500">rp</span>
 
                         <input
-                            type="number"
+                            type="text"
                             name="total-price"
                             id="total-price"
-                            v-model="activePayload.total_price"
+                            :value="formattedTotalPrice"
                             class="text-black border rounded-lg w-full p-2"
                             disabled
                         />
@@ -348,6 +348,16 @@ export default {
         activePayload() {
             return this.mode === "create" ? this.payload : this.updatePayload;
         },
+        formattedTotalPrice() {
+            const totalPrice = parseFloat(this.payload.total_price) || 0;
+
+            if (isNaN(totalPrice) || totalPrice <= 0) return "0";
+
+            return new Intl.NumberFormat("id-ID", {
+                style: "decimal",
+                maximumFractionDigits: 0,
+            }).format(totalPrice);
+        },
     },
     created() {
         if (
@@ -373,7 +383,6 @@ export default {
             if (this.mode === "create") {
                 if (this.currentPath === "/orders/create") {
                     this.$emit("createOrder");
-                    // console.log(this.payload);
                 } else {
                     this.$emit("createRoom");
                 }
