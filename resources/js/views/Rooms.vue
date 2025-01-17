@@ -13,11 +13,11 @@
                 </h2>
 
                 <button
-                    class="uppercase px-3 py-1 rounded-lg"
+                    class="uppercase px-3 py-1 rounded-lg font-semibold"
                     :class="
                         currentPath === '/rooms'
                             ? 'bg-indigo-500 text-white'
-                            : 'outline outline-indigo-500 text-black'
+                            : 'outline outline-indigo-500 text-indigo-500'
                     "
                 >
                     <RouterLink

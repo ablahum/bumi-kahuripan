@@ -95,9 +95,6 @@ export default {
             errors: {},
         };
     },
-    mounted() {
-        // console.log(localStorage.getItem("auth-token"));
-    },
     methods: {
         async login() {
             this.errors = {};
