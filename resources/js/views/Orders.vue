@@ -2,7 +2,7 @@
     <div class="flex-1 overflow-x-hidden overflow-y-auto bg-gray-200">
         <div class="container px-6 py-8 mx-auto">
             <div class="flex justify-between">
-                <h3 class="text-3xl font-semibold text-gray-700 capitalize">
+                <h2 class="text-3xl font-semibold text-gray-700 capitalize">
                     {{
                         currentPath === "/orders/create"
                             ? "tambah tamu"
@@ -10,14 +10,14 @@
                             ? "ubah tamu"
                             : "semua tamu"
                     }}
-                </h3>
+                </h2>
 
                 <button
                     class="uppercase px-3 py-1 rounded-lg"
                     :class="
                         currentPath === '/orders'
                             ? 'bg-indigo-500 text-white'
-                            : 'outline outline-indigo-500 text-black'
+                            : 'outline outline-indigo-500 text-indigo-500'
                     "
                 >
                     <RouterLink
@@ -88,7 +88,7 @@ export default {
                 room_id: "",
                 start_date: null,
                 end_date: null,
-                total_price: null,
+                total_price: 0,
             },
             message: {
                 success: this.$route.query.message || null,
@@ -107,6 +107,7 @@ export default {
         this.getOrders();
     },
     watch: {
+        "payload.room_id": "updateTotalPrice",
         "payload.start_date": "updateTotalPrice",
         "payload.end_date": "updateTotalPrice",
     },
@@ -119,9 +120,6 @@ export default {
         async updateTotalPrice() {
             const { room_id, start_date, end_date } = this.payload;
 
-            const res = await getRoom(room_id);
-            console.log(res);
-
             if (start_date && end_date) {
                 if (start_date > end_date) {
                     this.errors.start_date =
@@ -131,13 +129,17 @@ export default {
                     this.errors.end_date =
                         "Tanggal Keluar tidak boleh sama dengan Tanggal Masuk.";
                 } else {
-                    this.errors = {};
+                    if (room_id) {
+                        const res = await this.getRoom(room_id);
 
-                    this.payload.total_price = countPrice(
-                        200000,
-                        start_date,
-                        end_date
-                    );
+                        this.errors = {};
+
+                        this.payload.total_price = countPrice(
+                            res.data.room.price,
+                            start_date,
+                            end_date
+                        );
+                    }
                 }
             } else {
                 this.payload.total_price = 0;

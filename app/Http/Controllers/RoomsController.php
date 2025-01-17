@@ -29,7 +29,7 @@ class RoomsController extends Controller
         ], 200);
     }
 
-    public function getOne(string $id)
+    public function show(string $id)
     {
         $room = Room::find($id);
 

@@ -2,7 +2,7 @@
     <div class="flex-1 overflow-x-hidden overflow-y-auto bg-gray-200">
         <div class="container px-6 py-8 mx-auto">
             <div class="flex justify-between">
-                <h3 class="text-3xl font-semibold text-gray-700 capitalize">
+                <h2 class="text-3xl font-semibold text-gray-700 capitalize">
                     {{
                         currentPath === "/rooms/create"
                             ? "tambah kamar"
@@ -10,7 +10,7 @@
                             ? "ubah kamar"
                             : "semua kamar"
                     }}
-                </h3>
+                </h2>
 
                 <button
                     class="uppercase px-3 py-1 rounded-lg"
