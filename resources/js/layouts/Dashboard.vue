@@ -143,7 +143,7 @@
                     </p>
 
                     <button
-                        class="outline outline-red-500 uppercase px-3 py-1 rounded-lg text-red-500"
+                        class="outline outline-red-500 uppercase px-3 py-1 rounded-lg text-red-500 font-semibold"
                         @click="logout"
                     >
                         keluar
@@ -179,9 +179,11 @@ export default {
             try {
                 const res = await logout();
 
-                alert(res.data.message);
-                localStorage.removeItem("auth-token");
-                this.$router.push("/login");
+                if (res.status === 200) {
+                    alert("Logout berhasil.");
+                    localStorage.removeItem("auth-token");
+                    this.$router.push("/login");
+                }
             } catch (err) {
                 console.error(err.response.data);
             }

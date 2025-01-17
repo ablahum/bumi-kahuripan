@@ -13,7 +13,7 @@
                 </h2>
 
                 <button
-                    class="uppercase px-3 py-1 rounded-lg"
+                    class="uppercase px-3 py-1 rounded-lg font-semibold"
                     :class="
                         currentPath === '/orders'
                             ? 'bg-indigo-500 text-white'
