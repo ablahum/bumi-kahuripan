@@ -1,5 +1,5 @@
 <template>
-    <div class="md:w-2/3 lg:w-1/2 w-11/12 bg-white rounded-xl shadow-xl p-8">
+    <div class="md:w-2/3 lg:w-2/5 w-11/12 bg-white rounded-xl shadow-xl p-8">
         <div class="mb-4 text-center">
             <h3 class="font-bold uppercase text-2xl">masuk</h3>
 
@@ -62,7 +62,7 @@
         </div>
 
         <button
-            class="tracking-widest text-white bg-indigo-700 font-semibold rounded-lg w-full px-4 py-2 text-center uppercase"
+            class="tracking-widest text-white bg-indigo-500 font-semibold rounded-lg w-full px-4 py-2 text-center uppercase"
             @click="login"
         >
             masuk
@@ -129,6 +129,8 @@ export default {
                     }
                 }
             } catch (err) {
+                console.log({ error: err });
+
                 if (
                     err.response.data.message ===
                     "Email or password is incorrect. Please try again."

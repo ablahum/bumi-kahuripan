@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from "vue-router";
 import { authMiddleware } from "../middlewares";
+import { getMe } from "../apis/auth";
 import { Dashboard, Sign } from "../layouts";
 import { Login, Register, Orders, Rooms } from "../views";
 import { TableComponent, FormComponent } from "../components";
@@ -84,9 +85,9 @@ const routes = [
 
 const router = createRouter({
     history: createWebHistory(),
-    routes: routes,
+    routes,
 });
 
-authMiddleware(router);
+router.beforeEach(authMiddleware);
 
 export default router;
