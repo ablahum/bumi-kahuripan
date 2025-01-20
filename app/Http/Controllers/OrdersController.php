@@ -12,7 +12,8 @@ class OrdersController extends Controller
     public function index()
     {
         $orders = Order::with('guest')->with('room')->get();
-        $rooms = Room::where('status', 'available')->get();
+        // $rooms = Room::where('status', 'available')->get();
+        $rooms = Room::all();
 
         if (!$orders || !$rooms)
             return response()->json([
@@ -82,6 +83,9 @@ class OrdersController extends Controller
         $order = Order::find($id);
         $guest = Guest::find($order->guest_id);
     
+        Room::find($order->room_id)->update(['status' => 'available']);
+        Room::find($request['room_id'])->update(['status' => 'unavailable']);
+        
         $guest->update($guestData);
         $order->update($orderData);
         

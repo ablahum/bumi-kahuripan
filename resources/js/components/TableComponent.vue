@@ -3,21 +3,22 @@
         <div
             class="py-2 -my-2 overflow-x-auto sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8"
         >
-            <!-- <div
-                v-if="orders.length == 0 || rooms.length == 0"
+            <div v-if="isLoading" class="text-center">
+                <h3 class="text-2xl font-semibold capitalize">Loading...</h3>
+            </div>
+
+            <div
+                v-else-if="
+                    !isLoading && (orders?.length === 0 || rooms?.length === 0)
+                "
                 class="text-center"
             >
                 <h3 class="text-2xl font-semibold">
-                    <span class="capitalize">tidak </span>ada data
+                    <span class="capitalize">Tidak </span>ada data
                 </h3>
-            </div> -->
+            </div>
 
-            <!-- <div v-if="!orders || !rooms" class="text-center">
-                <h3 class="text-2xl font-semibold capitalize">loading...</h3>
-            </div> -->
-
-            <!-- <table class="min-w-full" v-else> -->
-            <table class="min-w-full">
+            <table class="min-w-full" v-else>
                 <thead>
                     <tr v-if="currentPath === '/orders'">
                         <th
@@ -105,15 +106,14 @@
                 </thead>
 
                 <tbody class="bg-white" v-if="currentPath === '/orders'">
-                    <tr v-for="order in orders" :key="order.id">
+                    <tr v-for="(order, idx) in orders" :key="order.id">
                         <td
                             class="px-6 py-4 whitespace-no-wrap border-b border-gray-200"
                         >
                             <p
                                 class="text-sm font-medium leading-5 text-gray-900"
                             >
-                                <!-- {{ order.number }} -->
-                                1
+                                {{ idx + 1 }}
                             </p>
                         </td>
 
@@ -191,7 +191,7 @@
                             class="px-6 py-4 whitespace-no-wrap border-b border-gray-200 flex items-center gap-2"
                         >
                             <button
-                                class="text-indigo-500 hover:text-indigo-900 uppercase"
+                                class="text-indigo-500 px-2 py-1 rounded hover:text-white hover:bg-indigo-500 font-semibold uppercase"
                             >
                                 <RouterLink
                                     :to="{
@@ -205,7 +205,7 @@
                             </button>
 
                             <button
-                                class="text-red-500 hover:text-indigo-900 uppercase"
+                                class="text-red-500 px-2 py-1 rounded hover:text-white hover:bg-red-500 font-semibold uppercase"
                                 @click="
                                     $emit(
                                         'deleteOrder',
@@ -273,7 +273,7 @@
                             class="px-6 py-4 whitespace-no-wrap border-b border-gray-200 flex items-center gap-2"
                         >
                             <button
-                                class="text-indigo-500 hover:text-indigo-900 uppercase"
+                                class="text-indigo-500 px-2 py-1 rounded hover:text-white hover:bg-indigo-500 font-semibold uppercase"
                             >
                                 <RouterLink
                                     :to="{
@@ -287,7 +287,7 @@
                             </button>
 
                             <button
-                                class="text-red-500 hover:text-indigo-900 uppercase"
+                                class="text-red-500 px-2 py-1 rounded hover:text-white hover:bg-red-500 font-semibold uppercase"
                                 @click="$emit('deleteRoom', room.id)"
                             >
                                 hapus
@@ -304,6 +304,7 @@
 export default {
     name: "TableComponent",
     props: {
+        isLoading: Boolean,
         orders: Array,
         rooms: Array,
         message: Object,
@@ -311,8 +312,5 @@ export default {
         deleteRoom: Function,
         currentPath: String,
     },
-    // mounted() {
-    //     console.log(this.rooms);
-    // },
 };
 </script>
