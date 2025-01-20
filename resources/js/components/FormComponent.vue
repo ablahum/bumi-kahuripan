@@ -240,7 +240,7 @@
                         id="category-id"
                         v-model="activePayload.category_id"
                         class="text-black border rounded-lg w-full p-2 uppercase"
-                        :class="{ 'border-red-500': errors.category }"
+                        :class="{ 'border-red-500': errors.category_id }"
                     >
                         <option value="" disabled>---pilih jenis---</option>
                         <option
@@ -253,10 +253,10 @@
                     </select>
 
                     <p
-                        v-if="errors.category"
+                        v-if="errors.category_id"
                         class="text-red-500 font-semibold text-end"
                     >
-                        {{ errors.category }}
+                        {{ errors.category_id }}
                     </p>
                 </div>
             </div>
@@ -375,6 +375,11 @@ export default {
                 data = JSON.parse(this.$route.query.room);
             }
 
+            // data.room_id = String(data.room_id);
+            // data.room_id = 3;
+
+            // data.category_id = 2;
+            console.log(data);
             this.updatePayload = { ...data };
         }
     },

@@ -52,24 +52,18 @@
                 <div
                     class="py-2 -my-2 overflow-x-auto sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8"
                 >
-                    <!-- <div
-                        class="inline-block min-w-full overflow-hidden align-middle border-b border-gray-200 shadow-md sm:rounded-lg"
-                    > -->
-                    <!-- <RouterView /> -->
-
                     <RouterView
+                        :isLoading="isLoading"
                         :rooms="rooms"
                         :categories="categories"
                         :payload="payload"
                         :errors="errors"
                         :message="message"
-                        :current-path="currentPath"
                         @create-room="createRoom"
                         @update-room="updateRoom"
                         @delete-room="deleteRoom"
+                        :current-path="currentPath"
                     />
-
-                    <!-- </div> -->
                 </div>
             </div>
         </div>
@@ -82,6 +76,7 @@ import { getAll, createOne, updateOne, deleteOne } from "../apis/rooms";
 export default {
     data() {
         return {
+            isLoading: true,
             rooms: [],
             categories: [],
             payload: {
@@ -119,6 +114,7 @@ export default {
                 if (res.status === 200) {
                     const { rooms, categories } = res.data;
 
+                    this.isLoading = false;
                     this.rooms = rooms;
                     this.categories = categories;
                 }
@@ -132,7 +128,7 @@ export default {
             if (!this.payload.number)
                 this.errors.number = "Nomor Kamar harus diisi.";
             if (!this.payload.category_id)
-                this.errors.category = "Jenis Kamar harus diisi.";
+                this.errors.category_id = "Jenis Kamar harus diisi.";
             if (!this.payload.status)
                 this.errors.status = "Status Kamar harus diisi.";
             if (!this.payload.price)

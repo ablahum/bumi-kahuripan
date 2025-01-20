@@ -53,15 +53,16 @@
                     class="py-2 -my-2 overflow-x-auto sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8"
                 >
                     <RouterView
+                        :isLoading="isLoading"
                         :orders="orders"
                         :rooms="rooms"
                         :payload="payload"
-                        :errors="errors"
                         :message="message"
-                        :current-path="currentPath"
+                        :errors="errors"
                         @create-order="createOrder"
                         @update-order="updateOrder"
                         @delete-order="deleteOrder"
+                        :current-path="currentPath"
                     />
                 </div>
             </div>
@@ -77,6 +78,7 @@ import countPrice from "../utils/countPrice";
 export default {
     data() {
         return {
+            isLoading: true,
             orders: [],
             rooms: [],
             payload: {
@@ -145,9 +147,9 @@ export default {
                 this.payload.total_price = 0;
             }
         },
-        async getRoom(roomId) {
+        async getRoom(id) {
             try {
-                return await getOne(roomId);
+                return await getOne(id);
             } catch (err) {
                 console.log(err);
             }
@@ -159,8 +161,12 @@ export default {
                 if (res.status === 200) {
                     const { orders, rooms } = res.data;
 
+                    this.isLoading = false;
                     this.orders = orders;
-                    this.rooms = rooms;
+                    // this.rooms = rooms;
+                    this.rooms = rooms.filter(
+                        (room) => room.status == "available"
+                    );
                 }
             } catch (err) {
                 this.message.failed = "Gagal memuat kamar. Silakan coba lagi.";
@@ -178,45 +184,46 @@ export default {
             if (!start_date)
                 this.errors.start_date = "Tanggal Masuk harus diisi.";
             if (!end_date) this.errors.end_date = "Tanggal Keluar harus diisi.";
-            else
-                try {
-                    const payload = {
-                        name,
-                        origin,
-                        phone: String(phone),
-                        room_id,
-                        start_date,
-                        end_date,
-                        total_price,
+
+            // else
+            try {
+                const payload = {
+                    name,
+                    origin,
+                    phone: String(phone),
+                    room_id,
+                    start_date,
+                    end_date,
+                    total_price,
+                };
+
+                const res = await createOne(payload);
+
+                if (res.status === 201) {
+                    this.payload = {
+                        guest: {
+                            name: "",
+                            origin: "",
+                            phone: "",
+                        },
+                        room_id: "",
+                        start_date: null,
+                        end_date: null,
+                        total_price: null,
                     };
 
-                    const res = await createOne(payload);
+                    this.errors = {};
 
-                    if (res.status === 201) {
-                        this.payload = {
-                            guest: {
-                                name: "",
-                                origin: "",
-                                phone: "",
-                            },
-                            room_id: "",
-                            start_date: null,
-                            end_date: null,
-                            total_price: null,
-                        };
-
-                        this.errors = {};
-
-                        this.$router.push("/orders");
-                        this.message.success = "Tamu berhasil ditambahkan.";
-                        this.getOrders();
-                    }
-                } catch (err) {
-                    console.log(err);
-
-                    this.message.failed =
-                        "Gagal menambahkan pesanan. Silakan coba lagi.";
+                    this.$router.push("/orders");
+                    this.message.success = "Tamu berhasil ditambahkan.";
+                    this.getOrders();
                 }
+            } catch (err) {
+                console.log(err);
+
+                this.message.failed =
+                    "Gagal menambahkan pesanan. Silakan coba lagi.";
+            }
         },
         async updateOrder(payload) {
             const { room_id, start_date, end_date, total_price } = payload;
