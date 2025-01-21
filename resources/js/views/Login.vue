@@ -129,8 +129,6 @@ export default {
                     }
                 }
             } catch (err) {
-                console.log({ error: err });
-
                 if (
                     err.response.data.message ===
                     "Email or password is incorrect. Please try again."

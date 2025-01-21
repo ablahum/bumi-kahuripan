@@ -26,7 +26,9 @@
                                 ? {
                                       name: 'CreateOrder',
                                   }
-                                : '/orders'
+                                : {
+                                      name: 'OrdersList',
+                                  }
                         "
                     >
                         {{
@@ -55,7 +57,7 @@
                     <RouterView
                         :isLoading="isLoading"
                         :orders="orders"
-                        :rooms="rooms"
+                        :listRooms="listRooms"
                         :payload="payload"
                         :message="message"
                         :errors="errors"
@@ -80,7 +82,7 @@ export default {
         return {
             isLoading: true,
             orders: [],
-            rooms: [],
+            listRooms: [],
             payload: {
                 guest: {
                     name: "",
@@ -108,53 +110,15 @@ export default {
 
         this.getOrders();
     },
-    watch: {
-        "payload.room_id": "updateTotalPrice",
-        "payload.start_date": "updateTotalPrice",
-        "payload.end_date": "updateTotalPrice",
-    },
     computed: {
         currentPath() {
             return this.$route.path;
         },
     },
     methods: {
-        async updateTotalPrice() {
-            const { room_id, start_date, end_date } = this.payload;
-
-            if (start_date && end_date) {
-                if (start_date > end_date) {
-                    this.errors.start_date =
-                        "Tanggal Masuk harus sebelum Tanggal Keluar.";
-                    this.payload.total_price = 0;
-                } else if (start_date == end_date) {
-                    this.errors.end_date =
-                        "Tanggal Keluar tidak boleh sama dengan Tanggal Masuk.";
-                } else {
-                    if (room_id) {
-                        const res = await this.getRoom(room_id);
-
-                        this.errors = {};
-
-                        this.payload.total_price = countPrice(
-                            res.data.room.price,
-                            start_date,
-                            end_date
-                        );
-                    }
-                }
-            } else {
-                this.payload.total_price = 0;
-            }
-        },
-        async getRoom(id) {
-            try {
-                return await getOne(id);
-            } catch (err) {
-                console.log(err);
-            }
-        },
         async getOrders() {
+            // this.errors = {};
+
             try {
                 const res = await getAll();
 
@@ -163,19 +127,20 @@ export default {
 
                     this.isLoading = false;
                     this.orders = orders;
-                    // this.rooms = rooms;
-                    this.rooms = rooms.filter(
+                    this.listRooms = rooms.filter(
                         (room) => room.status == "available"
                     );
+                } else if (res.status === 404) {
+                    this.message.failed = "Tamu tidak ada. Silakan coba lagi.";
                 }
             } catch (err) {
-                this.message.failed = "Gagal memuat kamar. Silakan coba lagi.";
+                this.message.failed = "Gagal memuat tamu. Silakan coba lagi.";
             }
         },
         async createOrder() {
-            // this.errors = {};
             const { room_id, total_price, start_date, end_date } = this.payload;
             const { name, origin, phone } = this.payload.guest;
+            this.errors = {};
 
             if (!name) this.errors.name = "Nama Tamu harus diisi.";
             if (!origin) this.errors.origin = "Asal Tamu harus diisi.";
@@ -185,7 +150,8 @@ export default {
                 this.errors.start_date = "Tanggal Masuk harus diisi.";
             if (!end_date) this.errors.end_date = "Tanggal Keluar harus diisi.";
 
-            // else
+            if (Object.keys(this.errors).length > 0) return;
+
             try {
                 const payload = {
                     name,
@@ -209,9 +175,8 @@ export default {
                         room_id: "",
                         start_date: null,
                         end_date: null,
-                        total_price: null,
+                        total_price: 0,
                     };
-
                     this.errors = {};
 
                     this.$router.push("/orders");
@@ -219,15 +184,24 @@ export default {
                     this.getOrders();
                 }
             } catch (err) {
-                console.log(err);
-
                 this.message.failed =
-                    "Gagal menambahkan pesanan. Silakan coba lagi.";
+                    "Gagal menambahkan tamu. Silakan coba lagi.";
             }
         },
         async updateOrder(payload) {
             const { room_id, start_date, end_date, total_price } = payload;
             const { name, origin, phone } = payload.guest;
+            this.errors = {};
+
+            if (!name) this.errors.name = "Nama Tamu harus diisi.";
+            if (!origin) this.errors.origin = "Asal Tamu harus diisi.";
+            if (!phone) this.errors.phone = "Nomor Telepon Tamu harus diisi.";
+            if (!room_id) this.errors.room_id = "Nomor Kamar harus diisi.";
+            if (!start_date)
+                this.errors.start_date = "Tanggal Masuk harus diisi.";
+            if (!end_date) this.errors.end_date = "Tanggal Keluar harus diisi.";
+
+            if (Object.keys(this.errors).length > 0) return;
 
             try {
                 const modifiedPayload = {
@@ -243,12 +217,27 @@ export default {
                 const res = await updateOne(payload.id, modifiedPayload);
 
                 if (res.status === 204) {
+                    this.payload = {
+                        guest: {
+                            name: "",
+                            origin: "",
+                            phone: "",
+                        },
+                        room_id: "",
+                        start_date: null,
+                        end_date: null,
+                        total_price: 0,
+                    };
+                    this.errors = {};
+
                     this.$router.push("/orders");
                     this.message.success = "Tamu berhasil diubah.";
                     this.getOrders();
+                } else if (res.status === 404) {
+                    this.message.failed = "Tamu tidak ada. Silakan coba lagi.";
                 }
             } catch (err) {
-                this.message.failed = "Gagal mengubah Tamu. Silakan coba lagi.";
+                this.message.failed = "Gagal mengubah tamu. Silakan coba lagi.";
             }
         },
         async deleteOrder(id) {
@@ -258,10 +247,12 @@ export default {
                 if (res.status === 204) {
                     this.message.success = "Tamu berhasil dihapus.";
                     this.getOrders();
+                } else if (res.status === 404) {
+                    this.message.failed = "Tamu tidak ada. Silakan coba lagi.";
                 }
             } catch (err) {
                 this.message.failed =
-                    "Gagal menghapus Tamu. Silakan coba lagi.";
+                    "Gagal menghapus tamu. Silakan coba lagi.";
             }
         },
     },
