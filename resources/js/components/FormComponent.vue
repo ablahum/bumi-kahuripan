@@ -262,10 +262,10 @@
             </div>
 
             <div
-                class="grid md:grid-cols-2 grid-cols-1 md:grid-rows-1 grid-rows-2 gap-4"
+                class="grid md:grid-cols-2 grid-cols-1 md:grid-rows-1 grid-rows-[auto_auto] gap-4 items-start"
             >
                 <div class="grid grid-cols-1 grid-rows-[auto_auto] gap-2">
-                    <label for="status" class="block capitalize"
+                    <label for="number" class="block capitalize"
                         >status kamar:</label
                     >
 
@@ -327,19 +327,34 @@
 </template>
 
 <script>
+import { getOne } from "../apis/rooms";
+import countPrice from "../utils/countPrice";
+
 export default {
     name: "FormComponent",
     data() {
         return {
             updatePayload: {},
+            rooms: [...this.listRooms],
         };
     },
     props: {
-        rooms: Array,
+        listRooms: {
+            type: Array,
+            default: [],
+        },
         categories: Array,
         payload: Object,
         errors: Object,
         currentPath: String,
+    },
+    watch: {
+        "payload.room_id": "updateTotalPrice",
+        "payload.start_date": "updateTotalPrice",
+        "payload.end_date": "updateTotalPrice",
+        "updatePayload.room_id": "updateTotalPrice",
+        "updatePayload.start_date": "updateTotalPrice",
+        "updatePayload.end_date": "updateTotalPrice",
     },
     computed: {
         mode() {
@@ -349,7 +364,10 @@ export default {
             return this.mode === "create" ? this.payload : this.updatePayload;
         },
         formattedTotalPrice() {
-            const totalPrice = parseFloat(this.payload.total_price) || 0;
+            const totalPrice =
+                parseFloat(this.payload.total_price) ||
+                parseFloat(this.updatePayload.total_price) ||
+                0;
 
             if (isNaN(totalPrice) || totalPrice <= 0) return "0";
 
@@ -366,36 +384,61 @@ export default {
         ) {
             let data;
 
-            if (
-                this.currentPath === "/orders/create" ||
-                this.currentPath === "/orders/update"
-            ) {
+            if (this.$route.path.includes("orders")) {
                 data = JSON.parse(this.$route.query.order);
             } else {
                 data = JSON.parse(this.$route.query.room);
             }
 
-            // data.room_id = String(data.room_id);
-            // data.room_id = 3;
-
-            // data.category_id = 2;
-            console.log(data);
             this.updatePayload = { ...data };
+            this.rooms.push(this.updatePayload.room);
         }
     },
     methods: {
+        async updateTotalPrice() {
+            const { room_id, start_date, end_date } = this.activePayload;
+
+            if (start_date && end_date) {
+                if (start_date > end_date) {
+                    this.errors.start_date =
+                        "Tanggal Masuk harus sebelum Tanggal Keluar.";
+                    this.activePayload.total_price = 0;
+                } else if (start_date == end_date) {
+                    this.errors.end_date =
+                        "Tanggal Keluar tidak boleh sama dengan Tanggal Masuk.";
+                } else if (!room_id) {
+                    this.errors.room_id = "Silakan pilih kamar yang tersedia.";
+                } else {
+                    try {
+                        const res = await getOne(room_id);
+
+                        // this.errors = {};
+
+                        this.activePayload.total_price = countPrice(
+                            res.data.room.price,
+                            start_date,
+                            end_date
+                        );
+                    } catch (err) {
+                        console.log(err);
+                    }
+                }
+            } else {
+                this.activePayload.total_price = 0;
+            }
+        },
         handleSubmit() {
             if (this.mode === "create") {
-                if (this.currentPath === "/orders/create") {
+                if (this.$route.path.includes("orders")) {
                     this.$emit("createOrder");
                 } else {
                     this.$emit("createRoom");
                 }
             } else {
-                if (this.currentPath === "/orders/update") {
-                    this.$emit("updateOrder", this.updatePayload);
+                if (this.$route.path.includes("orders")) {
+                    this.$emit("updateOrder", this.activePayload);
                 } else {
-                    this.$emit("updateRoom", this.updatePayload);
+                    this.$emit("updateRoom", this.activePayload);
                 }
             }
         },

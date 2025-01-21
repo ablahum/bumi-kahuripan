@@ -44,7 +44,7 @@ class OrdersController extends Controller
         $orderData = $request->validate([
             'room_id' => 'required|integer',
             'start_date' => 'required|string|date_format:Y-m-d',
-            'end_date' => 'required|string|date_format:Y-m-d|after_or_equal:start_date',
+            'end_date' => 'required|string|date_format:Y-m-d|after:start_date',
             'total_price' => 'required|integer'
         ]);
         
@@ -83,6 +83,11 @@ class OrdersController extends Controller
         $order = Order::find($id);
         $guest = Guest::find($order->guest_id);
     
+        if (!$order || !$guest)
+            return response()->json([
+                'message' => 'Guest or Order not found.',
+            ], 404);
+        
         Room::find($order->room_id)->update(['status' => 'available']);
         Room::find($request['room_id'])->update(['status' => 'unavailable']);
         

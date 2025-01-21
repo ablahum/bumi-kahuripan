@@ -26,7 +26,9 @@
                                 ? {
                                       name: 'CreateRoom',
                                   }
-                                : '/rooms'
+                                : {
+                                      name: 'RoomsList',
+                                  }
                         "
                     >
                         {{
@@ -117,22 +119,24 @@ export default {
                     this.isLoading = false;
                     this.rooms = rooms;
                     this.categories = categories;
+                } else if (res.status === 404) {
+                    this.message.failed = "Kamar tidak ada. Silakan coba lagi.";
                 }
             } catch (err) {
                 this.message.failed = "Gagal memuat kamar. Silakan coba lagi.";
             }
         },
         async createRoom() {
+            const { number, category_id, status, price } = this.payload;
             this.errors = {};
 
-            if (!this.payload.number)
-                this.errors.number = "Nomor Kamar harus diisi.";
-            if (!this.payload.category_id)
-                this.errors.category_id = "Jenis Kamar harus diisi.";
-            if (!this.payload.status)
-                this.errors.status = "Status Kamar harus diisi.";
-            if (!this.payload.price)
-                this.errors.price = "Harga Kamar harus diisi.";
+            if (!number) this.errors.number = "Nama Tamu harus diisi.";
+            if (!category_id)
+                this.errors.category_id = "Asal Tamu harus diisi.";
+            if (!status) this.errors.status = "Nomor Telepon Tamu harus diisi.";
+            if (!price) this.errors.price = "Nomor Kamar harus diisi.";
+
+            if (Object.keys(this.errors).length > 0) return;
 
             try {
                 const res = await createOne(this.payload);
@@ -140,8 +144,8 @@ export default {
                 if (res.status === 201) {
                     this.payload = {
                         number: null,
-                        category_id: null,
-                        status: null,
+                        category_id: "",
+                        status: "",
                         price: null,
                     };
                     this.errors = {};
@@ -156,15 +160,36 @@ export default {
             }
         },
         async updateRoom(payload) {
+            const { number, category_id, status, price } = payload;
+            this.errors = {};
+
+            if (!number) this.errors.number = "Nama Tamu harus diisi.";
+            if (!category_id)
+                this.errors.category_id = "Asal Tamu harus diisi.";
+            if (!status) this.errors.status = "Nomor Telepon Tamu harus diisi.";
+            if (!price) this.errors.price = "Nomor Kamar harus diisi.";
+
+            if (Object.keys(this.errors).length > 0) return;
+
             try {
                 const res = await updateOne(payload);
 
                 this.errors = {};
 
                 if (res.status === 204) {
+                    this.payload = {
+                        number: null,
+                        category_id: "",
+                        status: "",
+                        price: null,
+                    };
+                    this.errors = {};
+
                     this.$router.push("/rooms");
                     this.message.success = "Kamar berhasil diubah.";
                     this.getRooms();
+                } else if (res.status === 404) {
+                    this.message.failed = "Kamar tidak ada. Silakan coba lagi.";
                 }
             } catch (err) {
                 this.message.failed =
@@ -178,6 +203,8 @@ export default {
                 if (res.status === 204) {
                     this.message.success = "Kamar berhasil dihapus.";
                     this.getRooms();
+                } else if (res.status === 404) {
+                    this.message.failed = "Kamar tidak ada. Silakan coba lagi.";
                 }
             } catch (err) {
                 this.message.failed =

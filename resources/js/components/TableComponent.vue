@@ -307,7 +307,7 @@ export default {
         isLoading: Boolean,
         orders: Array,
         rooms: Array,
-        message: Object,
+        // message: Object,
         deleteOrder: Function,
         deleteRoom: Function,
         currentPath: String,
