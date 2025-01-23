@@ -75,7 +75,7 @@ class AuthController extends Controller {
         ]);
 
         $data['password'] = Hash::make($data['password']);
-
+        
         User::create($data);
         return response()->json([
             'message' => 'Register successful. Please login to continue!',

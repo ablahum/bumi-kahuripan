@@ -183,7 +183,7 @@
                             <p
                                 class="text-sm leading-5 text-gray-900 capitalize"
                             >
-                                rp. {{ order.total_price }}
+                                rp {{ formattedPrice(order.total_price) }}
                             </p>
                         </td>
 
@@ -265,7 +265,7 @@
                             <p
                                 class="text-sm leading-5 text-gray-900 capitalize"
                             >
-                                rp. {{ formattedPrice(room.price) }}
+                                rp {{ formattedPrice(room.price) }}
                             </p>
                         </td>
 
@@ -313,10 +313,9 @@ export default {
         deleteRoom: Function,
         currentPath: String,
     },
-    computed: {
+    methods: {
         formattedPrice(price) {
-            return price;
-            // return formatPrice("table", price);
+            return formatPrice(price);
         },
     },
 };

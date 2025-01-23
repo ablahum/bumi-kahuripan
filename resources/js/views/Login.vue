@@ -103,6 +103,8 @@ export default {
             if (!this.payload.password)
                 this.errors.password = "Password harus diisi.";
 
+            if (Object.keys(this.errors).length > 0) return;
+
             try {
                 const res = await login(this.payload);
 
