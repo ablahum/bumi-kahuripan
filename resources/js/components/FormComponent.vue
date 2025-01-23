@@ -336,14 +336,11 @@ export default {
     data() {
         return {
             updatePayload: {},
-            rooms: [...this.listRooms],
+            rooms: [],
         };
     },
     props: {
-        listRooms: {
-            type: Array,
-            default: [],
-        },
+        listRooms: Array,
         categories: Array,
         payload: Object,
         errors: Object,
@@ -356,6 +353,19 @@ export default {
         "updatePayload.room_id": "updateTotalPrice",
         "updatePayload.start_date": "updateTotalPrice",
         "updatePayload.end_date": "updateTotalPrice",
+        listRooms: {
+            immediate: true,
+            handler(newVal) {
+                this.updateRooms(newVal);
+            },
+        },
+        $route: {
+            immediate: true,
+            handler() {
+                this.initializeUpdatePayload();
+                this.updateRooms(this.listRooms);
+            },
+        },
     },
     computed: {
         mode() {
@@ -371,42 +381,45 @@ export default {
         },
     },
     created() {
-        if (
-            this.mode === "update" &&
-            (this.$route.query.room || this.$route.query.order)
-        ) {
-            let data;
-
-            if (this.currentPath.includes("orders")) {
-                data = JSON.parse(this.$route.query.order);
-            } else {
-                data = JSON.parse(this.$route.query.room);
-            }
-
-            this.updatePayload = { ...data };
-            this.rooms.push(this.updatePayload.room);
-        }
+        this.initializeUpdatePayload();
+        this.updateRooms(this.listRooms);
     },
     methods: {
+        initializeUpdatePayload() {
+            if (
+                this.mode === "update" &&
+                (this.$route.query.room || this.$route.query.order)
+            ) {
+                let data;
+
+                if (this.currentPath.includes("orders")) {
+                    data = JSON.parse(this.$route.query.order);
+                } else {
+                    data = JSON.parse(this.$route.query.room);
+                }
+
+                this.updatePayload = { ...data };
+            }
+        },
+        updateRooms(newListRooms) {
+            this.rooms = [...newListRooms];
+
+            if (
+                this.mode === "update" &&
+                this.updatePayload.room &&
+                !this.rooms.find(
+                    (room) => room.id === this.updatePayload.room.id
+                )
+            ) {
+                this.rooms.push(this.updatePayload.room);
+            }
+        },
         async updateTotalPrice() {
             const { room_id, start_date, end_date } = this.activePayload;
-            // this.errors = {};
 
             if (start_date && end_date && room_id) {
-                // if (start_date > end_date) {
-                //     this.errors.start_date =
-                //         "Tanggal Masuk harus sebelum Tanggal Keluar.";
-                //     // this.activePayload.total_price = 0;
-                // } else if (start_date == end_date) {
-                //     this.errors.end_date =
-                //         "Tanggal Keluar tidak boleh sama dengan Tanggal Masuk.";
-                // } else if (!room_id) {
-                //     this.errors.room_id = "Silakan pilih kamar yang tersedia.";
-                // } else {
                 try {
                     const res = await getOne(room_id);
-
-                    // this.errors = {};
 
                     this.activePayload.total_price = countPrice(
                         res.data.room.price,
@@ -416,7 +429,6 @@ export default {
                 } catch (err) {
                     console.log(err);
                 }
-                // }
             } else {
                 this.activePayload.total_price = 0;
             }
