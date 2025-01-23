@@ -365,11 +365,9 @@ export default {
             return this.mode === "create" ? this.payload : this.updatePayload;
         },
         formatTotalPrice() {
-            return formatPrice(
-                "form",
-                this.payload.total_price,
-                this.updatePayload.total_price
-            );
+            if (this.mode === "create")
+                return formatPrice(this.payload.total_price);
+            else return formatPrice(this.updatePayload.total_price);
         },
     },
     created() {

@@ -14,7 +14,7 @@
             "
             class="fixed inset-y-0 left-0 z-30 w-64 overflow-y-auto transition duration-300 transform bg-gray-900 lg:translate-x-0 lg:static lg:inset-0"
         >
-            <div class="flex items-center justify-center mt-8">
+            <div class="flex items-center justify-center my-8">
                 <div class="flex items-center">
                     <svg
                         class="w-12 h-12"
@@ -36,14 +36,13 @@
                         ></path>
                     </svg>
 
-                    <span
-                        class="mx-2 text-2xl font-semibold text-white capitalize"
+                    <span class="text-2xl font-semibold text-white capitalize"
                         >bumi kahuripan</span
                     >
                 </div>
             </div>
 
-            <nav class="mt-10">
+            <nav>
                 <div
                     :class="[
                         'flex items-center px-6 py-2 mt-4 text-gray-500 hover:bg-gray-700 hover:bg-opacity-25 hover:text-gray-100',

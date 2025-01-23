@@ -175,6 +175,8 @@ export default {
                 this.errors.password = "Password harus diisi.";
             if (!this.payload.role_id) this.errors.role = "Peran harus diisi.";
 
+            if (Object.keys(this.errors).length > 0) return;
+
             try {
                 const res = await register(this.payload);
 
