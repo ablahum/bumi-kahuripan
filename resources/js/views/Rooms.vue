@@ -94,6 +94,9 @@ export default {
             errors: {},
         };
     },
+    props: {
+        currentPath: String,
+    },
     mounted() {
         if (this.message) {
             setTimeout(() => {
@@ -102,11 +105,6 @@ export default {
         }
 
         this.getRooms();
-    },
-    computed: {
-        currentPath() {
-            return this.$route.path;
-        },
     },
     methods: {
         async getRooms() {

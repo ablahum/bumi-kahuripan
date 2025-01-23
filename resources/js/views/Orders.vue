@@ -74,8 +74,6 @@
 
 <script>
 import { getAll, createOne, updateOne, deleteOne } from "../apis/orders";
-import { getOne } from "../apis/rooms";
-import countPrice from "../utils/countPrice";
 
 export default {
     data() {
@@ -101,6 +99,9 @@ export default {
             errors: {},
         };
     },
+    props: {
+        currentPath: String,
+    },
     mounted() {
         if (this.message) {
             setTimeout(() => {
@@ -109,11 +110,6 @@ export default {
         }
 
         this.getOrders();
-    },
-    computed: {
-        currentPath() {
-            return this.$route.path;
-        },
     },
     methods: {
         async getOrders() {
@@ -149,6 +145,12 @@ export default {
             if (!start_date)
                 this.errors.start_date = "Tanggal Masuk harus diisi.";
             if (!end_date) this.errors.end_date = "Tanggal Keluar harus diisi.";
+            if (start_date > end_date)
+                this.errors.start_date =
+                    "Tanggal Masuk harus sebelum Tanggal Keluar.";
+            if (start_date == end_date)
+                this.errors.end_date =
+                    "Tanggal Keluar tidak boleh sama dengan Tanggal Masuk.";
 
             if (Object.keys(this.errors).length > 0) return;
 
@@ -200,6 +202,12 @@ export default {
             if (!start_date)
                 this.errors.start_date = "Tanggal Masuk harus diisi.";
             if (!end_date) this.errors.end_date = "Tanggal Keluar harus diisi.";
+            if (start_date > end_date)
+                this.errors.start_date =
+                    "Tanggal Masuk harus sebelum Tanggal Keluar.";
+            if (start_date == end_date)
+                this.errors.end_date =
+                    "Tanggal Keluar tidak boleh sama dengan Tanggal Masuk.";
 
             if (Object.keys(this.errors).length > 0) return;
 

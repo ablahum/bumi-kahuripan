@@ -265,7 +265,7 @@
                             <p
                                 class="text-sm leading-5 text-gray-900 capitalize"
                             >
-                                rp. {{ room.price }}
+                                rp. {{ formattedPrice(room.price) }}
                             </p>
                         </td>
 
@@ -301,16 +301,23 @@
 </template>
 
 <script>
+import formatPrice from "../utils/formatPrice";
+
 export default {
     name: "TableComponent",
     props: {
         isLoading: Boolean,
         orders: Array,
         rooms: Array,
-        // message: Object,
         deleteOrder: Function,
         deleteRoom: Function,
         currentPath: String,
+    },
+    computed: {
+        formattedPrice(price) {
+            return price;
+            // return formatPrice("table", price);
+        },
     },
 };
 </script>

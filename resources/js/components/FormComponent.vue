@@ -174,7 +174,7 @@
                             type="text"
                             name="total-price"
                             id="total-price"
-                            :value="formattedTotalPrice"
+                            :value="formatTotalPrice"
                             class="text-black border rounded-lg w-full p-2"
                             disabled
                         />
@@ -329,6 +329,7 @@
 <script>
 import { getOne } from "../apis/rooms";
 import countPrice from "../utils/countPrice";
+import formatPrice from "../utils/formatPrice";
 
 export default {
     name: "FormComponent",
@@ -358,23 +359,17 @@ export default {
     },
     computed: {
         mode() {
-            return this.$route.path.includes("create") ? "create" : "update";
+            return this.currentPath.includes("create") ? "create" : "update";
         },
         activePayload() {
             return this.mode === "create" ? this.payload : this.updatePayload;
         },
-        formattedTotalPrice() {
-            const totalPrice =
-                parseFloat(this.payload.total_price) ||
-                parseFloat(this.updatePayload.total_price) ||
-                0;
-
-            if (isNaN(totalPrice) || totalPrice <= 0) return "0";
-
-            return new Intl.NumberFormat("id-ID", {
-                style: "decimal",
-                maximumFractionDigits: 0,
-            }).format(totalPrice);
+        formatTotalPrice() {
+            return formatPrice(
+                "form",
+                this.payload.total_price,
+                this.updatePayload.total_price
+            );
         },
     },
     created() {
@@ -384,7 +379,7 @@ export default {
         ) {
             let data;
 
-            if (this.$route.path.includes("orders")) {
+            if (this.currentPath.includes("orders")) {
                 data = JSON.parse(this.$route.query.order);
             } else {
                 data = JSON.parse(this.$route.query.room);
@@ -397,45 +392,46 @@ export default {
     methods: {
         async updateTotalPrice() {
             const { room_id, start_date, end_date } = this.activePayload;
+            // this.errors = {};
 
-            if (start_date && end_date) {
-                if (start_date > end_date) {
-                    this.errors.start_date =
-                        "Tanggal Masuk harus sebelum Tanggal Keluar.";
-                    this.activePayload.total_price = 0;
-                } else if (start_date == end_date) {
-                    this.errors.end_date =
-                        "Tanggal Keluar tidak boleh sama dengan Tanggal Masuk.";
-                } else if (!room_id) {
-                    this.errors.room_id = "Silakan pilih kamar yang tersedia.";
-                } else {
-                    try {
-                        const res = await getOne(room_id);
+            if (start_date && end_date && room_id) {
+                // if (start_date > end_date) {
+                //     this.errors.start_date =
+                //         "Tanggal Masuk harus sebelum Tanggal Keluar.";
+                //     // this.activePayload.total_price = 0;
+                // } else if (start_date == end_date) {
+                //     this.errors.end_date =
+                //         "Tanggal Keluar tidak boleh sama dengan Tanggal Masuk.";
+                // } else if (!room_id) {
+                //     this.errors.room_id = "Silakan pilih kamar yang tersedia.";
+                // } else {
+                try {
+                    const res = await getOne(room_id);
 
-                        // this.errors = {};
+                    // this.errors = {};
 
-                        this.activePayload.total_price = countPrice(
-                            res.data.room.price,
-                            start_date,
-                            end_date
-                        );
-                    } catch (err) {
-                        console.log(err);
-                    }
+                    this.activePayload.total_price = countPrice(
+                        res.data.room.price,
+                        start_date,
+                        end_date
+                    );
+                } catch (err) {
+                    console.log(err);
                 }
+                // }
             } else {
                 this.activePayload.total_price = 0;
             }
         },
         handleSubmit() {
             if (this.mode === "create") {
-                if (this.$route.path.includes("orders")) {
+                if (this.currentPath.includes("orders")) {
                     this.$emit("createOrder");
                 } else {
                     this.$emit("createRoom");
                 }
             } else {
-                if (this.$route.path.includes("orders")) {
+                if (this.currentPath.includes("orders")) {
                     this.$emit("updateOrder", this.activePayload);
                 } else {
                     this.$emit("updateRoom", this.activePayload);

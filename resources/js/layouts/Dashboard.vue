@@ -36,8 +36,9 @@
                         ></path>
                     </svg>
 
-                    <span class="mx-2 text-2xl font-semibold text-white"
-                        >BookingTel</span
+                    <span
+                        class="mx-2 text-2xl font-semibold text-white capitalize"
+                        >bumi kahuripan</span
                     >
                 </div>
             </div>
@@ -151,7 +152,7 @@
                 </div>
             </header>
 
-            <RouterView />
+            <RouterView :current-path="currentPath" />
         </div>
     </div>
 </template>
@@ -168,6 +169,11 @@ export default {
     },
     mounted() {
         this.getProfile();
+    },
+    computed: {
+        currentPath() {
+            return this.$route.path;
+        },
     },
     methods: {
         async getProfile() {

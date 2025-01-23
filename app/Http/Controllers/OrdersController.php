@@ -76,7 +76,7 @@ class OrdersController extends Controller
         $orderData = $request->validate([
             'room_id' => 'required|integer',
             'start_date' => 'required|string|date_format:Y-m-d',
-            'end_date' => 'required|string|date_format:Y-m-d|after_or_equal:start_date',
+            'end_date' => 'required|string|date_format:Y-m-d|after:start_date',
             'total_price' => 'required|integer'
         ]);
 
