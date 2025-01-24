@@ -103,18 +103,16 @@ export default {
         currentPath: String,
     },
     mounted() {
-        if (this.message) {
-            setTimeout(() => {
-                this.message = {};
-            }, 5000);
-        }
+        // if (this.message) {
+        //     setTimeout(() => {
+        //         this.message = {};
+        //     }, 5000);
+        // }
 
         this.getOrders();
     },
     methods: {
         async getOrders() {
-            // this.errors = {};
-
             try {
                 const res = await getAll();
 
@@ -183,6 +181,13 @@ export default {
 
                     this.$router.push("/orders");
                     this.message.success = "Tamu berhasil ditambahkan.";
+
+                    if (this.message) {
+                        setTimeout(() => {
+                            this.message = {};
+                        }, 5000);
+                    }
+
                     this.getOrders();
                 }
             } catch (err) {
@@ -240,6 +245,13 @@ export default {
 
                     this.$router.push("/orders");
                     this.message.success = "Tamu berhasil diubah.";
+
+                    if (this.message) {
+                        setTimeout(() => {
+                            this.message = {};
+                        }, 5000);
+                    }
+
                     this.getOrders();
                 } else if (res.status === 404) {
                     this.message.failed = "Tamu tidak ada. Silakan coba lagi.";
@@ -254,6 +266,13 @@ export default {
 
                 if (res.status === 204) {
                     this.message.success = "Tamu berhasil dihapus.";
+
+                    if (this.message) {
+                        setTimeout(() => {
+                            this.message = {};
+                        }, 5000);
+                    }
+
                     this.getOrders();
                 } else if (res.status === 404) {
                     this.message.failed = "Tamu tidak ada. Silakan coba lagi.";

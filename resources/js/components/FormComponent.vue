@@ -392,11 +392,9 @@ export default {
             ) {
                 let data;
 
-                if (this.currentPath.includes("orders")) {
+                if (this.currentPath.includes("orders"))
                     data = JSON.parse(this.$route.query.order);
-                } else {
-                    data = JSON.parse(this.$route.query.room);
-                }
+                else data = JSON.parse(this.$route.query.room);
 
                 this.updatePayload = { ...data };
             }
@@ -410,9 +408,8 @@ export default {
                 !this.rooms.find(
                     (room) => room.id === this.updatePayload.room.id
                 )
-            ) {
+            )
                 this.rooms.push(this.updatePayload.room);
-            }
         },
         async updateTotalPrice() {
             const { room_id, start_date, end_date } = this.activePayload;
