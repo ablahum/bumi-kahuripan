@@ -201,29 +201,30 @@ export default {
                     }
                 }
             } catch (err) {
-                if (
-                    err.response.data.message ===
-                    "The email has already been taken."
-                ) {
+                const message = err.response.data.message
+                    .replace(/\(.*?\)/, "")
+                    .trim();
+
+                console.log(message);
+                if (message === "The email has already been taken.") {
                     this.message.failed = "Alamat email sudah terdaftar.";
                 } else if (
-                    err.response.data.message ===
-                    "The email field must be a valid email address."
+                    message === "The email field must be a valid email address."
                 ) {
                     this.message.failed = "Format alamat email harus benar.";
                 } else if (
-                    err.response.data.message ===
+                    message ===
                     "The password field must be at least 8 characters."
                 ) {
                     this.message.failed =
                         "Kata sandi harus setidaknya memiliki 8 karakter";
                 }
+            }
 
-                if (this.message) {
-                    setTimeout(() => {
-                        this.message = {};
-                    }, 5000);
-                }
+            if (this.message) {
+                setTimeout(() => {
+                    this.message = {};
+                }, 5000);
             }
         },
     },

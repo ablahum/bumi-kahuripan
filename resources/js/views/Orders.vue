@@ -103,12 +103,6 @@ export default {
         currentPath: String,
     },
     mounted() {
-        // if (this.message) {
-        //     setTimeout(() => {
-        //         this.message = {};
-        //     }, 5000);
-        // }
-
         this.getOrders();
     },
     methods: {
@@ -182,6 +176,7 @@ export default {
                     this.$router.push("/orders");
                     this.message.success = "Tamu berhasil ditambahkan.";
 
+                    // use global state
                     if (this.message) {
                         setTimeout(() => {
                             this.message = {};
