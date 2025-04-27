@@ -8,103 +8,103 @@ use App\Models\Category;
 
 class RoomsController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
-    {
-        // $rooms = Room::with('category')->get()->makeHidden('category_id');
-        $rooms = Room::with('category')->get();
-        $categories = Category::all();
+  /**
+   * Display a listing of the resource.
+   */
+  public function index()
+  {
+    // $rooms = Room::with('category')->get()->makeHidden('category_id');
+    $rooms = Room::with('category')->get();
+    $categories = Category::all();
 
-        if (!$rooms || !$categories)
-            return response()->json([
-                'message' => 'Rooms or Categories not found.',
-            ], 404);
-        
-        return response()->json([
-            'message' => 'Rooms successfully fetched.',
-            'rooms' => $rooms,
-            'categories' => $categories
-        ], 200);
-    }
+    if (!$rooms || !$categories)
+      return response()->json([
+        'message' => 'Rooms or Categories not found.',
+      ], 404);
 
-    public function show(string $id)
-    {
-        $room = Room::find($id);
+    return response()->json([
+      'message' => 'Rooms successfully fetched.',
+      'rooms' => $rooms,
+      'categories' => $categories
+    ], 200);
+  }
 
-        return response()->json([
-            'message' => 'Room successfully fetched.',
-            'room' => $room,
-        ], 200);
-    }
-    
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        $request['number'] = (int) $request['number'];
-        $request['category_id'] = (int) $request['category_id'];
-        $request['price'] = (int) $request['price'];
-        
-        $data = $request->validate([
-            'number' => 'required|integer',
-            'price' => 'required|integer',
-            'status' => 'required|string',
-            'category_id' => 'required|integer',
-        ]);
+  public function show(string $id)
+  {
+    $room = Room::find($id);
 
-        Room::create($data);
-        return response()->json([
-            'message' => 'Room successfully created.',
-        ], 201);
-    }
+    return response()->json([
+      'message' => 'Room successfully fetched.',
+      'room' => $room,
+    ], 200);
+  }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        $request['number'] = (int) $request['number'];
-        $request['category_id'] = (int) $request['category_id'];
-        $request['price'] = (int) $request['price'];
-        
-        $data = $request->validate([
-            'number' => 'required|integer',
-            'price' => 'required|integer',
-            'status' => 'required|string',
-            'category_id' => 'required|integer',
-        ]);
+  /**
+   * Store a newly created resource in storage.
+   */
+  public function store(Request $request)
+  {
+    $request['number'] = (int) $request['number'];
+    $request['category_id'] = (int) $request['category_id'];
+    $request['price'] = (int) $request['price'];
 
-        $room = Room::find($id);
+    $data = $request->validate([
+      'number' => 'required|integer',
+      'price' => 'required|integer',
+      'status' => 'required|string',
+      'category_id' => 'required|integer',
+    ]);
 
-        if (!$room)
-            return response()->json([
-                'message' => 'Room not found.',
-            ], 404);
-        
-        $room->update($data);
-        return response()->json([
-            'message' => 'Room successfully updated.',
-        ], 204);
-    }
+    Room::create($data);
+    return response()->json([
+      'message' => 'Room successfully created.',
+    ], 201);
+  }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        $room = Room::find($id);
-    
-        if (!$room)
-            return response()->json([
-                'message' => 'Room not found.',
-            ], 404);
-    
-        $room->destroy($id);
-        return response()->json([
-            'message' => 'Room successfully deleted.',
-        ], 204);
-    }
+  /**
+   * Update the specified resource in storage.
+   */
+  public function update(Request $request, string $id)
+  {
+    $request['number'] = (int) $request['number'];
+    $request['category_id'] = (int) $request['category_id'];
+    $request['price'] = (int) $request['price'];
+
+    $data = $request->validate([
+      'number' => 'required|integer',
+      'price' => 'required|integer',
+      'status' => 'required|string',
+      'category_id' => 'required|integer',
+    ]);
+
+    $room = Room::find($id);
+
+    if (!$room)
+      return response()->json([
+        'message' => 'Room not found.',
+      ], 404);
+
+    $room->update($data);
+    return response()->json([
+      'message' => 'Room successfully updated.',
+    ], 204);
+  }
+
+  /**
+   * Remove the specified resource from storage.
+   */
+  public function destroy(string $id)
+  {
+    $room = Room::find($id);
+
+    if (!$room)
+      return response()->json([
+        'message' => 'Room not found.',
+      ], 404);
+
+    $room->destroy($id);
+    return response()->json([
+      'message' => 'Room successfully deleted.',
+    ], 204);
+  }
 }
