@@ -36,7 +36,6 @@ class OrdersController extends Controller
     $request['room_id'] = (int) $request['room_id'];
     $request['total_price'] = (int) $request['total_price'];
 
-    // if ($request->hasFile('identity_photo')) {
     $file = $request->file('identity_photo');
     $guestData = $request->validate([
       'name' => 'required|string|max:255',
@@ -65,7 +64,6 @@ class OrdersController extends Controller
       'message' => 'Guest and Order successfully created.',
       'path' => $path
     ], 201);
-    // }
   }
 
   /**
