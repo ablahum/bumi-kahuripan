@@ -76,23 +76,9 @@
         class="grid md:grid-cols-3 grid-cols-1 md:grid-rows-1 grid-rows-[auto_auto_auto] gap-4 items-start"
       >
         <div class="grid grid-cols-1 grid-rows-[auto_auto] gap-2">
-          <!-- <div class="flex items-center gap-2"> -->
           <label for="start-date" class="block capitalize"
             >foto <span class="uppercase">ktp:</span></label
           >
-
-          <!-- <p
-              class="text-sm leading-5 text-blue-600 capitalize underline"
-              v-if="this.mode == 'update'"
-            >
-              <a
-                :href="`/storage/${updatePayload.guest.identity_photo}`"
-                target="_blank"
-              >
-                lihat foto
-              </a>
-            </p> -->
-          <!-- </div> -->
 
           <input
             class="block w-full text-sm text-gray-400 p-2 border rounded-lg cursor-pointer"
