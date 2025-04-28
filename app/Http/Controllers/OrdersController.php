@@ -13,7 +13,6 @@ class OrdersController extends Controller
   public function index()
   {
     $orders = Order::with('guest')->with('room')->get();
-    // $rooms = Room::where('status', 'available')->get();
     $rooms = Room::all();
 
     if (!$orders || !$rooms)
