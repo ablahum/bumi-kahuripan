@@ -4,11 +4,11 @@
       <div class="flex justify-between">
         <h2 class="text-3xl font-semibold text-gray-700 capitalize">
           {{
-            currentPath === "/rooms/create"
-              ? "tambah kamar"
-              : currentPath === "/rooms/update"
-              ? "ubah kamar"
-              : "semua kamar"
+            currentPath === '/rooms/create'
+              ? 'tambah kamar'
+              : currentPath === '/rooms/update'
+              ? 'ubah kamar'
+              : 'semua kamar'
           }}
         </h2>
 
@@ -24,14 +24,14 @@
             :to="
               currentPath === '/rooms'
                 ? {
-                    name: 'CreateRoom',
+                    name: 'CreateRoom'
                   }
                 : {
-                    name: 'RoomsList',
+                    name: 'RoomsList'
                   }
             "
           >
-            {{ currentPath === "/rooms" ? "tambah kamar" : "kembali" }}
+            {{ currentPath === '/rooms' ? 'tambah kamar' : 'kembali' }}
           </RouterLink>
         </button>
       </div>
@@ -69,7 +69,7 @@
 </template>
 
 <script>
-import { getAll, createOne, updateOne, deleteOne } from "../apis/rooms";
+import { getAll, createOne, updateOne, deleteOne } from '../apis/rooms'
 
 export default {
   data() {
@@ -79,127 +79,127 @@ export default {
       categories: [],
       payload: {
         number: null,
-        category_id: "",
-        status: "",
-        price: null,
+        category_id: '',
+        status: '',
+        price: null
       },
       message: {
         success: this.$route.query.message || null,
-        failed: null,
+        failed: null
       },
-      errors: {},
-    };
+      errors: {}
+    }
   },
   props: {
-    currentPath: String,
+    currentPath: String
   },
   mounted() {
     if (this.message) {
       setTimeout(() => {
-        this.message = {};
-      }, 5000);
+        this.message = {}
+      }, 5000)
     }
 
-    this.getRooms();
+    this.getRooms()
   },
   methods: {
     async getRooms() {
       try {
-        const res = await getAll();
+        const res = await getAll()
 
         if (res.status === 200) {
-          const { rooms, categories } = res.data;
+          const { rooms, categories } = res.data
 
-          this.isLoading = false;
-          this.rooms = rooms;
-          this.categories = categories;
+          this.isLoading = false
+          this.rooms = rooms
+          this.categories = categories
         } else if (res.status === 404) {
-          this.message.failed = "Kamar tidak ada. Silakan coba lagi.";
+          this.message.failed = 'Kamar tidak ada. Silakan coba lagi.'
         }
       } catch (err) {
-        this.message.failed = "Gagal memuat kamar. Silakan coba lagi.";
+        this.message.failed = 'Gagal memuat kamar. Silakan coba lagi.'
       }
     },
     async createRoom() {
-      const { number, category_id, status, price } = this.payload;
-      this.errors = {};
+      const { number, category_id, status, price } = this.payload
+      this.errors = {}
 
-      if (!number) this.errors.number = "Nama Tamu harus diisi.";
-      if (!category_id) this.errors.category_id = "Asal Tamu harus diisi.";
-      if (!status) this.errors.status = "Nomor Telepon Tamu harus diisi.";
-      if (!price) this.errors.price = "Nomor Kamar harus diisi.";
+      if (!number) this.errors.number = 'Nama Tamu harus diisi.'
+      if (!category_id) this.errors.category_id = 'Asal Tamu harus diisi.'
+      if (!status) this.errors.status = 'Nomor Telepon Tamu harus diisi.'
+      if (!price) this.errors.price = 'Nomor Kamar harus diisi.'
 
-      if (Object.keys(this.errors).length > 0) return;
+      if (Object.keys(this.errors).length > 0) return
 
       try {
-        const res = await createOne(this.payload);
+        const res = await createOne(this.payload)
 
         if (res.status === 201) {
           this.payload = {
             number: null,
-            category_id: "",
-            status: "",
-            price: null,
-          };
-          this.errors = {};
+            category_id: '',
+            status: '',
+            price: null
+          }
+          this.errors = {}
 
-          this.$router.push("/rooms");
-          this.message.success = "Kamar berhasil ditambahkan.";
-          this.getRooms();
+          this.$router.push('/rooms')
+          this.message.success = 'Kamar berhasil ditambahkan.'
+          this.getRooms()
         }
       } catch (err) {
-        this.message.failed = "Gagal menambahkan kamar. Silakan coba lagi.";
+        this.message.failed = 'Gagal menambahkan kamar. Silakan coba lagi.'
       }
     },
     async updateRoom(payload) {
-      const { number, category_id, status, price } = payload;
-      this.errors = {};
+      const { number, category_id, status, price } = payload
+      this.errors = {}
 
-      if (!number) this.errors.number = "Nama Tamu harus diisi.";
-      if (!category_id) this.errors.category_id = "Asal Tamu harus diisi.";
-      if (!status) this.errors.status = "Nomor Telepon Tamu harus diisi.";
-      if (!price) this.errors.price = "Nomor Kamar harus diisi.";
+      if (!number) this.errors.number = 'Nama Tamu harus diisi.'
+      if (!category_id) this.errors.category_id = 'Asal Tamu harus diisi.'
+      if (!status) this.errors.status = 'Nomor Telepon Tamu harus diisi.'
+      if (!price) this.errors.price = 'Nomor Kamar harus diisi.'
 
-      if (Object.keys(this.errors).length > 0) return;
+      if (Object.keys(this.errors).length > 0) return
 
       try {
-        const res = await updateOne(payload);
+        const res = await updateOne(payload)
 
-        this.errors = {};
+        this.errors = {}
 
         if (res.status === 204) {
           this.payload = {
             number: null,
-            category_id: "",
-            status: "",
-            price: null,
-          };
-          this.errors = {};
+            category_id: '',
+            status: '',
+            price: null
+          }
+          this.errors = {}
 
-          this.$router.push("/rooms");
-          this.message.success = "Kamar berhasil diubah.";
-          this.getRooms();
+          this.$router.push('/rooms')
+          this.message.success = 'Kamar berhasil diubah.'
+          this.getRooms()
         } else if (res.status === 404) {
-          this.message.failed = "Kamar tidak ada. Silakan coba lagi.";
+          this.message.failed = 'Kamar tidak ada. Silakan coba lagi.'
         }
       } catch (err) {
-        this.message.failed = "Gagal mengubah kamar. Silakan coba lagi.";
+        this.message.failed = 'Gagal mengubah kamar. Silakan coba lagi.'
       }
     },
     async deleteRoom(id) {
       try {
-        const res = await deleteOne(id);
+        const res = await deleteOne(id)
 
         if (res.status === 204) {
-          this.message.success = "Kamar berhasil dihapus.";
-          this.getRooms();
+          this.message.success = 'Kamar berhasil dihapus.'
+          this.getRooms()
         } else if (res.status === 404) {
-          this.message.failed = "Kamar tidak ada. Silakan coba lagi.";
+          this.message.failed = 'Kamar tidak ada. Silakan coba lagi.'
         }
       } catch (err) {
-        this.message.failed = "Gagal menghapus kamar. Silakan coba lagi.";
+        this.message.failed = 'Gagal menghapus kamar. Silakan coba lagi.'
       }
-    },
-  },
-};
+    }
+  }
+}
 </script>
