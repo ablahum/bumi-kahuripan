@@ -377,6 +377,10 @@ export default {
       }
     },
     updateRooms(newListRooms) {
+      if (!Array.isArray(newListRooms)) {
+        newListRooms = []
+      }
+
       this.rooms = [...newListRooms]
 
       if (
