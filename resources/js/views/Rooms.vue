@@ -81,7 +81,7 @@ export default {
         number: null,
         category_id: '',
         status: '',
-        price: null
+        price: ''
       },
       message: {
         success: this.$route.query.message || null,
@@ -124,10 +124,10 @@ export default {
       const { number, category_id, status, price } = this.payload
       this.errors = {}
 
-      if (!number) this.errors.number = 'Nama Tamu harus diisi.'
-      if (!category_id) this.errors.category_id = 'Asal Tamu harus diisi.'
-      if (!status) this.errors.status = 'Nomor Telepon Tamu harus diisi.'
-      if (!price) this.errors.price = 'Nomor Kamar harus diisi.'
+      if (!number) this.errors.number = 'Nomor Kamar harus diisi.'
+      if (!category_id) this.errors.category_id = 'Jenis Kamar harus diisi.'
+      if (!status) this.errors.status = 'Status Kamar harus diisi.'
+      if (!price) this.errors.price = 'Harga Kamar harus diisi.'
 
       if (Object.keys(this.errors).length > 0) return
 
@@ -155,10 +155,10 @@ export default {
       const { number, category_id, status, price } = payload
       this.errors = {}
 
-      if (!number) this.errors.number = 'Nama Tamu harus diisi.'
-      if (!category_id) this.errors.category_id = 'Asal Tamu harus diisi.'
-      if (!status) this.errors.status = 'Nomor Telepon Tamu harus diisi.'
-      if (!price) this.errors.price = 'Nomor Kamar harus diisi.'
+      if (!number) this.errors.number = 'Nomor Kamar harus diisi.'
+      if (!category_id) this.errors.category_id = 'Jenis Kamar harus diisi.'
+      if (!status) this.errors.status = 'Status Kamar harus diisi.'
+      if (!price) this.errors.price = 'Harga Kamar harus diisi.'
 
       if (Object.keys(this.errors).length > 0) return
 
