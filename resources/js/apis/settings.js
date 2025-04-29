@@ -5,7 +5,5 @@ export const getAll = async () => {
 }
 
 export const updateAll = async payload => {
-  // console.log(payload)
-
   return await axios.put(`/settings`, payload)
 }
