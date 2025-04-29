@@ -13,7 +13,6 @@ class RoomsController extends Controller
    */
   public function index()
   {
-    // $rooms = Room::with('category')->get()->makeHidden('category_id');
     $rooms = Room::with('category')->get();
     $categories = Category::all();
 
