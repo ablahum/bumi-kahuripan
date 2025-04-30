@@ -34,6 +34,7 @@ class OrdersController extends Controller
   {
     $request['room_id'] = (int) $request['room_id'];
     $request['total_price'] = (int) $request['total_price'];
+    $request['status_id'] = (int) $request['status_id'];
 
     $file = $request->file('identity_photo');
     $guestData = $request->validate([
@@ -47,7 +48,8 @@ class OrdersController extends Controller
       'room_id' => 'required|integer',
       'start_date' => 'required|string|date_format:Y-m-d',
       'end_date' => 'required|string|date_format:Y-m-d|after:start_date',
-      'total_price' => 'required|integer'
+      'total_price' => 'required|integer',
+      'status_id' => 'required|integer',
     ]);
 
     $path = $file->store('uploads', 'public');
@@ -72,6 +74,7 @@ class OrdersController extends Controller
   {
     $request['room_id'] = (int) $request['room_id'];
     $request['total_price'] = (int) $request['total_price'];
+    $request['status_id'] = (int) $request['status_id'];
 
     $guestData = $request->validate([
       'name' => 'required|string|max:255',
@@ -100,7 +103,8 @@ class OrdersController extends Controller
       'room_id' => 'required|integer',
       'start_date' => 'required|string|date_format:Y-m-d',
       'end_date' => 'required|string|date_format:Y-m-d|after:start_date',
-      'total_price' => 'required|integer'
+      'total_price' => 'required|integer',
+      'status_id' => 'required|integer',
     ]);
 
     $order = Order::find($id);
