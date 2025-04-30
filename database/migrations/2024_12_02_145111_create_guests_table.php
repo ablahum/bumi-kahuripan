@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('name');
             $table->string('origin');
             $table->string('phone');
+            $table->string('identity_photo');
         });
     }
 
