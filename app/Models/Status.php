@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class Category extends Model
+class Status extends Model
 {
   use HasFactory;
 
@@ -16,6 +16,11 @@ class Category extends Model
 
   public function room(): HasMany
   {
-    return $this->hasMany(Room::class, 'category_id', 'id');
+    return $this->hasMany(Room::class, 'status_id', 'id');
+  }
+
+  public function order(): HasMany
+  {
+    return $this->hasMany(Order::class, 'status_id', 'id');
   }
 }
