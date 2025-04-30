@@ -16,7 +16,7 @@ class RoomSeeder extends Seeder
         DB::table('rooms')->insert([
             'number' => 101,
             'price' => 350000,
-            'status' => "unavailable",
+            'status_id' => 1,
             'category_id' => 1
             // 'number' => 102,
             // 'price' => 250000,
