@@ -8,14 +8,14 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Category extends Model
 {
-    use HasFactory;
+  use HasFactory;
 
-    protected $guarded = ["id"];
-    
-    public $timestamps = false;
-    
-    public function room(): HasMany
-    {
-        return $this->hasMany(Room::class, 'category_id', 'id');
-    }
+  protected $guarded = ["id"];
+
+  public $timestamps = false;
+
+  public function room(): HasMany
+  {
+    return $this->hasMany(Room::class, 'category_id', 'id');
+  }
 }
