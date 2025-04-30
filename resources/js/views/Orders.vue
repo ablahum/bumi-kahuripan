@@ -87,7 +87,8 @@ export default {
         room_id: '',
         start_date: null,
         end_date: null,
-        total_price: 0
+        total_price: 0,
+        status_id: ''
       },
       message: {
         success: this.$route.query.message || null,
@@ -112,7 +113,7 @@ export default {
 
           this.isLoading = false
           this.orders = orders
-          this.listRooms = rooms.filter(room => room.status == 'available')
+          this.listRooms = rooms.filter(room => room.status_id == 1)
         } else if (res.status === 404) {
           this.message.failed = 'Tamu tidak ada. Silakan coba lagi.'
         }
@@ -156,6 +157,9 @@ export default {
         payload.append('start_date', start_date)
         payload.append('end_date', end_date)
         payload.append('total_price', total_price)
+        payload.append('status_id', '3')
+
+        // console.log(payload)
 
         const res = await createOne(payload)
 
@@ -170,7 +174,8 @@ export default {
             room_id: '',
             start_date: null,
             end_date: null,
-            total_price: 0
+            total_price: 0,
+            status_id: ''
           }
           this.errors = {}
 
@@ -191,7 +196,7 @@ export default {
       }
     },
     async updateOrder(payload) {
-      const { room_id, start_date, end_date, total_price } = payload
+      const { room_id, start_date, end_date, total_price, status_id } = payload
       const { name, origin, phone, identity_photo } = payload.guest
       this.errors = {}
 
@@ -241,6 +246,7 @@ export default {
         modifiedPayload.append('start_date', start_date)
         modifiedPayload.append('end_date', end_date)
         modifiedPayload.append('total_price', total_price)
+        modifiedPayload.append('status_id', status_id)
 
         const res = await updateOne(payload.id, modifiedPayload)
 
@@ -255,7 +261,8 @@ export default {
             room_id: '',
             start_date: null,
             end_date: null,
-            total_price: 0
+            total_price: 0,
+            status_id: ''
           }
           this.errors = {}
 

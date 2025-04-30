@@ -67,6 +67,12 @@
 
             <th
               class="px-6 py-3 text-xs font-medium leading-4 text-left text-gray-500 uppercase border-b border-gray-200 bg-gray-50"
+            >
+              status
+            </th>
+
+            <th
+              class="px-6 py-3 text-xs font-medium leading-4 text-left text-gray-500 uppercase border-b border-gray-200 bg-gray-50"
             ></th>
           </tr>
 
@@ -157,28 +163,45 @@
             </td>
 
             <td
-              class="px-6 py-4 whitespace-no-wrap border-b border-gray-200 flex items-center gap-2"
+              class="px-6 py-4 whitespace-no-wrap border-b border-gray-200"
+              :class="
+                order.status_id === 3
+                  ? 'bg-green-300'
+                  : order.status_id === 4
+                  ? 'bg-red-300'
+                  : ''
+              "
             >
-              <button
-                class="text-indigo-500 px-2 py-1 rounded hover:text-white hover:bg-indigo-500 font-semibold uppercase"
-              >
+              <p class="text-sm leading-5 text-gray-900 capitalize">
+                {{
+                  order.status_id === 3
+                    ? 'check-in'
+                    : order.status_id === 4
+                    ? 'check-out'
+                    : ''
+                }}
+              </p>
+            </td>
+
+            <td class="px-6 py-4 whitespace-no-wrap border-b border-gray-200">
+              <div class="flex items-center gap-2 h-full">
                 <RouterLink
                   :to="{
                     name: 'UpdateOrder',
                     query: { order: JSON.stringify(order) }
                   }"
-                  class="m-0"
+                  class="text-indigo-500 px-2 py-1 rounded hover:text-white hover:bg-indigo-500 font-semibold uppercase"
                 >
                   ubah
                 </RouterLink>
-              </button>
 
-              <button
-                class="text-red-500 px-2 py-1 rounded hover:text-white hover:bg-red-500 font-semibold uppercase"
-                @click="$emit('deleteOrder', order.guest_id, order.id)"
-              >
-                hapus
-              </button>
+                <button
+                  class="text-red-500 px-2 py-1 rounded hover:text-white hover:bg-red-500 font-semibold uppercase"
+                  @click="$emit('deleteOrder', order.guest_id, order.id)"
+                >
+                  hapus
+                </button>
+              </div>
             </td>
           </tr>
         </tbody>
@@ -200,12 +223,20 @@
             <td
               class="px-6 py-4 whitespace-no-wrap border-b border-gray-200 capitalize"
               :class="
-                room.status === 'available' ? 'bg-green-300' : 'bg-red-300'
+                room.status_id === 1
+                  ? 'bg-green-300'
+                  : room.status_id === 2
+                  ? 'bg-red-300'
+                  : ''
               "
             >
               <p class="text-sm leading-5 text-gray-900">
                 {{
-                  room.status === 'available' ? 'tersedia' : 'tidak Tersedia'
+                  room.status_id === 1
+                    ? 'tersedia'
+                    : room.status_id === 2
+                    ? 'tidak tersedia'
+                    : ''
                 }}
               </p>
             </td>

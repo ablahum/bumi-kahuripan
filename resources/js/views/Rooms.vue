@@ -80,7 +80,7 @@ export default {
       payload: {
         number: null,
         category_id: '',
-        status: '',
+        status_id: '',
         price: ''
       },
       message: {
@@ -121,12 +121,12 @@ export default {
       }
     },
     async createRoom() {
-      const { number, category_id, status, price } = this.payload
+      const { number, category_id, status_id, price } = this.payload
       this.errors = {}
 
       if (!number) this.errors.number = 'Nomor Kamar harus diisi.'
       if (!category_id) this.errors.category_id = 'Jenis Kamar harus diisi.'
-      if (!status) this.errors.status = 'Status Kamar harus diisi.'
+      if (!status_id) this.errors.status_id = 'Status Kamar harus diisi.'
       if (!price) this.errors.price = 'Harga Kamar harus diisi.'
 
       if (Object.keys(this.errors).length > 0) return
@@ -145,7 +145,7 @@ export default {
           this.payload = {
             number: null,
             category_id: '',
-            status: '',
+            status_id: '',
             price: null
           }
           this.errors = {}
@@ -159,12 +159,12 @@ export default {
       }
     },
     async updateRoom(payload) {
-      const { number, category_id, status, price } = payload
+      const { number, category_id, status_id, price } = payload
       this.errors = {}
 
       if (!number) this.errors.number = 'Nomor Kamar harus diisi.'
       if (!category_id) this.errors.category_id = 'Jenis Kamar harus diisi.'
-      if (!status) this.errors.status = 'Status Kamar harus diisi.'
+      if (!status_id) this.errors.status_id = 'Status Kamar harus diisi.'
       if (!price) this.errors.price = 'Harga Kamar harus diisi.'
 
       if (Object.keys(this.errors).length > 0) return
@@ -185,7 +185,7 @@ export default {
           this.payload = {
             number: null,
             category_id: '',
-            status: '',
+            status_id: '',
             price: null
           }
           this.errors = {}

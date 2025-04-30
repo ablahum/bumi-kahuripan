@@ -45,12 +45,13 @@ class RoomsController extends Controller
   {
     $request['number'] = (int) $request['number'];
     $request['category_id'] = (int) $request['category_id'];
+    $request['status_id'] = (int) $request['status_id'];
     $request['price'] = (int) $request['price'];
 
     $data = $request->validate([
       'number' => 'required|integer',
       'price' => 'required|integer',
-      'status' => 'required|string',
+      'status_id' => 'required|integer',
       'category_id' => 'required|integer',
     ]);
 
@@ -67,12 +68,13 @@ class RoomsController extends Controller
   {
     $request['number'] = (int) $request['number'];
     $request['category_id'] = (int) $request['category_id'];
+    $request['status_id'] = (int) $request['status_id'];
     $request['price'] = (int) $request['price'];
 
     $data = $request->validate([
       'number' => 'required|integer',
       'price' => 'required|integer',
-      'status' => 'required|string',
+      'status_id' => 'required|integer',
       'category_id' => 'required|integer',
     ]);
 

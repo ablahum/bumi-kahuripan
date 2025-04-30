@@ -139,6 +139,9 @@
 
       <div
         class="grid md:grid-cols-2 grid-cols-1 md:grid-rows-1 grid-rows-[auto_auto] gap-4 items-start"
+        :class="{
+          'md:grid-cols-3 grid-rows-[auto_auto_auto]': this.mode === 'update'
+        }"
       >
         <div class="grid grid-cols-1 grid-rows-[auto_auto] gap-2">
           <label for="room-id" class="block capitalize">nomor kamar:</label>
@@ -183,6 +186,39 @@
           >
             {{ errors.total_price }}
           </p>
+        </div>
+
+        <div
+          class="grid grid-cols-1 grid-rows-[auto_auto] gap-2 h-full"
+          v-if="this.mode === 'update'"
+        >
+          <label for="total-price" class="block capitalize">status:</label>
+
+          <div class="flex items-center gap-4">
+            <div class="flex items-center gap-2">
+              <input
+                id="check-in"
+                type="radio"
+                value="3"
+                v-model="activePayload.status_id"
+                name="status_id"
+                class="w-4 h-4"
+              />
+              <label for="check-in" class="capitalize">check-in</label>
+            </div>
+
+            <div class="flex items-center gap-2">
+              <input
+                id="check-out"
+                type="radio"
+                value="4"
+                v-model="activePayload.status_id"
+                name="status_id"
+                class="w-4 h-4"
+              />
+              <label for="check-out" class="capitalize">check-out</label>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -257,17 +293,20 @@
           <select
             name="status"
             id="status"
-            v-model="activePayload.status"
+            v-model="activePayload.status_id"
             class="border rounded-lg w-full p-2 uppercase"
-            :class="{ 'border-red-500': errors.status }"
+            :class="{ 'border-red-500': errors.status_id }"
           >
             <option value="" disabled>---pilih status---</option>
-            <option value="available">tersedia</option>
-            <option value="unavailable">tidak tersedia</option>
+            <option value="1">tersedia</option>
+            <option value="2">tidak tersedia</option>
           </select>
 
-          <p v-if="errors.status" class="text-red-500 font-semibold text-end">
-            {{ errors.status }}
+          <p
+            v-if="errors.status_id"
+            class="text-red-500 font-semibold text-end"
+          >
+            {{ errors.status_id }}
           </p>
         </div>
 
