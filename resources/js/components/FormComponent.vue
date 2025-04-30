@@ -272,7 +272,7 @@
         </div>
 
         <div class="grid grid-cols-1 grid-rows-[auto_auto] gap-2">
-          <label for="price" class="block capitalize">harga dasar kamar:</label>
+          <label for="price" class="block capitalize">harga kamar:</label>
 
           <div class="flex items-center gap-2">
             <span class="capitalize text-gray-500">rp</span>
@@ -284,7 +284,7 @@
               v-model="activePayload.price"
               class="text-black border rounded-lg w-full p-2"
               :class="{ 'border-red-500': errors.price }"
-              placeholder="Masukkan harga dasar kamar..."
+              placeholder="Masukkan harga kamar..."
             />
           </div>
 
@@ -353,8 +353,11 @@ export default {
       return this.mode === 'create' ? this.payload : this.updatePayload
     },
     formatTotalPrice() {
-      if (this.mode === 'create') return formatPrice(this.payload.total_price)
-      else return formatPrice(this.updatePayload.total_price)
+      const isOrders = this.currentPath.includes('orders')
+
+      return formatPrice(
+        isOrders ? this.activePayload.total_price : this.activePayload.price
+      )
     }
   },
   created() {
@@ -409,6 +412,9 @@ export default {
         this.activePayload.total_price = 0
       }
     },
+    handleFile(event) {
+      this.activePayload.guest.identity_photo = event.target.files[0]
+    },
     handleSubmit() {
       if (this.mode === 'create') {
         if (this.currentPath.includes('orders')) {
@@ -423,9 +429,6 @@ export default {
           this.$emit('updateRoom', this.activePayload)
         }
       }
-    },
-    handleFile(event) {
-      this.activePayload.guest.identity_photo = event.target.files[0]
     }
   }
 }

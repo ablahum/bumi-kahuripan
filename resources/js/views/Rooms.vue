@@ -132,6 +132,13 @@ export default {
       if (Object.keys(this.errors).length > 0) return
 
       try {
+        const category = this.categories.find(
+          category => category.id === category_id
+        )
+
+        if (category.name === 'ac')
+          this.payload.price = this.payload.price + category.additional_price
+
         const res = await createOne(this.payload)
 
         if (res.status === 201) {
@@ -163,6 +170,13 @@ export default {
       if (Object.keys(this.errors).length > 0) return
 
       try {
+        const category = this.categories.find(
+          category => category.id === category_id
+        )
+
+        if (category.name === 'ac')
+          payload.price = payload.price + category.additional_price
+
         const res = await updateOne(payload)
 
         this.errors = {}
