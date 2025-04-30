@@ -111,6 +111,7 @@
               ? 'text-gray-100 bg-gray-700 bg-opacity-25'
               : ''
           ]"
+          v-if="user && user.role.name === 'Super Admin'"
         >
           <svg
             class="w-6 h-6"
