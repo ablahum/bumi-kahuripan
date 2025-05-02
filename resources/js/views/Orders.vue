@@ -55,7 +55,7 @@
             !$route.path.includes('create') && !$route.path.includes('update')
           "
         >
-          <FilterComponent @apply-filter="applyFilter" />
+          <FilterComponent @filter="applyFilter" />
         </div>
 
         <RouterView
@@ -317,10 +317,12 @@ export default {
         this.message.failed = 'Gagal menghapus tamu. Silakan coba lagi.'
       }
     },
-    applyFilter(selectedStatus = [], startDate = null, endDate = null) {
+    applyFilter({ selectedStatus = [], startDate = null, endDate = null }) {
       let result = [...this.allOrders]
 
       if (selectedStatus.length) {
+        selectedStatus = selectedStatus.map(Number)
+
         result = result.filter(order =>
           selectedStatus.includes(order.status_id)
         )
