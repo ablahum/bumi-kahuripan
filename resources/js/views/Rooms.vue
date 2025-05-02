@@ -55,7 +55,7 @@
             !$route.path.includes('create') && !$route.path.includes('update')
           "
         >
-          <FilterComponent @filter-status="handleStatusFilter" />
+          <FilterComponent @filter="applyFilter" />
         </div>
 
         <RouterView
@@ -122,9 +122,13 @@ export default {
         if (res.status === 200) {
           const { rooms, categories } = res.data
 
+          const sortedRooms = rooms.sort(
+            (a, b) => Number(a.number) - Number(b.number)
+          )
+
           this.isLoading = false
-          this.allRooms = rooms
-          this.filteredRooms = [...rooms]
+          this.allRooms = sortedRooms
+          this.filteredRooms = [...sortedRooms]
           this.categories = categories
         } else if (res.status === 404) {
           this.message.failed = 'Kamar tidak ada. Silakan coba lagi.'
@@ -227,10 +231,12 @@ export default {
         this.message.failed = 'Gagal menghapus kamar. Silakan coba lagi.'
       }
     },
-    handleStatusFilter(selected) {
-      if (selected.length) {
+    applyFilter({ selectedStatus = [] }) {
+      if (selectedStatus.length) {
+        selectedStatus = selectedStatus.map(Number)
+
         this.filteredRooms = this.allRooms.filter(order =>
-          selected.includes(order.status_id)
+          selectedStatus.includes(order.status_id)
         )
       } else {
         this.filteredRooms = [...this.allRooms]
