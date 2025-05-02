@@ -87,9 +87,6 @@ export default {
     this.getPrices()
   },
   computed: {
-    formatTotalPrice() {
-      return formatPrice(this.payload.price.category)
-    },
     formattedPrice: {
       get() {
         return this.payload.price.category
