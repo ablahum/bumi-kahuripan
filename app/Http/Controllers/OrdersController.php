@@ -59,7 +59,7 @@ class OrdersController extends Controller
     $orderData['guest_id'] = $guest->id;
     Order::create($orderData);
 
-    Room::find($request['room_id'])->update(['status' => 'unavailable']);
+    Room::find($request['room_id'])->update(['status_id' => 2]);
 
     return response()->json([
       'message' => 'Guest and Order successfully created.',
@@ -116,10 +116,10 @@ class OrdersController extends Controller
       ], 404);
 
     if ($oldRoom = Room::find($order->room_id)) {
-      $oldRoom->update(['status' => 'available']);
+      $oldRoom->update(['status_id' => 1]);
     }
     if ($newRoom = Room::find($request['room_id'])) {
-      $newRoom->update(['status' => 'unavailable']);
+      $newRoom->update(['status_id' => 2]);
     }
 
     if ($request->hasFile('identity_photo')) {
@@ -158,7 +158,7 @@ class OrdersController extends Controller
 
     $order->delete();
     $guest->delete();
-    $room->update(['status' => 'available']);
+    $room->update(['status_id' => 1]);
 
     return response()->json([
       'message' => 'Guest and Order successfully deleted.',

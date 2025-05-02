@@ -51,7 +51,7 @@
         </div>
       </div>
 
-      <div class="mt-4">
+      <div class="mt-4" v-if="$route.path === '/orders'">
         <button
           @click="toggleAccordion('date')"
           class="w-full text-left px-4 py-2 font-semibold bg-gray-100 hover:bg-gray-200 capitalize"
@@ -60,8 +60,8 @@
         </button>
 
         <div v-show="activeAccordion === 'date'" class="px-4 py-2 space-y-2">
-          <label class="block">
-            Start Date:
+          <label class="block capitalize">
+            tanggal masuk:
             <input
               type="date"
               v-model="startDate"
@@ -69,21 +69,14 @@
             />
           </label>
 
-          <label class="block">
-            End Date:
+          <label class="block capitalize">
+            tanggal keluar:
             <input
               type="date"
               v-model="endDate"
               class="w-full border px-2 py-1 rounded"
             />
           </label>
-
-          <!-- <button
-            @click="emitDateFilter"
-            class="mt-2 px-3 py-1 bg-green-500 text-white rounded w-full"
-          >
-            Terapkan Tanggal
-          </button> -->
         </div>
       </div>
 
@@ -119,11 +112,16 @@ export default {
       this.activeAccordion = this.activeAccordion === section ? null : section
     },
     applyFilter() {
-      this.$emit('filter', {
-        selectedStatus: this.selectedStatus,
-        startDate: this.startDate,
-        endDate: this.endDate
-      })
+      const payload = {
+        selectedStatus: this.selectedStatus
+      }
+
+      if (this.startDate && this.endDate) {
+        payload.startDate = this.startDate
+        payload.endDate = this.endDate
+      }
+
+      this.$emit('filter', payload)
     }
   }
 }
