@@ -119,13 +119,11 @@ export default {
       this.activeAccordion = this.activeAccordion === section ? null : section
     },
     applyFilter() {
-      this.$emit(
-        'apply-filter',
-        this.selectedStatus,
-        this.startDate,
-        this.endDate
-      )
-      this.open = false
+      this.$emit('filter', {
+        selectedStatus: this.selectedStatus,
+        startDate: this.startDate,
+        endDate: this.endDate
+      })
     }
   }
 }
