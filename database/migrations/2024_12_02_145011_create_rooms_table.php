@@ -15,7 +15,6 @@ return new class extends Migration
       $table->id();
       $table->integer('number')->unique();
       $table->integer('price');
-      // $table->enum('status', ['available', 'unavailable']);
       $table->foreignId('status_id')->constrained('statuses');
       $table->foreignId('category_id')->constrained('categories');
     });
