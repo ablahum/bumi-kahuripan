@@ -46,23 +46,30 @@
         </p>
       </div>
 
-      <div class="flex flex-col mt-8">
+      <div
+        class="mt-8 py-2 -my-2 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8 flex flex-col"
+      >
         <div
-          class="py-2 -my-2 overflow-x-auto sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8"
+          class="self-end mb-4"
+          v-if="
+            !$route.path.includes('create') && !$route.path.includes('update')
+          "
         >
-          <RouterView
-            :isLoading="isLoading"
-            :rooms="rooms"
-            :categories="categories"
-            :payload="payload"
-            :errors="errors"
-            :message="message"
-            @create-room="createRoom"
-            @update-room="updateRoom"
-            @delete-room="deleteRoom"
-            :current-path="currentPath"
-          />
+          <FilterComponent @filter-status="handleStatusFilter" />
         </div>
+
+        <RouterView
+          :isLoading="isLoading"
+          :rooms="filteredRooms"
+          :categories="categories"
+          :payload="payload"
+          :errors="errors"
+          :message="message"
+          @create-room="createRoom"
+          @update-room="updateRoom"
+          @delete-room="deleteRoom"
+          :current-path="currentPath"
+        />
       </div>
     </div>
   </div>
@@ -70,12 +77,14 @@
 
 <script>
 import { getAll, createOne, updateOne, deleteOne } from '../apis/rooms'
+import { FilterComponent } from '../components'
 
 export default {
   data() {
     return {
       isLoading: true,
-      rooms: [],
+      allRooms: [],
+      filteredRooms: [],
       categories: [],
       payload: {
         number: null,
@@ -89,6 +98,9 @@ export default {
       },
       errors: {}
     }
+  },
+  components: {
+    FilterComponent
   },
   props: {
     currentPath: String
@@ -111,7 +123,8 @@ export default {
           const { rooms, categories } = res.data
 
           this.isLoading = false
-          this.rooms = rooms
+          this.allRooms = rooms
+          this.filteredRooms = [...rooms]
           this.categories = categories
         } else if (res.status === 404) {
           this.message.failed = 'Kamar tidak ada. Silakan coba lagi.'
@@ -212,6 +225,15 @@ export default {
         }
       } catch (err) {
         this.message.failed = 'Gagal menghapus kamar. Silakan coba lagi.'
+      }
+    },
+    handleStatusFilter(selected) {
+      if (selected.length) {
+        this.filteredRooms = this.allRooms.filter(order =>
+          selected.includes(order.status_id)
+        )
+      } else {
+        this.filteredRooms = [...this.allRooms]
       }
     }
   }
