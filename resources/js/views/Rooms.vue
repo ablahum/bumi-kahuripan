@@ -76,7 +76,8 @@
 </template>
 
 <script>
-import { getAll, createOne, updateOne, deleteOne } from '../apis/rooms'
+import { getAll, getOne, createOne, updateOne, deleteOne } from '../apis/rooms'
+
 import { FilterComponent } from '../components'
 
 export default {
@@ -187,12 +188,13 @@ export default {
       if (Object.keys(this.errors).length > 0) return
 
       try {
+        const room = await getOne(payload.id)
         const category = this.categories.find(
           category => category.id === category_id
         )
 
-        if (category.name === 'ac')
-          payload.price = payload.price + category.additional_price
+        if (category.name === 'ac' && room.data.room.price !== price)
+          payload.price += category.additional_price
 
         const res = await updateOne(payload)
 
