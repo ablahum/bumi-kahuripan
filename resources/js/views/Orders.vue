@@ -46,23 +46,30 @@
         </p>
       </div>
 
-      <div class="flex flex-col mt-8">
+      <div
+        class="mt-8 py-2 -my-2 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8 flex flex-col"
+      >
         <div
-          class="py-2 -my-2 overflow-x-auto sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8"
+          class="self-end mb-4"
+          v-if="
+            !$route.path.includes('create') && !$route.path.includes('update')
+          "
         >
-          <RouterView
-            :isLoading="isLoading"
-            :orders="orders"
-            :listRooms="listRooms"
-            :payload="payload"
-            :message="message"
-            :errors="errors"
-            @create-order="createOrder"
-            @update-order="updateOrder"
-            @delete-order="deleteOrder"
-            :current-path="currentPath"
-          />
+          <FilterComponent @apply-filter="applyFilter" />
         </div>
+
+        <RouterView
+          :isLoading="isLoading"
+          :orders="filteredOrders"
+          :listRooms="listRooms"
+          :payload="payload"
+          :message="message"
+          :errors="errors"
+          @create-order="createOrder"
+          @update-order="updateOrder"
+          @delete-order="deleteOrder"
+          :current-path="currentPath"
+        />
       </div>
     </div>
   </div>
@@ -70,12 +77,14 @@
 
 <script>
 import { getAll, createOne, updateOne, deleteOne } from '../apis/orders'
+import { FilterComponent } from '../components'
 
 export default {
   data() {
     return {
       isLoading: true,
-      orders: [],
+      allOrders: [],
+      filteredOrders: [],
       listRooms: [],
       payload: {
         guest: {
@@ -97,6 +106,9 @@ export default {
       errors: {}
     }
   },
+  components: {
+    FilterComponent
+  },
   props: {
     currentPath: String
   },
@@ -112,7 +124,8 @@ export default {
           const { orders, rooms } = res.data
 
           this.isLoading = false
-          this.orders = orders
+          this.allOrders = orders
+          this.filteredOrders = [...orders]
           this.listRooms = rooms.filter(room => room.status_id == 1)
         } else if (res.status === 404) {
           this.message.failed = 'Tamu tidak ada. Silakan coba lagi.'
@@ -158,8 +171,6 @@ export default {
         payload.append('end_date', end_date)
         payload.append('total_price', total_price)
         payload.append('status_id', '3')
-
-        // console.log(payload)
 
         const res = await createOne(payload)
 
@@ -305,6 +316,28 @@ export default {
       } catch (err) {
         this.message.failed = 'Gagal menghapus tamu. Silakan coba lagi.'
       }
+    },
+    applyFilter(selectedStatus = [], startDate = null, endDate = null) {
+      let result = [...this.allOrders]
+
+      if (selectedStatus.length) {
+        result = result.filter(order =>
+          selectedStatus.includes(order.status_id)
+        )
+      }
+
+      if (startDate && endDate) {
+        const start = new Date(startDate)
+        const end = new Date(endDate)
+
+        result = result.filter(order => {
+          const orderStart = new Date(order.start_date)
+          const orderEnd = new Date(order.end_date)
+          return orderStart >= start && orderEnd <= end
+        })
+      }
+
+      this.filteredOrders = result
     }
   }
 }

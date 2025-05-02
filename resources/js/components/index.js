@@ -1,4 +1,5 @@
-import TableComponent from "./TableComponent.vue";
-import FormComponent from "./FormComponent.vue";
+import TableComponent from './TableComponent.vue'
+import FormComponent from './FormComponent.vue'
+import FilterComponent from './FilterComponent.vue'
 
-export { TableComponent, FormComponent };
+export { TableComponent, FormComponent, FilterComponent }
