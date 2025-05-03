@@ -19,7 +19,7 @@ export const authMiddleware = async (to, from, next) => {
             record.meta.requiresRole !== user.role.name
         )
       ) {
-        return next({ path: '/orders' })
+        return next({ path: '/dashboard' })
       }
 
       return next()
@@ -29,7 +29,7 @@ export const authMiddleware = async (to, from, next) => {
     }
   } else if (to.matched.some(record => record.meta.requiresUser)) {
     if (token) {
-      return next({ path: '/orders' })
+      return next({ path: '/dashboard' })
     }
 
     return next()

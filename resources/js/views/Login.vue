@@ -122,7 +122,7 @@ export default {
             setTimeout(() => {
               this.message = {}
 
-              this.$router.push('/orders')
+              this.$router.push('/dashboard')
             }, 5000)
           }
         }
