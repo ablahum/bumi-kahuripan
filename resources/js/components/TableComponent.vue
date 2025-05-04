@@ -2,7 +2,7 @@
   <div class="flex flex-col">
     <div class="py-2 -my-2 overflow-x-auto sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8">
       <div v-if="isLoading" class="text-center">
-        <h3 class="text-2xl font-semibold capitalize">Loading...</h3>
+        <h3 class="text-2xl font-semibold capitalize">Memuat...</h3>
       </div>
 
       <div

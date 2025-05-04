@@ -3,7 +3,7 @@ import { getMe } from '../apis/auth'
 export const authMiddleware = async (to, from, next) => {
   const token = localStorage.getItem('auth-token')
 
-  if (to.matched.some(record => record.meta.requiresAuth)) {
+  if (to.matched.some((record) => record.meta.requiresAuth)) {
     if (!token) {
       return next({ path: '/login' })
     }
@@ -14,7 +14,7 @@ export const authMiddleware = async (to, from, next) => {
 
       if (
         to.matched.some(
-          record =>
+          (record) =>
             record.meta.requiresRole &&
             record.meta.requiresRole !== user.role.name
         )
@@ -27,7 +27,7 @@ export const authMiddleware = async (to, from, next) => {
       console.error('Auth guard error:', err)
       return next({ path: '/login' })
     }
-  } else if (to.matched.some(record => record.meta.requiresUser)) {
+  } else if (to.matched.some((record) => record.meta.requiresUser)) {
     if (token) {
       return next({ path: '/dashboard' })
     }
