@@ -1,7 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import { authMiddleware } from '../middlewares'
 import { Dashboard, Sign } from '../layouts'
-import { Login, Register, Orders, Rooms, Settings } from '../views'
+import { Login, Register, Home, Orders, Rooms, Settings } from '../views'
 import { TableComponent, FormComponent } from '../components'
 
 const routes = [
@@ -31,6 +31,14 @@ const routes = [
     path: '/',
     component: Dashboard,
     children: [
+      {
+        path: 'dashboard',
+        component: Home,
+        meta: {
+          requiresAuth: true,
+          requiresRole: 'Super Admin'
+        }
+      },
       {
         path: 'orders',
         component: Orders,
