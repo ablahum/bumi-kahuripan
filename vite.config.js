@@ -17,9 +17,5 @@ export default defineConfig({
   },
   server: {
     https: true
-  },
-  build: {
-    manifest: true,
-    outDir: 'public/build'
   }
 })
