@@ -16,8 +16,13 @@
       </div>
 
       <div class="flex flex-col mt-8">
+        <div v-if="isLoading" class="text-center">
+          <h3 class="text-2xl font-semibold capitalize">Memuat...</h3>
+        </div>
+
         <div
           class="py-2 -my-2 overflow-x-auto sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8"
+          v-if="!isLoading"
         >
           <div
             class="bg-white rounded-lg p-6 grid grid-cols-1 grid-rows-[auto_auto] gap-4"
@@ -72,6 +77,7 @@ import { getAll, updateAll } from '../apis/settings'
 export default {
   data() {
     return {
+      isLoading: true,
       payload: {
         price: {
           category: 0
@@ -108,12 +114,14 @@ export default {
           const categories = res.data.data.categories || []
 
           const acCategory = categories.find(
-            category => category.name.toLowerCase() === 'ac'
+            (category) => category.name.toLowerCase() === 'ac'
           )
 
           if (acCategory && acCategory.additional_price != null)
             this.payload.price.category = acCategory.additional_price
           else this.payload.price.category = 0
+
+          this.isLoading = false
         } else if (res.status === 404) {
           this.message.failed = 'Data pengaturan tidak ada. Silakan coba lagi.'
         }
