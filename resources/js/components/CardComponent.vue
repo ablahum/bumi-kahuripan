@@ -3,8 +3,11 @@
     class="rounded-lg p-4 shadow-lg grid grid-cols-1 grid-rows-[auto_auto] outline"
     :class="cardClass"
   >
-    <div class="text-2xl font-bold text-indigo-500 text-center">
-      {{ total }}
+    <div class="flex items-center justify-center gap-2">
+      <p v-if="type === 'amount'" class="capitalize">rp.</p>
+      <p class="text-2xl font-bold text-indigo-500 text-center">
+        {{ type === 'count' ? count : amount }}
+      </p>
     </div>
 
     <div class="mt-4 flex flex-col items-center">
@@ -25,17 +28,14 @@ export default {
       type: String,
       required: true
     },
-    total: {
-      type: [String, Number],
-      required: true
-    },
     description: {
       type: [String],
       required: true
     },
-    cardClass: {
-      type: [String]
-    }
+    type: String,
+    count: Number,
+    amount: String,
+    cardClass: String
   }
 }
 </script>

@@ -35,7 +35,8 @@
                   v-for="(item, index) in allOrdersByStatus"
                   :key="index"
                   :title="item.title"
-                  :total="item.total"
+                  :type="'count'"
+                  :count="item.count"
                   :description="`Jumlah tamu yang ${
                     item.title === 'check-in'
                       ? 'baru Check-In'
@@ -64,8 +65,47 @@
                   v-for="(item, index) in allOrdersByDate"
                   :key="index"
                   :title="item.title"
-                  :total="item.total"
+                  :type="'count'"
+                  :count="item.count"
                   :description="`Jumlah tamu di ${
+                    item.title === 'harian'
+                      ? 'hari'
+                      : item.title === 'mingguan'
+                      ? 'minggu'
+                      : item.title === 'bulanan'
+                      ? 'bulan'
+                      : item.title === 'tahunan'
+                      ? 'tahun'
+                      : ''
+                  } ini`"
+                  :class="
+                    item.title === 'harian'
+                      ? 'outline-red-200'
+                      : item.title === 'mingguan'
+                      ? 'outline-yellow-200'
+                      : item.title === 'bulanan'
+                      ? 'outline-green-200'
+                      : item.title === 'tahunan'
+                      ? 'outline-blue-200'
+                      : ''
+                  "
+                />
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 grid-rows-[auto_auto] gap-4 mb-2">
+              <h3 class="capitalize text-xl font-semibold">penghasilan</h3>
+
+              <div
+                class="grid gap-4 lg:grid-cols-4 sm:grid-cols-2 grid-cols-1 lg:grid-rows-1 sm:grid-rows-[auto_auto] grid-rows-[auto_auto_auto_auto]"
+              >
+                <CardComponent
+                  v-for="(item, index) in allOrdersByDate"
+                  :key="index"
+                  :title="item.title"
+                  :type="'amount'"
+                  :amount="item.amount"
+                  :description="`Jumlah pendapatan di ${
                     item.title === 'harian'
                       ? 'hari'
                       : item.title === 'mingguan'
@@ -100,6 +140,7 @@
 <script>
 import { getAll } from '../apis/orders'
 import { CardComponent } from '../components'
+import { formatPrice } from '../utils/formatter'
 import dayjs from 'dayjs'
 import isToday from 'dayjs/plugin/isToday'
 import isSameOrAfter from 'dayjs/plugin/isSameOrAfter'
@@ -116,14 +157,14 @@ export default {
     return {
       isLoading: true,
       allOrdersByStatus: [
-        { title: 'check-in', total: 0 },
-        { title: 'check-out', total: 0 }
+        { title: 'check-in', count: 0 },
+        { title: 'check-out', count: 0 }
       ],
       allOrdersByDate: [
-        { title: 'harian', total: 0 },
-        { title: 'mingguan', total: 0 },
-        { title: 'bulanan', total: 0 },
-        { title: 'tahunan', total: 0 }
+        { title: 'harian', count: 0, amount: 0 },
+        { title: 'mingguan', count: 0, amount: 0 },
+        { title: 'bulanan', count: 0, amount: 0 },
+        { title: 'tahunan', count: 0, amount: 0 }
       ],
       message: {
         success: this.$route.query.message || null,
@@ -151,39 +192,85 @@ export default {
           const currentYear = today.year()
 
           const categorized = {
-            in: 0,
-            out: 0,
-            daily: 0,
-            weekly: 0,
-            monthly: 0,
-            annually: 0
+            checkin: 0,
+            checkout: 0,
+            daily: {
+              count: 0,
+              amount: 0
+            },
+            weekly: {
+              count: 0,
+              amount: 0
+            },
+            monthly: {
+              count: 0,
+              amount: 0
+            },
+            annually: {
+              count: 0,
+              amount: 0
+            }
           }
 
           orders.forEach((order) => {
             const start = dayjs(order.start_date)
             const end = dayjs(order.end_date)
+            const price = Number(order.total_price) || 0
 
-            if (start.isToday() && order.status_id === 3) categorized.in++
-            if (end.isToday() && order.status_id === 4) categorized.out++
+            if (start.isToday() && order.status_id === 3) categorized.checkin++
+            if (end.isToday() && order.status_id === 4) categorized.checkout++
 
-            if (start.isToday()) categorized.daily++
-            if (start.week() === currentWeek && start.year() === currentYear)
-              categorized.weekly++
-            if (start.month() === currentMonth && start.year() === currentYear)
-              categorized.monthly++
-            if (start.year() === currentYear) categorized.annually++
+            if (start.isToday()) {
+              categorized.daily.count++
+              categorized.daily.amount += price
+            }
+
+            if (start.week() === currentWeek && start.year() === currentYear) {
+              categorized.weekly.count++
+              categorized.weekly.amount += price
+            }
+
+            if (
+              start.month() === currentMonth &&
+              start.year() === currentYear
+            ) {
+              categorized.monthly.count++
+              categorized.monthly.amount += price
+            }
+
+            if (start.year() === currentYear) {
+              categorized.annually.count++
+              categorized.annually.amount += price
+            }
           })
 
           this.allOrdersByStatus = [
-            { title: 'check-in', total: categorized.in },
-            { title: 'check-out', total: categorized.out }
+            { title: 'check-in', count: categorized.checkin },
+            { title: 'check-out', count: categorized.checkout }
           ]
 
           this.allOrdersByDate = [
-            { title: 'harian', total: categorized.daily },
-            { title: 'mingguan', total: categorized.weekly },
-            { title: 'bulanan', total: categorized.monthly },
-            { title: 'tahunan', total: categorized.annually }
+            {
+              title: 'harian',
+              count: categorized.daily.count,
+              // amount: categorized.daily.amount
+              amount: formatPrice(categorized.daily.amount)
+            },
+            {
+              title: 'mingguan',
+              count: categorized.weekly.count,
+              amount: formatPrice(categorized.weekly.amount)
+            },
+            {
+              title: 'bulanan',
+              count: categorized.monthly.count,
+              amount: formatPrice(categorized.monthly.amount)
+            },
+            {
+              title: 'tahunan',
+              count: categorized.annually.count,
+              amount: formatPrice(categorized.annually.amount)
+            }
           ]
 
           this.isLoading = false
