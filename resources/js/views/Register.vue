@@ -98,7 +98,7 @@
                 'transition-colors',
                 'peer-checked:bg-indigo-700 peer-checked:text-white',
                 role.id == 1 ? 'rounded-l-lg' : 'rounded-r-lg',
-                { 'border-red-500': errors.role },
+                { 'border-red-500': errors.role }
               ]"
             >
               {{ role.name }}
@@ -130,94 +130,88 @@
 </template>
 
 <script>
-import { register } from "../apis/auth";
+import { register } from '../apis/auth'
 
 export default {
   data() {
     return {
       roles: [
-        { id: 1, name: "super admin" },
-        { id: 2, name: "admin" },
+        { id: 1, name: 'super admin' },
+        { id: 2, name: 'admin' }
       ],
       payload: {
         name: null,
         email: null,
         password: null,
-        role_id: null,
+        role_id: null
       },
       message: {
         success: this.$route.query.message || null,
-        failed: null,
+        failed: null
       },
-      errors: {},
-    };
+      errors: {}
+    }
   },
   mounted() {
     if (this.message) {
       setTimeout(() => {
-        this.message = {};
-      }, 5000);
+        this.message = {}
+      }, 5000)
     }
   },
   methods: {
     async register() {
-      this.errors = {};
+      this.errors = {}
 
-      if (!this.payload.name) this.errors.name = "Nama harus diisi.";
-      if (!this.payload.email) this.errors.email = "Email harus diisi.";
-      if (!this.payload.password)
-        this.errors.password = "Password harus diisi.";
-      if (!this.payload.role_id) this.errors.role = "Peran harus diisi.";
+      if (!this.payload.name) this.errors.name = 'Nama harus diisi.'
+      if (!this.payload.email) this.errors.email = 'Email harus diisi.'
+      if (!this.payload.password) this.errors.password = 'Password harus diisi.'
+      if (!this.payload.role_id) this.errors.role = 'Peran harus diisi.'
 
-      if (Object.keys(this.errors).length > 0) return;
+      if (Object.keys(this.errors).length > 0) return
 
       try {
-        const res = await register(this.payload);
+        const res = await register(this.payload)
 
         if (res.status === 201) {
           this.message.success =
-            "Buat akun berhasil. Anda akan diarahkan dalam 5 detik.";
+            'Buat akun berhasil. Anda akan diarahkan dalam 5 detik.'
 
           this.payload = {
             name: null,
             email: null,
             password: null,
-            role_id: null,
-          };
-          this.errors = {};
+            role_id: null
+          }
+          this.errors = {}
 
           if (this.message) {
             setTimeout(() => {
-              this.message = {};
+              this.message = {}
 
-              this.$router.push("/login");
-            }, 5000);
+              this.$router.push('/login')
+            }, 5000)
           }
         }
       } catch (err) {
-        const message = err.response.data.message.replace(/\(.*?\)/, "").trim();
+        const message = err.response.data.message
 
-        console.log(message);
-        if (message === "The email has already been taken.") {
-          this.message.failed = "Alamat email sudah terdaftar.";
-        } else if (
-          message === "The email field must be a valid email address."
-        ) {
-          this.message.failed = "Format alamat email harus benar.";
-        } else if (
-          message === "The password field must be at least 8 characters."
-        ) {
+        if (message === 'validation.unique') {
+          this.message.failed = 'Alamat email sudah terdaftar.'
+        } else if (message === 'validation.email') {
+          this.message.failed = 'Format alamat email harus benar.'
+        } else if (message === 'validation.min.string') {
           this.message.failed =
-            "Kata sandi harus setidaknya memiliki 8 karakter";
+            'Kata sandi harus setidaknya memiliki 8 karakter'
         }
       }
 
       if (this.message) {
         setTimeout(() => {
-          this.message = {};
-        }, 5000);
+          this.message = {}
+        }, 5000)
       }
-    },
-  },
-};
+    }
+  }
+}
 </script>
