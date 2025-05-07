@@ -157,6 +157,9 @@
             <option v-for="room in rooms" :key="room.id" :value="room.id">
               {{ room.number }}
             </option>
+            <option value="" disabled v-if="!rooms.length">
+              tidak ada kamar yang tersedia
+            </option>
           </select>
 
           <p v-if="errors.room_id" class="text-red-500 font-semibold text-end">
@@ -428,7 +431,7 @@ export default {
       if (
         this.mode === 'update' &&
         this.updatePayload.room &&
-        !this.rooms.find(room => room.id === this.updatePayload.room.id)
+        !this.rooms.find((room) => room.id === this.updatePayload.room.id)
       )
         this.rooms.push(this.updatePayload.room)
     },
