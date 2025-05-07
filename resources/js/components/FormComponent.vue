@@ -102,13 +102,12 @@
             >tanggal masuk:</label
           >
 
-          <input
-            type="date"
-            name="start-date"
-            id="start-date"
+          <flat-pickr
             v-model="activePayload.start_date"
+            :config="{ dateFormat: 'd-m-Y' }"
             class="text-black border rounded-lg w-full p-2"
             :class="{ 'border-red-500': errors.start_date }"
+            placeholder="Pilih tanggal masuk..."
           />
 
           <p
@@ -122,13 +121,12 @@
         <div class="grid grid-cols-1 grid-rows-[auto_auto] gap-2">
           <label for="end-date" class="block capitalize">tanggal keluar:</label>
 
-          <input
-            type="date"
-            name="end-date"
-            id="end-date"
+          <flat-pickr
             v-model="activePayload.end_date"
+            :config="{ dateFormat: 'd-m-Y' }"
             class="text-black border rounded-lg w-full p-2"
             :class="{ 'border-red-500': errors.end_date }"
+            placeholder="Pilih tanggal keluar..."
           />
 
           <p v-if="errors.end_date" class="text-red-500 font-semibold text-end">
@@ -349,7 +347,9 @@
 <script>
 import { getOne } from '../apis/rooms'
 import countPrice from '../utils/countPrice'
-import { formatPrice } from '../utils/formatter'
+import { formatDate, formatPrice } from '../utils/formatter'
+import FlatPickr from 'vue-flatpickr-component'
+import 'flatpickr/dist/flatpickr.css'
 
 export default {
   name: 'FormComponent',
@@ -366,6 +366,7 @@ export default {
     errors: Object,
     currentPath: String
   },
+  components: { FlatPickr },
   watch: {
     'payload.room_id': 'updateTotalPrice',
     'payload.start_date': 'updateTotalPrice',
@@ -444,8 +445,8 @@ export default {
 
           this.activePayload.total_price = countPrice(
             res.data.room.price,
-            start_date,
-            end_date
+            formatDate('to-iso', start_date),
+            formatDate('to-iso', end_date)
           )
         } catch (err) {
           console.log(err)

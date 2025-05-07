@@ -9,9 +9,15 @@ export const formatPrice = (number) => {
   }).format(price)
 }
 
-export const formatDate = (date) => {
+export const formatDate = (type, date) => {
   if (!date) return ''
 
-  const [year, month, day] = date.split('-')
-  return `${day}-${month}-${year}`
+  if (type === 'to-local') {
+    const [year, month, day] = date.split('-')
+    return `${day}-${month}-${year}`
+  } else if (type === 'to-iso') {
+    const [day, month, year] = date.split('-')
+
+    return `${year}-${month}-${day}`
+  }
 }

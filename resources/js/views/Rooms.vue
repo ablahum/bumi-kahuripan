@@ -151,7 +151,7 @@ export default {
 
       try {
         const category = this.categories.find(
-          category => category.id === category_id
+          (category) => category.id === category_id
         )
 
         if (category.name === 'ac')
@@ -190,7 +190,7 @@ export default {
       try {
         const room = await getOne(payload.id)
         const category = this.categories.find(
-          category => category.id === category_id
+          (category) => category.id === category_id
         )
 
         if (category.name === 'ac' && room.data.room.price !== price)
@@ -237,7 +237,7 @@ export default {
       if (selectedStatus.length) {
         selectedStatus = selectedStatus.map(Number)
 
-        this.filteredRooms = this.allRooms.filter(order =>
+        this.filteredRooms = this.allRooms.filter((order) =>
           selectedStatus.includes(order.status_id)
         )
       } else {
