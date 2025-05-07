@@ -62,19 +62,23 @@
         <div v-show="activeAccordion === 'date'" class="px-4 py-2 space-y-2">
           <label class="block capitalize">
             tanggal masuk:
-            <input
-              type="date"
+
+            <flat-pickr
               v-model="startDate"
-              class="w-full border px-2 py-1 rounded"
+              :config="{ dateFormat: 'd-m-Y' }"
+              class="w-full border px-2 py-1 rounded mt-2"
+              placeholder="Pilih tanggal masuk..."
             />
           </label>
 
           <label class="block capitalize">
             tanggal keluar:
-            <input
-              type="date"
+
+            <flat-pickr
               v-model="endDate"
-              class="w-full border px-2 py-1 rounded"
+              :config="{ dateFormat: 'd-m-Y' }"
+              class="w-full border px-2 py-1 rounded mt-2"
+              placeholder="Pilih tanggal keluar..."
             />
           </label>
         </div>
@@ -93,8 +97,12 @@
 </template>
 
 <script>
+import FlatPickr from 'vue-flatpickr-component'
+import 'flatpickr/dist/flatpickr.css'
+import { formatDate } from '../utils/formatter'
+
 export default {
-  name: 'FilterButton',
+  name: 'FilterComponent',
   data() {
     return {
       open: false,
@@ -104,6 +112,7 @@ export default {
       endDate: ''
     }
   },
+  components: { FlatPickr },
   methods: {
     toggleDropdown() {
       this.open = !this.open
@@ -117,8 +126,8 @@ export default {
       }
 
       if (this.startDate && this.endDate) {
-        payload.startDate = this.startDate
-        payload.endDate = this.endDate
+        payload.startDate = formatDate('to-iso', this.startDate)
+        payload.endDate = formatDate('to-iso', this.endDate)
       }
 
       this.$emit('filter', payload)

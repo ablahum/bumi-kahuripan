@@ -296,7 +296,7 @@ export default {
       return formatPrice(price)
     },
     formattedDate(date) {
-      return formatDate(date)
+      return formatDate('to-local', date)
     }
   }
 }

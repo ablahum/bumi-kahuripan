@@ -78,6 +78,7 @@
 <script>
 import { getAll, createOne, updateOne, deleteOne } from '../apis/orders'
 import { FilterComponent } from '../components'
+import { formatDate } from '../utils/formatter'
 
 export default {
   data() {
@@ -126,7 +127,7 @@ export default {
           this.isLoading = false
           this.allOrders = orders
           this.filteredOrders = [...orders]
-          this.listRooms = rooms.filter(room => room.status_id == 1)
+          this.listRooms = rooms.filter((room) => room.status_id == 1)
         } else if (res.status === 404) {
           this.message.failed = 'Tamu tidak ada. Silakan coba lagi.'
         }
@@ -167,8 +168,8 @@ export default {
         payload.append('phone', String(phone))
         payload.append('identity_photo', identity_photo)
         payload.append('room_id', room_id)
-        payload.append('start_date', start_date)
-        payload.append('end_date', end_date)
+        payload.append('start_date', formatDate('to-iso', start_date))
+        payload.append('end_date', formatDate('to-iso', end_date))
         payload.append('total_price', total_price)
         payload.append('status_id', '3')
 
@@ -203,6 +204,8 @@ export default {
           this.getOrders()
         }
       } catch (err) {
+        console.log(err)
+
         this.message.failed = 'Gagal menambahkan tamu. Silakan coba lagi.'
       }
     },
@@ -323,7 +326,7 @@ export default {
       if (selectedStatus.length) {
         selectedStatus = selectedStatus.map(Number)
 
-        result = result.filter(order =>
+        result = result.filter((order) =>
           selectedStatus.includes(order.status_id)
         )
       }
@@ -332,7 +335,7 @@ export default {
         const start = new Date(startDate)
         const end = new Date(endDate)
 
-        result = result.filter(order => {
+        result = result.filter((order) => {
           const orderStart = new Date(order.start_date)
           const orderEnd = new Date(order.end_date)
           return orderStart >= start && orderEnd <= end
