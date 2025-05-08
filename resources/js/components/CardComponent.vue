@@ -4,9 +4,10 @@
     :class="cardClass"
   >
     <div class="flex items-center justify-center gap-2">
-      <p v-if="type === 'amount'" class="capitalize">rp.</p>
+      <p v-if="type === 'revenue'" class="capitalize">rp.</p>
+
       <p class="text-2xl font-bold text-indigo-500 text-center">
-        {{ type === 'count' ? count : amount }}
+        {{ type === 'count' ? count : revenue }}
       </p>
     </div>
 
@@ -34,7 +35,7 @@ export default {
     },
     type: String,
     count: Number,
-    amount: String,
+    revenue: String,
     cardClass: String
   }
 }
