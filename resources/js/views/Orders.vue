@@ -257,8 +257,8 @@ export default {
         modifiedPayload.append('phone', String(phone))
         modifiedPayload.append('identity_photo', identity_photo)
         modifiedPayload.append('room_id', room_id)
-        modifiedPayload.append('start_date', start_date)
-        modifiedPayload.append('end_date', end_date)
+        modifiedPayload.append('start_date', formatDate('to-iso', start_date))
+        modifiedPayload.append('end_date', formatDate('to-iso', end_date))
         modifiedPayload.append('total_price', total_price)
         modifiedPayload.append('status_id', status_id)
 
