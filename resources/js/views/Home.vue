@@ -158,8 +158,10 @@
             <div class="grid grid-cols-1 grid-rows-[auto_auto] gap-4 mb-2">
               <h3 class="capitalize text-xl font-semibold">statistik</h3>
 
-              <div class="flex flex-col">
-                <div class="flex flex-col gap-2 self-end w-1/4">
+              <div class="flex flex-col gap-4">
+                <div
+                  class="flex flex-col gap-2 md:self-end lg:w-1/4 md:w-1/2 w-full"
+                >
                   <div class="flex items-center">
                     <label for="range" class="block w-1/2">
                       Rentang waktu:
