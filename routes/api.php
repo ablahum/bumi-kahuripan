@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\OrdersController;
 use App\Http\Controllers\RoomsController;
 use App\Http\Controllers\SettingsController;
@@ -16,6 +17,9 @@ Route::group(['prefix' => 'auth'], function () {
 });
 
 Route::middleware('auth:sanctum')->group(function () {
+  Route::get('/dashboard/orders', [DashboardController::class, 'orderStats']);
+  Route::get('/dashboard/rooms', [DashboardController::class, 'roomStats']);
+
   Route::resource('/orders', OrdersController::class);
   Route::resource('/rooms', RoomsController::class);
 
