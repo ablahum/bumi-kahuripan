@@ -57,11 +57,82 @@ class DashboardController extends Controller
             'count' => $annuallyCount,
             'revenue' => $annuallyRevenue,
           ],
+        ],
+        'breakdown' => [
+          'weekly' => $this->breakdown('weekly'),
+          'monthly' => $this->breakdown('monthly'),
+          'annually' => $this->breakdown('annually'),
         ]
       ],
     ], 200);
   }
 
+  private function breakdown(String $type)
+  {
+    switch ($type) {
+      case 'weekly':
+        $days = [];
+        $startOfWeek = now()->startOfWeek();
+
+        for ($i = 0; $i < 7; $i++) {
+          $day = $startOfWeek->copy()->addDays($i);
+
+          $count = Order::whereDate('start_date', $day)->count();
+          $revenue = Order::whereDate('start_date', $day)->sum('total_price');
+
+          $days[] = [
+            'label' => $day->translatedFormat('l'),
+            'count' => $count,
+            'revenue' => $revenue
+          ];
+        }
+        return $days;
+
+      case 'monthly':
+        $weeks = [];
+        $startOfMonth = now()->startOfMonth();
+        $endOfMonth = now()->endOfMonth();
+        $current = $startOfMonth->copy();
+
+        while ($current <= $endOfMonth) {
+          $startOfWeek = $current->copy()->startOfWeek();
+          $endOfWeek = $current->copy()->endOfWeek();
+
+          $count = Order::whereBetween('start_date', [$startOfWeek, $endOfWeek])->count();
+          $revenue = Order::whereBetween('start_date', [$startOfWeek, $endOfWeek])->sum('total_price');
+
+          $weeks[] = [
+            'label' => 'Minggu ' . $current->weekOfMonth,
+            'count' => $count,
+            'revenue' => $revenue
+          ];
+
+          $current->addWeek();
+        }
+
+        return $weeks;
+
+      case 'annually':
+        $months = [];
+
+        for ($i = 1; $i <= 12; $i++) {
+          $month = now()->copy()->month($i);
+
+          $count = Order::whereMonth('start_date', $i)->whereYear('start_date', now()->year)->count();
+          $revenue = Order::whereMonth('start_date', $i)->whereYear('start_date', now()->year)->sum('total_price');
+
+          $months[] = [
+            'label' => $month->translatedFormat('F'),
+            'count' => $count,
+            'revenue' => $revenue
+          ];
+        }
+        return $months;
+
+      default:
+        return [];
+    }
+  }
 
   public function roomStats()
   {

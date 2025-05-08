@@ -23,7 +23,7 @@
           v-if="!isLoading"
         >
           <div
-            class="bg-white rounded-lg p-6 grid grid-cols-1 grid-rows-[auto_auto_auto] gap-4"
+            class="bg-white rounded-lg p-6 grid grid-cols-1 grid-rows-[auto_auto_auto_auto_auto] gap-4"
           >
             <div class="grid grid-cols-1 grid-rows-[auto_auto] gap-4 mb-2">
               <h3 class="capitalize text-xl font-semibold">status kamar</h3>
@@ -70,9 +70,9 @@
                   } hari ini`"
                   :class="
                     item.title === 'check-in'
-                      ? 'bg-green-200 outline-none'
+                      ? 'bg-green-300 outline-none'
                       : item.title === 'check-out'
-                      ? 'bg-red-200 outline-none'
+                      ? 'bg-red-300 outline-none'
                       : ''
                   "
                 />
@@ -104,13 +104,13 @@
                   } ini`"
                   :class="
                     item.title === 'harian'
-                      ? 'outline-red-200'
+                      ? 'bg-red-200 outline-none'
                       : item.title === 'mingguan'
-                      ? 'outline-yellow-200'
+                      ? 'bg-yellow-200 outline-none'
                       : item.title === 'bulanan'
-                      ? 'outline-green-200'
+                      ? 'bg-green-200 outline-none'
                       : item.title === 'tahunan'
-                      ? 'outline-blue-200'
+                      ? 'bg-blue-200 outline-none'
                       : ''
                   "
                 />
@@ -154,6 +154,46 @@
                 />
               </div>
             </div>
+
+            <div class="grid grid-cols-1 grid-rows-[auto_auto] gap-4 mb-2">
+              <h3 class="capitalize text-xl font-semibold">statistik</h3>
+
+              <div class="flex flex-col">
+                <div class="flex flex-col gap-2 self-end w-1/4">
+                  <div class="flex items-center">
+                    <label for="range" class="block w-1/2">
+                      Rentang waktu:
+                    </label>
+                    <select
+                      id="range"
+                      v-model="allOrdersStats.range"
+                      class="text-black border rounded-lg p-2 capitalize w-1/2"
+                    >
+                      <option value="weekly">mingguan</option>
+                      <option value="monthly">bulanan</option>
+                      <option value="annually">tahunan</option>
+                    </select>
+                  </div>
+
+                  <div class="flex items-center">
+                    <label for="type" class="block w-1/2">Jenis:</label>
+                    <select
+                      id="type"
+                      v-model="allOrdersStats.type"
+                      class="text-black border rounded-lg p-2 capitalize w-1/2"
+                    >
+                      <option value="count">jumlah tamu</option>
+                      <option value="revenue">pendapatan</option>
+                    </select>
+                  </div>
+                </div>
+
+                <ChartComponent
+                  :chartData="chartData"
+                  :chartOptions="chartOptions"
+                />
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -163,7 +203,7 @@
 
 <script>
 import { getOrderStats, getRoomStats } from '../apis/dashboard'
-import { CardComponent } from '../components'
+import { CardComponent, ChartComponent } from '../components'
 import { formatPrice } from '../utils/formatter'
 
 export default {
@@ -184,6 +224,13 @@ export default {
         { title: '', count: 0, revenue: 0 },
         { title: '', count: 0, revenue: 0 }
       ],
+      allOrdersStats: {
+        range: 'weekly',
+        type: 'count',
+        weekly: [],
+        monthly: [],
+        annually: []
+      },
       message: {
         success: this.$route.query.message || null,
         failed: null
@@ -191,12 +238,52 @@ export default {
     }
   },
   components: {
-    CardComponent
+    CardComponent,
+    ChartComponent
   },
   mounted() {
     this.getStats()
   },
-  computed: {},
+  computed: {
+    chartData() {
+      const range = this.allOrdersStats.range
+      const type = this.allOrdersStats.type
+      const dataSet = this.allOrdersStats[range] || []
+
+      const labels = dataSet.map((d) => d.label || d.day)
+      const data = dataSet.map((d) => d[type])
+
+      return {
+        labels,
+        datasets: [
+          {
+            label: type === 'count' ? 'Jumlah Tamu' : 'Pendapatan',
+            backgroundColor: '#6366f1',
+            data
+          }
+        ]
+      }
+    },
+    chartOptions() {
+      const type = this.allOrdersStats.type
+      return {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+          y: {
+            ticks: {
+              callback: function (value) {
+                return type === 'revenue'
+                  ? 'Rp' + value.toLocaleString('id-ID')
+                  : value
+              },
+              stepSize: type === 'count' ? 1 : undefined
+            }
+          }
+        }
+      }
+    }
+  },
   methods: {
     async getStats() {
       try {
@@ -204,7 +291,7 @@ export default {
         const resRooms = await getRoomStats()
 
         if (resOrders.status === 200 && resRooms.status === 200) {
-          const { status, total } = resOrders.data.data
+          const { status, total, breakdown } = resOrders.data.data
           const { data } = resRooms.data
 
           this.allRoomsByStatus = [
@@ -217,7 +304,6 @@ export default {
               count: data.unavailable
             }
           ]
-
           this.allOrdersByStatus = Object.entries(status).map(
             ([key, value]) => {
               return {
@@ -226,7 +312,6 @@ export default {
               }
             }
           )
-
           this.allOrdersByDate = [
             {
               title: 'harian',
@@ -249,6 +334,9 @@ export default {
               revenue: formatPrice(total.annually.revenue)
             }
           ]
+          this.allOrdersStats.weekly = breakdown.weekly
+          this.allOrdersStats.monthly = breakdown.monthly
+          this.allOrdersStats.annually = breakdown.annually
 
           this.isLoading = false
         } else if (res.status === 404) {
