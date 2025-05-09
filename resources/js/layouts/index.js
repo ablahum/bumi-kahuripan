@@ -1,4 +1,4 @@
-import Dashboard from "./Dashboard.vue";
-import Sign from "./Sign.vue";
+import Sidebar from './Sidebar.vue'
+import Sign from './Sign.vue'
 
-export { Dashboard, Sign };
+export { Sidebar, Sign }
