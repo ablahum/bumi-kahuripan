@@ -50,11 +50,13 @@
         class="mt-8 py-2 -my-2 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8 flex flex-col"
       >
         <div
-          class="self-end mb-4"
+          class="mb-4 gap-4 flex items-center sm:justify-between w-full"
           v-if="
             !$route.path.includes('create') && !$route.path.includes('update')
           "
         >
+          <SearchComponent @filter="applyFilter" />
+
           <FilterComponent @filter="applyFilter" />
         </div>
 
@@ -77,7 +79,7 @@
 
 <script>
 import { getAll, createOne, updateOne, deleteOne } from '../apis/orders'
-import { FilterComponent } from '../components'
+import { FilterComponent, SearchComponent } from '../components'
 import { formatDate } from '../utils/formatter'
 
 export default {
@@ -86,6 +88,12 @@ export default {
       isLoading: true,
       allOrders: [],
       filteredOrders: [],
+      filters: {
+        keyword: '',
+        selectedStatus: [],
+        startDate: null,
+        endDate: null
+      },
       listRooms: [],
       payload: {
         guest: {
@@ -108,6 +116,7 @@ export default {
     }
   },
   components: {
+    SearchComponent,
     FilterComponent
   },
   props: {
@@ -320,14 +329,42 @@ export default {
         this.message.failed = 'Gagal menghapus tamu. Silakan coba lagi.'
       }
     },
-    applyFilter({ selectedStatus = [], startDate = null, endDate = null }) {
-      let result = [...this.allOrders]
+    applyFilter(newFilters = {}) {
+      this.filters = {
+        keyword:
+          newFilters.keyword !== undefined
+            ? newFilters.keyword
+            : this.filters.keyword,
+        selectedStatus:
+          newFilters.selectedStatus !== undefined
+            ? newFilters.selectedStatus
+            : this.filters.selectedStatus,
+        startDate:
+          newFilters.startDate !== undefined
+            ? newFilters.startDate
+            : this.filters.startDate,
+        endDate:
+          newFilters.endDate !== undefined
+            ? newFilters.endDate
+            : this.filters.endDate
+      }
+
+      const { keyword, selectedStatus, startDate, endDate } = this.filters
+
+      let result = JSON.parse(JSON.stringify(this.allOrders))
+
+      if (keyword) {
+        const lower = keyword.toLowerCase()
+        result = result.filter((order) => {
+          const name = String(order.guest.name || '').toLowerCase()
+          const origin = String(order.guest.origin || '').toLowerCase()
+          return name.includes(lower) || origin.includes(lower)
+        })
+      }
 
       if (selectedStatus.length) {
-        selectedStatus = selectedStatus.map(Number)
-
         result = result.filter((order) =>
-          selectedStatus.includes(order.status_id)
+          selectedStatus.includes(String(order.status_id))
         )
       }
 
