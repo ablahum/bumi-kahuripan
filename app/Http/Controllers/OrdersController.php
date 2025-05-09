@@ -59,7 +59,7 @@ class OrdersController extends Controller
     $orderData['guest_id'] = $guest->id;
     Order::create($orderData);
 
-    Room::find($request['room_id'])->update(['status_id' => 2]);
+    if ($orderData['start_date'] == now()) Room::find($orderData['room_id'])->update(['status_id' => 2]);
 
     return response()->json([
       'message' => 'Guest and Order successfully created.',
@@ -86,14 +86,20 @@ class OrdersController extends Controller
           if (request()->hasFile('identity_photo')) {
             $file = request()->file('identity_photo');
             if (!in_array($file->getClientOriginalExtension(), ['jpeg', 'jpg', 'png'])) {
-              $fail('Identity photo format must be JPG, JPEG, or PNG.');
+              return response()->json([
+                'message' => 'Identity photo format must be JPG, JPEG, or PNG.',
+              ], 404);
             }
           } else if (is_string($value)) {
             if (!preg_match('/\.(jpg|jpeg|png)$/i', $value)) {
-              $fail('Old file path format must be JPG, JPEG, or PNG.');
+              return response()->json([
+                'message' => 'Old indentity photo format must be JPG, JPEG, or PNG.',
+              ], 404);
             }
           } else {
-            $fail('Format not valid.');
+            return response()->json([
+              'message' => 'Identity photo format not valid.',
+            ], 404);
           }
         }
       ]
@@ -115,12 +121,9 @@ class OrdersController extends Controller
         'message' => 'Guest or Order not found.',
       ], 404);
 
-    if ($oldRoom = Room::find($order->room_id)) {
-      $oldRoom->update(['status_id' => 1]);
-    }
-    if ($newRoom = Room::find($request['room_id'])) {
-      $newRoom->update(['status_id' => 2]);
-    }
+    if ($oldRoom = Room::find($order->room_id)) $oldRoom->update(['status_id' => 1]);
+
+    if ($newRoom = Room::find($request['room_id'])) $newRoom->update(['status_id' => 2]);
 
     if ($request->hasFile('identity_photo')) {
       $file = $request->file('identity_photo');
