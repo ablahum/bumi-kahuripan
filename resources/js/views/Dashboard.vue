@@ -160,7 +160,7 @@
 
               <div class="flex flex-col gap-4">
                 <div
-                  class="flex flex-col gap-2 md:self-end lg:w-1/4 md:w-1/2 w-full"
+                  class="flex flex-col gap-2 md:self-end md:w-1/2 w-full lg:w-1/3"
                 >
                   <div class="flex items-center">
                     <label for="range" class="block w-1/2">

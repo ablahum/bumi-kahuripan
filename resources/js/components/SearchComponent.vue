@@ -10,7 +10,7 @@
       v-model="keyword"
       @input="emitFilter"
       placeholder="Masukkan nama atau asal tamu..."
-      class="md:w-3/4 w-full p-2 text-black border rounded-lg self-end"
+      class="md:w-3/4 w-full p-2 text-black rounded-lg"
     />
   </div>
 </template>
