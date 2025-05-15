@@ -203,7 +203,6 @@ export default {
           this.$router.push('/orders')
           this.message.success = 'Tamu berhasil ditambahkan.'
 
-          // use global state
           if (this.message) {
             setTimeout(() => {
               this.message = {}
