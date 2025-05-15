@@ -34,6 +34,7 @@
               ? 'bg-indigo-500'
               : 'hover:bg-gray-700 hover:bg-opacity-25 hover:text-gray-100'
           ]"
+          v-if="user && user.role.name === 'Super Admin'"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -68,7 +69,7 @@
           </svg>
 
           <span class="mx-3 capitalize">
-            <RouterLink to="/dashboard" class="m-0">dashboard</RouterLink>
+            <RouterLink to="/dashboard" class="m-0">beranda</RouterLink>
           </span>
         </div>
 
@@ -79,6 +80,7 @@
               ? 'bg-indigo-500'
               : 'hover:bg-gray-700 hover:bg-opacity-25 hover:text-gray-100'
           ]"
+          v-if="user"
         >
           <svg
             version="1.1"
