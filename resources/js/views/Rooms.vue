@@ -107,12 +107,6 @@ export default {
     currentPath: String
   },
   mounted() {
-    if (this.message) {
-      setTimeout(() => {
-        this.message = {}
-      }, 5000)
-    }
-
     this.getRooms()
   },
   methods: {
@@ -170,6 +164,13 @@ export default {
 
           this.$router.push('/rooms')
           this.message.success = 'Kamar berhasil ditambahkan.'
+
+          if (this.message) {
+            setTimeout(() => {
+              this.message = {}
+            }, 5000)
+          }
+
           this.getRooms()
         }
       } catch (err) {
@@ -211,6 +212,13 @@ export default {
 
           this.$router.push('/rooms')
           this.message.success = 'Kamar berhasil diubah.'
+
+          if (this.message) {
+            setTimeout(() => {
+              this.message = {}
+            }, 5000)
+          }
+
           this.getRooms()
         } else if (res.status === 404) {
           this.message.failed = 'Kamar tidak ada. Silakan coba lagi.'
@@ -225,6 +233,13 @@ export default {
 
         if (res.status === 204) {
           this.message.success = 'Kamar berhasil dihapus.'
+
+          if (this.message) {
+            setTimeout(() => {
+              this.message = {}
+            }, 5000)
+          }
+
           this.getRooms()
         } else if (res.status === 404) {
           this.message.failed = 'Kamar tidak ada. Silakan coba lagi.'
