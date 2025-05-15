@@ -12,14 +12,16 @@ export const authMiddleware = async (to, from, next) => {
       const res = await getMe()
       const user = res.data.user
 
-      if (
-        to.matched.some(
-          (record) =>
-            record.meta.requiresRole &&
-            record.meta.requiresRole !== user.role.name
-        )
-      ) {
-        return next({ path: '/dashboard' })
+      const isRestricted = to.matched.some(
+        (record) =>
+          record.meta.requiresRole &&
+          record.meta.requiresRole !== user.role.name
+      )
+
+      if (isRestricted) {
+        return user.role.name === 'Super Admin'
+          ? next({ path: '/dashboard' })
+          : next({ path: '/orders' })
       }
 
       return next()
@@ -29,7 +31,16 @@ export const authMiddleware = async (to, from, next) => {
     }
   } else if (to.matched.some((record) => record.meta.requiresUser)) {
     if (token) {
-      return next({ path: '/dashboard' })
+      try {
+        const res = await getMe()
+        const user = res.data.user
+        return user.role.name === 'Super Admin'
+          ? next({ path: '/dashboard' })
+          : next({ path: '/orders' })
+      } catch (err) {
+        console.error('Token ada tapi getMe error:', err)
+        return next({ path: '/login' })
+      }
     }
 
     return next()
