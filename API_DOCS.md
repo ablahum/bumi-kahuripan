@@ -2,7 +2,7 @@
 
 This document provides an overview of the available API endpoints used in the Bumi Kahuripan, a guesthouse/lodgings management system.
 
-> Base URL: `http://localhost:8000/api`
+> Base URL: `https://bumi-kahuripan.up.railway.app/api`
 
 ## 🔐 Authentication
 
