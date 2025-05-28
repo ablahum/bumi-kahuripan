@@ -6,7 +6,7 @@
 
 ### Dashboard Overview
 
-- Automatic calculation of total daily, weekly, monthly, yearly guests
+- Automatic calculation of total daily, weekly, monthly, and yearly guests
 - Real-time gross profit summary
 
 ### Guest Management
@@ -18,15 +18,15 @@
 ### Rooms Management
 
 - Manage room availability data
-- Manage room base price and its types
+- Manage the room base price and its types
 
 ### Settings
 
-- Manage the price increase in room rates based on their type (AC/Non AC)
+- Manage the price increase in room rates based on their type (AC/Non-AC)
 
 ### Authentication
 
-- Register & Login based on user's role (admin & super admin)
+- Register & Login based on the user's role (admin & super admin)
 
 ## 🛠️ Tech Stack
 
@@ -48,7 +48,7 @@
 
 ## ⚙️ Installation
 
-To run this project locally, make sure you have PHP, Composer, Node.js, and PostgreSQL installed on your machine.
+To run this project locally, ensure you have PHP, Composer, Node.js, and PostgreSQL installed on your machine.
 
 - Clone the repository
 
@@ -92,12 +92,17 @@ npm run dev
 
 ## 📝 API Documentation:
 
-The details of API Documentation, you can read here: [API Docs](./API_DOCS.md)
+The details of the API Documentation can be found here: [API Docs](./API_DOCS.md)
 
 ## 📷 Screenshots
 
 A glimpse of screenshots of the apps
 
+![alt text](https://github.com/ablahum/bumi-kahuripan/blob/main/public/assets/register.png)
+![alt text](https://github.com/ablahum/bumi-kahuripan/blob/main/public/assets/dashboard.png)
+![alt text](https://github.com/ablahum/bumi-kahuripan/blob/main/public/assets/orders.png)
+![alt text](https://github.com/ablahum/bumi-kahuripan/blob/main/public/assets/form.png)
+![alt text](https://github.com/ablahum/bumi-kahuripan/blob/main/public/assets/settings.png)
 <!-- upload photo here -->
 
 ## 📌 Project Info
