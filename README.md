@@ -90,9 +90,9 @@ php artisan serve
 npm run dev
 ```
 
-## 📝 API Documentation:
+## 📝 API Documentation
 
-The details of the API Documentation can be found here: [API Docs](./API_DOCS.md)
+The details of the API Docs can be found here: [API Docs](./API_DOCS.md)
 
 ## 📷 Screenshots
 
