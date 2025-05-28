@@ -99,6 +99,8 @@ The details of the API Documentation can be found here: [API Docs](./API_DOCS.md
 A glimpse of screenshots of the apps
 
 ![alt text](https://github.com/ablahum/bumi-kahuripan/blob/main/public/assets/register.png)
+![alt text](https://github.com/ablahum/bumi-kahuripan/blob/main/public/assets/dashboard.png)
+![alt text](https://github.com/ablahum/bumi-kahuripan/blob/main/public/assets/orders.png)
 ![alt text](https://github.com/ablahum/bumi-kahuripan/blob/main/public/assets/form.png)
 ![alt text](https://github.com/ablahum/bumi-kahuripan/blob/main/public/assets/settings.png)
 <!-- upload photo here -->
