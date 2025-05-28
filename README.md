@@ -114,4 +114,4 @@ This project is a freelance solution for a real-world client and is not open for
 For any questions or collaboration inquiries, feel free to ask me!
 
 - **Email**: ablahum@proton.me
-- **GitHub**: @ablahum
+- **Website**: https://tama-dev.vercel.app/
