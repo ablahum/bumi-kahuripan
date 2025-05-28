@@ -96,14 +96,20 @@ The details of the API Docs can be found here: [API Docs](./API_DOCS.md)
 
 ## 📷 Screenshots
 
-A glimpse of screenshots of the apps
+<details>
+  <summary>A glimpse of screenshots of the apps</summary>
 
-![alt text](https://github.com/ablahum/bumi-kahuripan/blob/main/public/assets/register.png)
-![alt text](https://github.com/ablahum/bumi-kahuripan/blob/main/public/assets/dashboard.png)
-![alt text](https://github.com/ablahum/bumi-kahuripan/blob/main/public/assets/orders.png)
-![alt text](https://github.com/ablahum/bumi-kahuripan/blob/main/public/assets/form.png)
-![alt text](https://github.com/ablahum/bumi-kahuripan/blob/main/public/assets/settings.png)
-<!-- upload photo here -->
+  ### Register page
+  ![register](https://github.com/ablahum/bumi-kahuripan/blob/main/public/assets/register.png)
+  ### Dashboard page
+  ![dashboard](https://github.com/ablahum/bumi-kahuripan/blob/main/public/assets/dashboard.png)
+  ### Guest/order list page
+  ![guest/order](https://github.com/ablahum/bumi-kahuripan/blob/main/public/assets/orders.png)
+  ### Order form page
+  ![order-form](https://github.com/ablahum/bumi-kahuripan/blob/main/public/assets/form.png)
+  ### Setting page
+  ![setting](https://github.com/ablahum/bumi-kahuripan/blob/main/public/assets/settings.png)
+</details>
 
 ## 📌 Project Info
 
